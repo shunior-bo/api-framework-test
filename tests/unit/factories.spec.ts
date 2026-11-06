@@ -16,6 +16,7 @@ import {
   buildUser,
   isoNow,
   MAX_TITLE_LENGTH,
+  recentIsoDate,
   uniqueSuffix,
 } from '@src/data/factories';
 import { DateTimeSchema } from '@src/utils/schema';
@@ -29,6 +30,15 @@ test.describe('uniqueSuffix / isoNow', () => {
 
   test('isoNow returns an OpenAPI date-time string', () => {
     expect(DateTimeSchema.safeParse(isoNow()).success).toBe(true);
+  });
+
+  test('recentIsoDate returns a date-time about 24 hours in the past', () => {
+    const date = recentIsoDate();
+    const hoursAgo = (Date.now() - new Date(date).getTime()) / 3_600_000;
+
+    expect(DateTimeSchema.safeParse(date).success).toBe(true);
+    expect(hoursAgo).toBeGreaterThan(23);
+    expect(hoursAgo).toBeLessThan(25);
   });
 });
 

@@ -29,6 +29,15 @@ export const MAX_TITLE_LENGTH = 128;
 const DEFAULT_AVATAR = '.\\data\\users\\face_1591133479.7144732.jpg';
 
 /**
+ * Article image path that exists in the GAD seed data.
+ *
+ * `image` is optional in the contract, but GAD's DB sanity check (reported by
+ * GET /api/health as `dbProblems`) flags every article without it and turns the
+ * health status to "Degraded" — even after the article is deleted. Always send it.
+ */
+const DEFAULT_ARTICLE_IMAGE = '.\\data\\images\\256\\chuttersnap-9cCeS9Sg6nU-unsplash.jpg';
+
+/**
  * Returns a short string that is unique per call within a test run.
  *
  * Combines the current timestamp with a random component, e.g. "m3x9k2-4821".
@@ -39,9 +48,23 @@ export function uniqueSuffix(): string {
 
 /**
  * Returns the current date-time as an ISO 8601 string (OpenAPI `format: date-time`).
+ *
+ * Do NOT use it as payload data for GAD: see `recentIsoDate()`.
  */
 export function isoNow(): string {
   return new Date().toISOString();
+}
+
+/**
+ * Returns an ISO 8601 date-time 24 hours in the past.
+ *
+ * Why not "now": GAD compares the payload `date` (a UTC instant) against the
+ * server's LOCAL wall-clock time, so on a host west of UTC the current instant
+ * is rejected with 422 "date in future" (see tc-articles-12). A date one day in
+ * the past is valid in every timezone.
+ */
+export function recentIsoDate(): string {
+  return new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 }
 
 /**
@@ -55,7 +78,8 @@ export function buildArticle(overrides: Partial<CreateArticleRequest> = {}): Cre
   return {
     title: title.slice(0, MAX_TITLE_LENGTH),
     body: faker.lorem.paragraph(),
-    date: isoNow(),
+    date: recentIsoDate(),
+    image: DEFAULT_ARTICLE_IMAGE,
     ...overrides,
   };
 }
@@ -74,7 +98,7 @@ export function buildComment(
   return {
     article_id: articleId,
     body: `[api-test] ${faker.lorem.sentence()} ${uniqueSuffix()}`,
-    date: isoNow(),
+    date: recentIsoDate(),
     ...overrides,
   };
 }
@@ -97,3 +121,10 @@ export function buildUser(overrides: Partial<CreateUserRequest> = {}): CreateUse
     ...overrides,
   };
 }
+
+/**
+ * An ID that no GAD resource uses. Use it for 404 scenarios on GET.
+ *
+ * Do NOT use it for PUT: GAD upserts and would create a resource with this ID.
+ */
+export const NON_EXISTENT_ID = 999999999;
