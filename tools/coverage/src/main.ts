@@ -60,7 +60,7 @@ Exit codes: 0 OK · 1 threshold not met · 2 input/usage error. Gaps alone never
 `;
 
 /**
- * Reads git metadata from CI variables, then from the git binary.
+ * Reads git metadata: COVERAGE_GIT_SHA/BRANCH, then GitHub CI variables, then the git binary.
  *
  * @param env - Environment variables.
  */
@@ -80,9 +80,14 @@ function defaultGit(env: Record<string, string | undefined>): {
       return null;
     }
   };
-  const sha = env.GITHUB_SHA || run(['rev-parse', 'HEAD']);
+  // COVERAGE_GIT_* lets CI label each side of a PR comparison exactly (GITHUB_SHA
+  // is the merge commit on pull_request events), then CI variables, then git.
+  const sha = env.COVERAGE_GIT_SHA || env.GITHUB_SHA || run(['rev-parse', 'HEAD']);
   const branch =
-    env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME || run(['rev-parse', '--abbrev-ref', 'HEAD']);
+    env.COVERAGE_GIT_BRANCH ||
+    env.GITHUB_HEAD_REF ||
+    env.GITHUB_REF_NAME ||
+    run(['rev-parse', '--abbrev-ref', 'HEAD']);
   return { sha: sha ?? null, branch: branch ?? null };
 }
 
