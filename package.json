@@ -12,6 +12,7 @@
     "report": "playwright show-report reports/html",
     "coverage": "node tools/coverage/src/cli.ts",
     "coverage:json": "node tools/coverage/src/cli.ts --format json,gaps",
+    "coverage:compare-estimate": "node tools/coverage/src/compare-estimate.ts",
     "typecheck": "tsc -p . && tsc -p tools/coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
