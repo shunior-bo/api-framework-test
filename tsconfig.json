@@ -7,9 +7,11 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "rootDir": ".",
     "paths": {
-      "@src/*": ["./src/*"]
+      "@src/*": ["./src/*"],
+      "@coverage/*": ["./tools/coverage/src/*"]
     }
   },
   "include": ["tests/**/*.ts", "src/**/*.ts", "playwright.config.ts"],
