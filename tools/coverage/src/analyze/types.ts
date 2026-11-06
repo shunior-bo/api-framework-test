@@ -110,6 +110,8 @@ export interface RequestCounts {
   hooks: number;
   /** Records excluded by --only-passed. */
   filteredByOutcome: number;
+  /** Records whose call threw (status null): they never reached the API and never count. */
+  errored: number;
   /** Records (any phase) that matched no documented operation and are not ignored. */
   unmatched: number;
 }

@@ -3,6 +3,8 @@
  * parameters — plus spec-drift extras. Pure function: no I/O, no clock, no env.
  *
  * Counted requests (coverage units):
+ *   - the call got an HTTP response (status !== null) — a call that threw
+ *     (connection refused, timeout) never exercised the API;
  *   - phase !== "hook", unless `includeHooks`;
  *   - with `onlyPassed`, a non-hook request counts only when its test ended as
  *     expected (testStatus === expectedStatus). Hook requests are not filtered
@@ -63,6 +65,7 @@ export const UNTAGGED = '(untagged)';
  * @param options - Counting options.
  */
 export function isCounted(record: RequestRecord, options: AnalyzeOptions): boolean {
+  if (record.status === null) return false;
   if (record.phase === 'hook') return options.includeHooks;
   if (!options.onlyPassed) return true;
   return record.testStatus !== null && record.testStatus === record.expectedStatus;
@@ -220,6 +223,7 @@ export function analyzeCoverage(
     counted: 0,
     hooks: 0,
     filteredByOutcome: 0,
+    errored: 0,
     unmatched: 0,
   };
 
@@ -227,6 +231,7 @@ export function analyzeCoverage(
     if (record.phase === 'hook') counts.hooks += 1;
     const counted = isCounted(record, options);
     if (counted) counts.counted += 1;
+    else if (record.status === null) counts.errored += 1;
     else if (record.phase !== 'hook') counts.filteredByOutcome += 1;
 
     const result = matcher.match(record.method, record.path);
