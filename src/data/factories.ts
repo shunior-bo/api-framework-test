@@ -37,13 +37,20 @@ const DEFAULT_AVATAR = '.\\data\\users\\face_1591133479.7144732.jpg';
  */
 const DEFAULT_ARTICLE_IMAGE = '.\\data\\images\\256\\chuttersnap-9cCeS9Sg6nU-unsplash.jpg';
 
+/** Per-process call counter: guarantees uniqueness within one worker. */
+let suffixCounter = 0;
+
 /**
  * Returns a short string that is unique per call within a test run.
  *
- * Combines the current timestamp with a random component, e.g. "m3x9k2-4821".
+ * Combines the timestamp, the worker process id and a per-process counter,
+ * e.g. "m3x9k2-1a2b-7". The counter makes calls within the same millisecond
+ * unique (a random component alone collided ~12% of the time for 50 calls),
+ * and the pid separates parallel workers.
  */
 export function uniqueSuffix(): string {
-  return `${Date.now().toString(36)}-${faker.string.numeric(4)}`;
+  suffixCounter += 1;
+  return `${Date.now().toString(36)}-${process.pid.toString(36)}-${suffixCounter.toString(36)}`;
 }
 
 /**
