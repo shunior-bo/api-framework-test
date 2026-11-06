@@ -5,6 +5,13 @@ import * as dotenv from 'dotenv';
 dotenv.config({ quiet: true });
 
 export default defineConfig({
+  // GAD is a single Node process whose request-validation layer re-reads
+  // db.json from disk, while json-server persists writes asynchronously.
+  // Parallel workers therefore hit a read-after-write race (a just-created
+  // article intermittently answers 404 on PATCH/DELETE and leaks). Running
+  // serially removes the race; see the "Known GAD issues" section of README.md.
+  workers: 1,
+  fullyParallel: false,
   use: {
     baseURL: process.env.BASE_URL,
     extraHTTPHeaders: {
