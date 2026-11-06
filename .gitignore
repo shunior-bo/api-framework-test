@@ -6,3 +6,6 @@ playwright-report
 .env
 .vscode
 .idea
+
+# GAD checkout used by CI (and local CI simulations)
+gad/

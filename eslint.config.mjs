@@ -6,7 +6,13 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['node_modules/**', 'reports/**', 'test-results/**', 'playwright-report/**'],
+    ignores: [
+      'node_modules/**',
+      'reports/**',
+      'test-results/**',
+      'playwright-report/**',
+      'gad/**',
+    ],
   },
   {
     files: ['**/*.ts'],
