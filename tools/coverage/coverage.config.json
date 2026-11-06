@@ -1,0 +1,56 @@
+{
+  "$comment": "Exclusions leave the coverage denominators and are listed under `excluded` with their reason. ignoreUnmatched globs match FULL request paths (with /api). See tools/coverage/README.md.",
+  "excludeOperations": [
+    {
+      "method": "GET",
+      "path": "/debug/exit",
+      "reason": "Terminates the GAD process; would kill the server under test."
+    },
+    {
+      "method": "GET",
+      "path": "/debug/restart",
+      "reason": "Restarts the GAD process (needs a process manager); destructive for the run."
+    },
+    {
+      "method": "GET",
+      "path": "/restoreDB",
+      "reason": "Replaces the shared database; forbidden in tests by CONVENTIONS.md (breaks test independence)."
+    },
+    {
+      "method": "GET",
+      "path": "/restoreEmptyDB",
+      "reason": "Empties the shared database; forbidden in tests by CONVENTIONS.md."
+    },
+    {
+      "method": "GET",
+      "path": "/restoreBigDB",
+      "reason": "Replaces the shared database with a large dataset; forbidden in tests by CONVENTIONS.md."
+    },
+    {
+      "method": "GET",
+      "path": "/diagnostic/toggle-metrics",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite."
+    },
+    {
+      "method": "GET",
+      "path": "/diagnostic/toggle-diagnostics",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite."
+    },
+    {
+      "method": "GET",
+      "path": "/diagnostic/toggle-logs",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite."
+    },
+    {
+      "method": "POST",
+      "path": "/diagnostic/log-level",
+      "reason": "Changes global server logging configuration; operational, out of functional scope."
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/books/{id}",
+      "reason": "Spec defect: the template repeats the /api base path, so the documented URL (/api/api/books/{id}) is not served by GAD."
+    }
+  ],
+  "ignoreUnmatched": ["/api/config/**"]
+}

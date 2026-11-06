@@ -17,6 +17,10 @@ npm run lint && npm run format:check && npm run typecheck
 npm run test:unit           # no server needed
 npm run test:api            # needs GAD at BASE_URL
 npm run report              # open reports/html
+
+# Coverage (CONVENTIONS.md §12, tools/coverage/README.md)
+npm run test:api:coverage   # tests + coverage report; gaps in reports/coverage/gaps.json
+npm run coverage            # re-report the last recorded run
 ```
 
 ## Working rules

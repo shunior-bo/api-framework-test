@@ -9,12 +9,12 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 ## 1. Hard rules (read these first)
 
 1. **All HTTP goes through a client in `src/api/`, and clients come from fixtures.** Tests never call `request.get/post/...` and never write `new XxxClient(request)`.
-   *Why:* the Day 2 coverage tool records every request at this single point (the `request` fixture → client fixtures in `src/fixtures/api.fixture.ts`). A request made any other way is invisible to coverage.
+   *Why:* the coverage recorder (§12) wraps the `request` fixture, and every client is built from it in `src/fixtures/api.fixture.ts`. A request made any other way (for example `playwright.request.newContext()` or an external HTTP library) is **left out of coverage**, and the tool will then report as untested an endpoint that the test does exercise.
 2. **`spec/openapi.json` is the source of truth** for paths, methods, status codes and body shapes. It is a vendored copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json`. `OPENAPI_PATH` in `.env` points to it.
 3. **Only `src/fixtures/auth.fixture.ts` logs in.** Tests get tokens from `authToken` or `loginAs(...)`. The single exception is `tests/api/auth.spec.ts`, because login is its feature under test.
 4. **Only `src/utils/schema.ts` imports `zod`.** ESLint enforces this rule.
 5. **Always use the `@src/` alias. Never use relative imports** (`./` or `../`). ESLint enforces this rule.
-6. **No hardcoded URLs or credentials.** The base URL comes from `BASE_URL`, and credentials come from `API_USERNAME` / `API_PASSWORD` through fixtures. Only fixtures read `process.env`.
+6. **No hardcoded URLs or credentials.** The base URL comes from `BASE_URL`, and credentials come from `API_USERNAME` / `API_PASSWORD` through fixtures. Only `playwright.config.ts` and `src/fixtures/` read `process.env`. The one exception is `src/coverage/globalSetup.ts`, which only *writes* `COVERAGE_RUN_ID`. The standalone CLI in `tools/coverage/` may read env vars because it is a tool and not a framework layer.
 7. **No `any`.** Response bodies are typed `unknown` and narrowed with a schema. ESLint enforces this rule.
 8. **Every test cleans up what it creates** in a `finally` block, using the client's `delete`.
 9. **Never bend an assertion to match a GAD bug.** Keep the assertion the contract demands and mark the test with `test.fail(true, '<reason>')` plus a comment that explains the spec-vs-actual discrepancy.
@@ -25,18 +25,22 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 
 ```
 api-framework-test/
+├── .github/workflows/         # CI (api-coverage.yml)
 ├── spec/openapi.json          # Contract (source of truth)
 ├── src/
 │   ├── api/                   # XxxClient.ts — one class per resource
 │   ├── models/                # xxx.model.ts — pure interfaces
 │   ├── data/                  # factories.ts — buildXxx() payload builders
-│   ├── fixtures/              # api.fixture.ts (clients), auth.fixture.ts (tokens)
+│   ├── coverage/              # RequestRecorder (Proxy over `request`), raw JSONL writer
+│   ├── fixtures/              # coverage.fixture.ts → api.fixture.ts (clients) → auth.fixture.ts (tokens)
 │   └── utils/                 # schema.ts (Zod), auth.ts (auth strategies)
+├── tools/coverage/            # Standalone coverage CLI (no Playwright, no deps)
 ├── tests/
 │   ├── api/                   # xxx.spec.ts — one spec per resource (needs GAD)
 │   └── unit/                  # xxx.spec.ts — pure logic, no network
-├── docs/                      # Experiments and reports
-├── playwright.config.ts       # projects: api, unit
+│       └── coverage/          # tests of tools/coverage + the recorder
+├── docs/                      # Experiments, reports, coverage baselines
+├── playwright.config.ts       # projects: api, unit; globalSetup stamps the coverage run
 └── CONVENTIONS.md             # This file
 ```
 
@@ -47,9 +51,11 @@ api-framework-test/
 | `src/utils/schema.ts` | Every Zod schema, plus the re-export of `z` | SRP + OCP | network, assertions |
 | `src/utils/auth.ts` | `AuthStrategy`, `TokenAuth`, `BasicAuth`, `authHeaders()` | OCP + LSP + ISP | network, env reads |
 | `src/data/` | `buildXxx(overrides)` factories that return valid, unique payloads | SRP + OCP | network, assertions, env reads |
-| `src/fixtures/` | Building clients (`api.fixture.ts`) and the login flow (`auth.fixture.ts`) | SRP + OCP + DIP | feature assertions, HTTP logic |
+| `src/coverage/` | Recording every request (names only) as raw JSONL | SRP + OCP | assertions, changing requests/responses, recording values |
+| `src/fixtures/` | Recording proxy (`coverage.fixture.ts`), building clients (`api.fixture.ts`) and the login flow (`auth.fixture.ts`) | SRP + OCP + DIP | feature assertions, HTTP logic |
+| `tools/coverage/` | Coverage CLI: spec × records → coverage.json / gaps.json | SRP | Playwright, `src/` imports, dependencies, non-deterministic output |
 | `tests/api/` | One spec per resource, with happy path and negative cases | SRP | raw `request`, `zod`, `@playwright/test` imports, login calls |
-| `tests/unit/` | Tests for `src/utils` and `src/data` with no network | SRP | HTTP, server fixtures |
+| `tests/unit/` | Tests for `src/utils`, `src/data`, `src/coverage` and `tools/coverage` with no network | SRP | HTTP, server fixtures |
 
 Every source file starts with a JSDoc header that names its SOLID principle(s) and has a `Must NOT:` section. Every folder has a `README.md` with these sections: *What belongs here / SOLID principle / What must NOT be here / Example file*.
 
@@ -85,6 +91,8 @@ Every source file starts with a JSDoc header that names its SOLID principle(s) a
 | Types (`ResourceId`, `CreateArticleRequest`) | `@src/models/<x>.model` with `import { type … }` | relative paths |
 | A client **type** for a helper's signature | `import { type ArticlesClient } from '@src/api/ArticlesClient'` | creating an instance in a test |
 | `APIRequestContext`, `APIResponse` (clients only) | `@playwright/test` | — |
+| Coverage tool modules (only in `tests/unit/coverage/`) | `@coverage/<module>` (alias of `tools/coverage/src/*`) | relative paths; `@coverage/*` anywhere else (ESLint) |
+| Anything, from inside `tools/coverage/src/` | relative path **with `.ts`** (`./spec/loadSpec.ts`) | `@src/*`, `@playwright/*`, `zod` (ESLint) |
 
 `tests/unit/*.spec.ts` import `test`/`expect` from `@playwright/test`, because they need no fixtures.
 
@@ -399,6 +407,15 @@ npm run test:unit
 npm run test:api           # GAD must be running at BASE_URL
 ```
 
+### Step 8: Confirm the gap closed
+
+```bash
+npm run test:api:coverage
+node -e "const g=require('./reports/coverage/gaps.json').gaps;console.log(g.filter(x=>x.path==='/widgets'))"
+```
+
+The gaps you targeted (for example `operation:POST /widgets` or `status:POST /widgets:401`) must have disappeared from `reports/coverage/gaps.json`. If a gap is still there, the test did not really exercise it: check the status code that was actually received in `coverage.json` → `operations[].observedStatuses`.
+
 Every documented status code should have a test, or a written reason why it doesn't (for example, "400 needs malformed JSON, which the typed client can't send").
 
 ---
@@ -419,6 +436,7 @@ Every documented status code should have a test, or a written reason why it does
 ## 10. Don'ts checklist
 
 - [ ] No `request.get/post/put/patch/delete` and no `new XxxClient(` in `tests/`
+- [ ] No own `APIRequestContext` (`playwright.request.newContext()`) or other HTTP library: invisible to coverage
 - [ ] No `import … from '@playwright/test'` in `tests/api/`
 - [ ] No `import … from 'zod'` outside `src/utils/schema.ts`
 - [ ] No `../` or `./` imports
@@ -441,3 +459,55 @@ Every documented status code should have a test, or a written reason why it does
 - Make small atomic commits, one per layer (models → schema → client → fixture → spec).
 - Stage files explicitly (no blind `git add .`) and never commit `.env`.
 - On the first push, run `git push -u origin <branch>`, then open a PR against `main`.
+
+---
+
+## 12. Coverage
+
+The framework measures how much of `spec/openapi.json` the API tests exercise. There are two parts:
+
+| Part | Where | What it does |
+|------|-------|--------------|
+| Recorder | `src/coverage/` + `src/fixtures/coverage.fixture.ts` | Records every request the tests make, as raw JSONL |
+| CLI | `tools/coverage/` | Compares the records with the spec and writes `coverage.json`, `gaps.json` and `summary.md`, plus the console report |
+
+### How the recorder works
+
+- **Fixture chain:** `@playwright/test` → `coverage.fixture.ts` → `api.fixture.ts` → `auth.fixture.ts`. `coverage.fixture.ts` overrides Playwright's `request` fixture with a `Proxy` (`RequestRecorder`). Every client is built from that `request`, so every call is recorded with no change to clients or specs.
+- Records are buffered per test and written in the fixture teardown, once the test outcome (`testStatus` / `expectedStatus`) is known. The file is `reports/coverage/raw/requests-<runId>-w<worker>.jsonl`, one per worker, so recording is parallel-safe.
+- **Phase:** requests in a test body, `beforeEach` or `afterEach` get `phase: "test"`. Requests in `beforeAll`/`afterAll` get `phase: "hook"`. The heuristic: Playwright never instantiates auto fixtures for `beforeAll`/`afterAll`, so a `request` created outside the auto `coverageScope` window belongs to one of those hooks. Hook requests do not count by default (`--include-hooks` changes that).
+- **Run isolation:** coverage always reflects **the last run that made API requests**. Each run gets a run id, and the first record of a new run deletes the raw files of older runs. `npm run test:smokeAPI` followed by `npm run coverage` therefore measures only the smoke tests. `npm run test:unit` records nothing and leaves the previous data intact.
+- **Recorded:** method, path, query **names**, header **names** that the client sent explicitly, top-level body **keys**, status, duration, test file/title/id, phase and outcome.
+- **Never recorded:** header values (tokens), query values, bodies, passwords. A unit test guards this.
+- `COVERAGE_RECORD=0` disables recording. `COVERAGE_RAW_DIR` changes the raw directory.
+
+### Commands
+
+```bash
+npm run test:api:coverage   # run the API tests, then the coverage report (keeps the test exit code)
+npm run coverage            # console report from the last recorded run
+npm run coverage:json       # also write reports/coverage/coverage.json and gaps.json
+```
+
+The definitions of a covered operation, status and parameter, and of a counted request, are in [`tools/coverage/README.md`](tools/coverage/README.md#coverage-definitions).
+
+### Reading `gaps.json`
+
+Each gap has a **stable `id`**, a `type` (`operation` | `status` | `parameter`), a `priority` and a deterministic `hint` built from the spec. Gaps are ordered with `high` first, then by path and method.
+
+- `operation:GET /likes/article/{id}` (high): the endpoint is never called. What is left to cover is nested under `pending`. Write the happy path first, then one test per pending status.
+- `status:POST /articles:400` (2xx is high, 4xx/5xx medium): the operation is tested, but this documented code is never received. Write a negative or alternative test.
+- `parameter:GET /articles:query:_limit` (required is medium, optional low): send the parameter through the client (`params`).
+
+A gap closes only when a counted request actually receives that code or sends that parameter. Read `coverage.json` → `operations[].observedStatuses` to see what was received.
+
+### Adding an exclusion
+
+Exclude an operation only when it must not be tested: destructive to the shared server, out of functional scope, or unreachable because of a spec defect. Add it to `tools/coverage/coverage.config.json` with a **mandatory `reason`**:
+
+```json
+{ "method": "GET", "path": "/debug/exit", "reason": "Terminates the GAD process." }
+```
+
+`path` is the spec template without `/api`. Excluded operations leave every denominator and are listed under `excluded`. For known test-infrastructure calls that are not in the spec (for example `/api/config/features`), add a glob to `ignoreUnmatched` instead. Commit config changes with `chore:` and say why in the PR.
+

@@ -1,0 +1,3517 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-06T05:04:13.923Z",
+  "spec": {
+    "path": "spec/openapi.json",
+    "sha256": "1317f4717dbab1fc41cccdc295a9f5a10aab4fb90a285ffcfc7161984771758e"
+  },
+  "summary": {
+    "total": 162,
+    "high": 145,
+    "medium": 17,
+    "low": 0
+  },
+  "gaps": [
+    {
+      "id": "operation:GET /about",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/about",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /about (Get information about application) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /article-labels/articles/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/article-labels/articles/{id}",
+      "operationId": "getArticleLabels",
+      "tags": [
+        "article-labels"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /article-labels/articles/{id} (Get labels for article) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:PUT /article-labels/articles/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/article-labels/articles/{id}",
+      "operationId": "putArticleLabels",
+      "tags": [
+        "article-labels"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "400",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PUT /article-labels/articles/{id} (Creates, updates or deletes labels for article) is never called. Documented responses: 200, 201, 400, 404, 422. Request body: components.schemas.ArticleLabelsUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /articles/search",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/articles/search",
+      "operationId": "getArticlesQuery",
+      "tags": [
+        "search"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "_embed",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_end",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_expand",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_limit",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_page",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_start",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /articles/search (Get articles with query) is never called. Documented responses: 200."
+    },
+    {
+      "id": "status:PUT /articles/{id}:201",
+      "type": "status",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "201",
+      "hint": "Documented 201 (\"Article created\") for PUT /articles/{id} is never exercised. Call it with a valid request (see components.schemas.ArticleUpdatePut)."
+    },
+    {
+      "id": "operation:HEAD /articles/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "HEAD",
+      "path": "/articles/{id}",
+      "operationId": "headArticle",
+      "tags": [
+        "articles"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "HEAD /articles/{id} (Info about article) is never called. Documented responses: 200, 400, 404."
+    },
+    {
+      "id": "operation:GET /book-authors",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-authors",
+      "operationId": "getBookAuthors",
+      "tags": [
+        "book-shop"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-authors (Get book authors) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /book-genres",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-genres",
+      "operationId": "getBookGenres",
+      "tags": [
+        "book-shop"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-genres (Get book genres) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /book-shop-account-payment-cards",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "getUserPaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-account-payment-cards (Get user payment card from logged account) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PUT /book-shop-account-payment-cards",
+      "type": "operation",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "updatePaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "PUT /book-shop-account-payment-cards (Update payment card from logged account) is never called. Documented responses: 200, 401, 422. Request body: components.schemas.BookShopPaymentCardUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:DELETE /book-shop-account-payment-cards",
+      "type": "operation",
+      "priority": "high",
+      "method": "DELETE",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "deletePaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "DELETE /book-shop-account-payment-cards (Delete payment card from logged account) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-account-payment-cards/topup",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-account-payment-cards/topup",
+      "operationId": "topUpPaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-account-payment-cards/topup (Top up account from payment card) is never called. Documented responses: 200, 401, 422. Request body: components.schemas.BookShopPaymentCardTopUp. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-accounts",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-accounts",
+      "operationId": "getBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-accounts (Get book shop account) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-accounts",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-accounts",
+      "operationId": "createBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "401",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-accounts (Create book shop account) is never called. Documented responses: 201, 401, 409. Request body: components.schemas.BookShopAccount. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-accounts/files",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-accounts/files",
+      "operationId": null,
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-accounts/files (Upload account files) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-accounts/my-books",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-accounts/my-books",
+      "operationId": "getUserBooks",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-accounts/my-books (Get user's books) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-accounts/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-accounts/{id}",
+      "operationId": "getBookShopAccountById",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /book-shop-accounts/{id} (Get book shop account by ID) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /book-shop-accounts/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/book-shop-accounts/{id}",
+      "operationId": "updateBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /book-shop-accounts/{id} (Update book shop account) is never called. Documented responses: 200, 401, 403, 404. Request body: components.schemas.BookShopAccount. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-authorize",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-authorize",
+      "operationId": "authorizeBookShopAccount",
+      "tags": [
+        "book-shop-authorization"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-authorize (Check if user has a book shop account with the required roles) is never called. Documented responses: 200, 401, 403, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-book-reviews",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-book-reviews",
+      "operationId": "getBookReviews",
+      "tags": [
+        "book-shop"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "book_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "book_ids",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mean",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /book-shop-book-reviews (Get book reviews or review stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /book-shop-items",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-items",
+      "operationId": "getBookShopItems",
+      "tags": [
+        "book-shop-items"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-items (Get book shop items) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/books-without-items",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/books-without-items",
+      "operationId": "getBooksWithoutItems",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-manage/books-without-items (Get books without items) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/items",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/items",
+      "operationId": "getAllItems",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-manage/items (Get all items) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-manage/items",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-manage/items",
+      "operationId": "createItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "401",
+          "409",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-manage/items (Create a new item) is never called. Documented responses: 201, 401, 409, 422. Request body: components.schemas.BookShopItem. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/items/by-book/{bookId}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/items/by-book/{bookId}",
+      "operationId": "getItemByBookId",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /book-shop-manage/items/by-book/{bookId} (Get item by book ID) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /book-shop-manage/items/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/book-shop-manage/items/{id}",
+      "operationId": "updateItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /book-shop-manage/items/{id} (Update an item) is never called. Documented responses: 200, 401, 404, 422. Request body: components.schemas.BookShopItem. Requires a bearer token."
+    },
+    {
+      "id": "operation:DELETE /book-shop-manage/items/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "DELETE",
+      "path": "/book-shop-manage/items/{id}",
+      "operationId": "deleteItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "DELETE /book-shop-manage/items/{id} (Delete an item) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/orders",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/orders",
+      "operationId": "getAllOrders",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-manage/orders (Get all orders) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /book-shop-manage/orders/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/book-shop-manage/orders/{id}",
+      "operationId": "updateOrderStatus",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404",
+          "409",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /book-shop-manage/orders/{id} (Update order status) is never called. Documented responses: 200, 401, 404, 409, 422. Request body: components.schemas.BookShopOrderStatusUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/team",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/team",
+      "operationId": null,
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-manage/team (Get team members) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-manage/users",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-manage/users",
+      "operationId": "getBookshopUsers",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /book-shop-manage/users (Get users) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-order-items",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-order-items",
+      "operationId": null,
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "404",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-order-items (Add item to order) is never called. Documented responses: 201, 404, 409. Request body: components.schemas.BookShopOrderItem. Requires a bearer token."
+    },
+    {
+      "id": "operation:DELETE /book-shop-order-items",
+      "type": "operation",
+      "priority": "high",
+      "method": "DELETE",
+      "path": "/book-shop-order-items",
+      "operationId": null,
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "DELETE /book-shop-order-items (Remove item from order) is never called. Documented responses: 200, 404. Request body: components.schemas.BookShopOrderItem. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-order-statuses",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-order-statuses",
+      "operationId": "getBookShopOrderStatuses",
+      "tags": [
+        "book-shop"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-order-statuses (Get book shop order statuses) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /book-shop-orders",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-orders",
+      "operationId": "getUserOrders",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-orders (Get all user orders) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-orders",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-orders",
+      "operationId": "createOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "401",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-orders (Create a new order) is never called. Documented responses: 201, 401, 409. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-orders/coupon",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-orders/coupon",
+      "operationId": "applyCoupon",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-orders/coupon (Apply coupon to order) is never called. Documented responses: 200, 401, 404, 409. Request body: components.schemas.CouponCode. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /book-shop-orders/items",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/book-shop-orders/items",
+      "operationId": "addItemToOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "401",
+          "404",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /book-shop-orders/items (Add item to order) is never called. Documented responses: 201, 401, 404, 409. Request body: components.schemas.BookShopOrderItem. Requires a bearer token."
+    },
+    {
+      "id": "operation:DELETE /book-shop-orders/items",
+      "type": "operation",
+      "priority": "high",
+      "method": "DELETE",
+      "path": "/book-shop-orders/items",
+      "operationId": "removeItemFromOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "DELETE /book-shop-orders/items (Remove item from order) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /book-shop-orders/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/book-shop-orders/{id}",
+      "operationId": "updateOrderStatus",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404",
+          "409",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /book-shop-orders/{id} (Update order status) is never called. Documented responses: 200, 401, 404, 409, 422. Request body: components.schemas.BookShopOrderStatusUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-roles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-roles",
+      "operationId": "getBookShopRoles",
+      "tags": [
+        "book-shop"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-roles (Get book shop roles) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /book-shop-stats/all",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-stats/all",
+      "operationId": "getAllBookShopStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-stats/all (Get all book shop statistics) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-stats/orders",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-stats/orders",
+      "operationId": "getBookShopOrdersStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-stats/orders (Get book shop orders statistics) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /book-shop-stats/users",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/book-shop-stats/users",
+      "operationId": "getBookShopUsersStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /book-shop-stats/users (Get book shop users statistics) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /bookmarks/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/bookmarks/articles",
+      "operationId": "getUserArticlesBookmarks",
+      "tags": [
+        "bookmarks"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /bookmarks/articles (Get user articles bookmarks) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /bookmarks/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/bookmarks/articles",
+      "operationId": "addUserArticlesBookmarks",
+      "tags": [
+        "bookmarks"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /bookmarks/articles (Add user articles bookmarks) is never called. Documented responses: 200, 201, 401. Request body: components.schemas.CreateBookmark. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /books",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/books",
+      "operationId": "getBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /books (Get books) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:POST /books/favorites/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/books/favorites/{id}",
+      "operationId": "updateFavoriteBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "POST /books/favorites/{id} (Add or remove book from favorites) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /books/owned/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/books/owned/{id}",
+      "operationId": "updateOwnedBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "POST /books/owned/{id} (Add or remove book from owned list) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /books/read/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/books/read/{id}",
+      "operationId": "updateReadBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "POST /books/read/{id} (Add or remove book from read list) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /books/wishlist/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/books/wishlist/{id}",
+      "operationId": "updateWishlistBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "POST /books/wishlist/{id} (Add or remove book from wishlist) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /calc/roi",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/calc/roi",
+      "operationId": "calcAdvRoi",
+      "tags": [
+        "calculators"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /calc/roi (Calculate advanced ROI) is never called. Documented responses: 200. Request body: components.schemas.RoiParameters."
+    },
+    {
+      "id": "operation:POST /calc/simpleroi",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/calc/simpleroi",
+      "operationId": "calcSimpleRoi",
+      "tags": [
+        "calculators"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /calc/simpleroi (Calculate simple ROI) is never called. Documented responses: 200. Request body: components.schemas.SimpleRoiParameters."
+    },
+    {
+      "id": "operation:GET /captcha",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/captcha",
+      "operationId": null,
+      "tags": [
+        "captcha"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /captcha (Get a captcha equation) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:POST /captcha",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/captcha",
+      "operationId": null,
+      "tags": [
+        "captcha"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /captcha (Verify a captcha solution) is never called. Documented responses: 200, 400, 404, 422. Request body: components.schemas.CaptchaSolution."
+    },
+    {
+      "id": "operation:GET /comments/search",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/comments/search",
+      "operationId": "getCommentsQuery",
+      "tags": [
+        "search"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "_end",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_expand",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_limit",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_page",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_start",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "article_id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /comments/search (Get comments with query) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:PUT /comments/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/comments/{id}",
+      "operationId": "putComment",
+      "tags": [
+        "comments"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "400",
+          "401",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PUT /comments/{id} (Updates comment) is never called. Documented responses: 200, 201, 400, 401, 404, 422. Request body: components.schemas.CommentUpdatePut. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /comments/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/comments/{id}",
+      "operationId": "patchComment",
+      "tags": [
+        "comments"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "401",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /comments/{id} (Updates comment) is never called. Documented responses: 200, 400, 401, 404, 422. Request body: components.schemas.CommentUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:HEAD /comments/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "HEAD",
+      "path": "/comments/{id}",
+      "operationId": "headComment",
+      "tags": [
+        "comments"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "HEAD /comments/{id} (Info about comment) is never called. Documented responses: 200, 400, 404."
+    },
+    {
+      "id": "operation:GET /diagnostic/request/histogram",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/diagnostic/request/histogram",
+      "operationId": "getRequestHistogram",
+      "tags": [
+        "diagnostic"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /diagnostic/request/histogram (Get request histogram) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /files/uploaded",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/files/uploaded",
+      "operationId": "getFiles",
+      "tags": [
+        "files"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /files/uploaded (Get files) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /files/uploaded/public",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/files/uploaded/public",
+      "operationId": "getPublicFiles",
+      "tags": [
+        "files"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /files/uploaded/public (Get files) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /files/uploaded/public/users/{userIds}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/files/uploaded/public/users/{userIds}",
+      "operationId": "getUsersPublicFiles",
+      "tags": [
+        "files"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "userIds",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /files/uploaded/public/users/{userIds} (Get users public files) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /files/uploaded/{userId}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/files/uploaded/{userId}",
+      "operationId": "getUserFiles",
+      "tags": [
+        "files"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /files/uploaded/{userId} (Get user files) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /flashposts",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/flashposts",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /flashposts (Get flashposts) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /flashposts",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/flashposts",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /flashposts (Create a new flashpost) is never called. Documented responses: 200, 401, 422. Request body: components.schemas.FlashpostCreate. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /flashposts/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /flashposts/{id} (Get flashpost by ID) is never called. Documented responses: 200, 401, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /flashposts/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /flashposts/{id} (Update flashpost) is never called. Documented responses: 200, 401, 403, 404, 422. Request body: components.schemas.FlashpostUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:DELETE /flashposts/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "DELETE",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "DELETE /flashposts/{id} (Delete flashpost) is never called. Documented responses: 200, 401, 403, 404. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /games",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/games",
+      "operationId": "getGames",
+      "tags": [
+        "games"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /games (Get games) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /hangman/highscores",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/hangman/highscores",
+      "operationId": "getHangmanHighscores",
+      "tags": [
+        "hangman"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /hangman/highscores (Get hangman highscores) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /hangman/random",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/hangman/random",
+      "operationId": "getRandomWord",
+      "tags": [
+        "hangman"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /hangman/random (Get random word) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:POST /hangman/score",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/hangman/score",
+      "operationId": "setHangmanScore",
+      "tags": [
+        "hangman"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /hangman/score (Set Hangman Score) is never called. Documented responses: 200, 401, 422. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /health/configcheck",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/health/configcheck",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /health/configcheck (Get config check result) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /health/db",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/health/db",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /health/db (Get db status) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /health/dbcheck",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/health/dbcheck",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /health/dbcheck (Get dbcheck result) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /health/memory",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/health/memory",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /health/memory (Get memory usage) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /health/uptime",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/health/uptime",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /health/uptime (Get uptime) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /images/posts",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/images/posts",
+      "operationId": "getArticlesPictures",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /images/posts (Get articles pictures) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /images/user",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/images/user",
+      "operationId": "getUserPictures",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /images/user (Get user pictures) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:POST /likes",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/likes",
+      "operationId": "createLike",
+      "tags": [
+        "likes"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "400",
+          "404",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /likes (Like or dislike element on page) is never called. Documented responses: 200, 201, 400, 404, 422. Request body: components.schemas.Like. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /likes/article",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/likes/article",
+      "operationId": "getLikesForArticle",
+      "tags": [
+        "likes"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /likes/article (Get likes for article) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /likes/article/mylikes",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/likes/article/mylikes",
+      "operationId": "getMyLikes",
+      "tags": [
+        "likes"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "userid",
+            "in": "header",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /likes/article/mylikes (Get myLikes) is never called. Documented responses: 200, 400, 404."
+    },
+    {
+      "id": "operation:GET /likes/article/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/likes/article/{id}",
+      "operationId": "getLikesForArticleById",
+      "tags": [
+        "likes"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /likes/article/{id} (Get likes for article) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /likes/comment/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/likes/comment/{id}",
+      "operationId": "getLikesForComment",
+      "tags": [
+        "likes"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /likes/comment/{id} (Get likes for comment) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /login",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/login",
+      "operationId": "userValidation",
+      "tags": [
+        "authentication"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /login (Validate if token is correct and user is logged in) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /logs",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/logs",
+      "operationId": "getLogs",
+      "tags": [
+        "diagnostic"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /logs (Get logs from server (diagnostics must be on - use toggleDiagnostics or toggleLogs)) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /messenger/contacts",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/messenger/contacts",
+      "operationId": "getContacts",
+      "tags": [
+        "messenger"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /messenger/contacts (Get contacts) is never called. Documented responses: 200. Requires a bearer token."
+    },
+    {
+      "id": "operation:PUT /messenger/contacts",
+      "type": "operation",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/messenger/contacts",
+      "operationId": "addContact",
+      "tags": [
+        "messenger"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404",
+          "409"
+        ],
+        "parameters": []
+      },
+      "hint": "PUT /messenger/contacts (Add contact) is never called. Documented responses: 200, 404, 409. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /messenger/messages",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/messenger/messages",
+      "operationId": "getMessages",
+      "tags": [
+        "messenger"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "idFrom",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /messenger/messages (Get messages) is never called. Documented responses: 200. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /messenger/messages",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/messenger/messages",
+      "operationId": "sendMessage",
+      "tags": [
+        "messenger"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /messenger/messages (Send message) is never called. Documented responses: 200, 404. Request body: components.schemas.MessengerMessage. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /messenger/unread",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/messenger/unread",
+      "operationId": "getUnreadMessages",
+      "tags": [
+        "messenger"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /messenger/unread (Get unread messages) is never called. Documented responses: 200. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /minesweeper/highscores",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/minesweeper/highscores",
+      "operationId": "getMinesweeperHighscores",
+      "tags": [
+        "minesweeper"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /minesweeper/highscores (Get minesweeper highscores) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:POST /minesweeper/score",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/minesweeper/score",
+      "operationId": "setMinesweeperScore",
+      "tags": [
+        "minesweeper"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /minesweeper/score (Set minesweeper Score) is never called. Documented responses: 200, 401, 422. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /openapi.json",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/openapi.json",
+      "operationId": "getOpenApiSchema",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /openapi.json (Get OpenAPI schema) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /ping",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/ping",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /ping (Get ping) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /quiz/highscores",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/quiz/highscores",
+      "operationId": "getQuizhighscores",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /quiz/highscores (Get quiz high scores) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /quiz/questions",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/quiz/questions",
+      "operationId": "getQuizQuestions",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /quiz/questions (Get quiz questions) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /quiz/questions/check",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/quiz/questions/check",
+      "operationId": "checkQuizAnswer",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /quiz/questions/check (Check quiz answer for question) is never called. Documented responses: 200, 401. Request body: components.schemas.QuizAnswer. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /quiz/questions/count",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/quiz/questions/count",
+      "operationId": "getQuestionCount",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /quiz/questions/count (Get number of questions) is never called. Documented responses: 200, 401."
+    },
+    {
+      "id": "operation:GET /quiz/start",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/quiz/start",
+      "operationId": "startQuiz",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /quiz/start (Start quiz) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /quiz/stop",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/quiz/stop",
+      "operationId": "stopQuiz",
+      "tags": [
+        "quiz"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /quiz/stop (Stop quiz) is never called. Documented responses: 200, 201, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /random/article",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/random/article",
+      "operationId": "getRandomArticle",
+      "tags": [
+        "random"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /random/article (Get random article) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /restore/list",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/restore/list",
+      "operationId": "getRestoreList",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /restore/list (Get list of restoreDB endpoints) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /schema",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/schema",
+      "operationId": "getOpenApiSchema2",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /schema (Get OpenAPI schema) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /scores",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/scores",
+      "operationId": "getScores",
+      "tags": [
+        "scores"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /scores (Get scores) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /scores/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/scores/{id}",
+      "operationId": "getGameScores",
+      "tags": [
+        "scores"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /scores/{id} (Get game scores) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /stats/activity/user",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/activity/user",
+      "operationId": "getUserActivityStats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/activity/user (Get user activity stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/activity/user/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/activity/user/{id}",
+      "operationId": "getSingleUserActivityStats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /stats/activity/user/{id} (Get single user activity stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/api",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/api",
+      "operationId": "getApiCalls",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/api (Get api calls) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/api/details",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/api/details",
+      "operationId": "getApiDetailedCalls",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/api/details (Get api detailed calls) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/articles",
+      "operationId": "getArticleStats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "chartType",
+            "in": "query",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /stats/articles (Get article stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/nonapi",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/nonapi",
+      "operationId": "getNonApiCalls",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/nonapi (Get non api calls) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/nonapi/details",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/nonapi/details",
+      "operationId": "getNonApiDetailedCalls",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/nonapi/details (Get non api detailed calls) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/publications/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/publications/articles",
+      "operationId": "getArticlePublishStats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/publications/articles (Get article publish stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/publications/comments",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/publications/comments",
+      "operationId": "getCommentsPublishStats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /stats/publications/comments (Get comments publish stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /stats/users",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/stats/users",
+      "operationId": "getUserstats",
+      "tags": [
+        "stats"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "chartType",
+            "in": "query",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /stats/users (Get user stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /surveys/responses",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/surveys/responses",
+      "operationId": "getUserSurveyResponses",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /surveys/responses (Get user survey responses) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /surveys/responses",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/surveys/responses",
+      "operationId": "createSurvey",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "400",
+          "401",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /surveys/responses (Create a new survey response) is never called. Documented responses: 201, 400, 401, 422. Request body: components.schemas.SurveyResponse."
+    },
+    {
+      "id": "operation:GET /surveys/responses/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/surveys/responses/{id}",
+      "operationId": "getUserSurveyResponse",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /surveys/responses/{id} (Get user survey response) is never called. Documented responses: 200, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /surveys/statistics/{type}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/surveys/statistics/{type}",
+      "operationId": "getSurveysStatistics",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /surveys/statistics/{type} (Get surveys statistics) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /surveys/{surveyType}/description",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/surveys/{surveyType}/description",
+      "operationId": "getSurveysDescription",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "surveyType",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /surveys/{surveyType}/description (Get surveys description) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /surveys/{surveyType}/questions/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/surveys/{surveyType}/questions/{id}",
+      "operationId": "getSurveysQuestions",
+      "tags": [
+        "surveys"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "surveyType",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /surveys/{surveyType}/questions/{id} (Get surveys questions) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "operation:GET /tic-tac-toe/highscores",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/tic-tac-toe/highscores",
+      "operationId": "getTicTacToeHighscores",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /tic-tac-toe/highscores (Get tic-tac-toe highscores) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:POST /tic-tac-toe/join",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/tic-tac-toe/join",
+      "operationId": "joinTicTacToeSession",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "409",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /tic-tac-toe/join (join TicTacToe session) is never called. Documented responses: 200, 401, 403, 409, 422. Request body: components.schemas.TicTacToeJoin. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /tic-tac-toe/start",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/tic-tac-toe/start",
+      "operationId": "startTicTacToe",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "401"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /tic-tac-toe/start (start TicTacToe) is never called. Documented responses: 201, 401. Requires a bearer token."
+    },
+    {
+      "id": "operation:POST /tic-tac-toe/status",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/tic-tac-toe/status",
+      "operationId": "moveTicTacToe",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /tic-tac-toe/status (make a move in TicTacToe) is never called. Documented responses: 200, 401, 403, 422. Request body: components.schemas.MoveTicTacToe. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /tic-tac-toe/status/{code}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/tic-tac-toe/status/{code}",
+      "operationId": "getTicTacToeStatus",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /tic-tac-toe/status/{code} (Get tic-tac-toe status) is never called. Documented responses: 200, 401, 404."
+    },
+    {
+      "id": "operation:POST /tic-tac-toe/stop",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/tic-tac-toe/stop",
+      "operationId": "stopTicTacToeSession",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "401",
+          "403"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /tic-tac-toe/stop (stop TicTacToe session) is never called. Documented responses: 200, 401, 403. Request body: components.schemas.TicTacToeStop. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /users/search",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/users/search",
+      "operationId": "getUsersQuery",
+      "tags": [
+        "search"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "_embed",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_end",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_limit",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_page",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "_start",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "firstname",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "lastname",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /users/search (Get users with query) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /users/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/users/{id}",
+      "operationId": "getUserById",
+      "tags": [
+        "users"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /users/{id} (Find user by ID) is never called. Documented responses: 200, 400, 404."
+    },
+    {
+      "id": "operation:PUT /users/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PUT",
+      "path": "/users/{id}",
+      "operationId": "putUser",
+      "tags": [
+        "users"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "201",
+          "400",
+          "401",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PUT /users/{id} (Updates user) is never called. Documented responses: 200, 201, 400, 401, 404, 422. Request body: components.schemas.UserUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:PATCH /users/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "PATCH",
+      "path": "/users/{id}",
+      "operationId": "patchUser",
+      "tags": [
+        "users"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "401",
+          "404",
+          "422"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "PATCH /users/{id} (Updates user) is never called. Documented responses: 200, 400, 401, 404, 422. Request body: components.schemas.UserUpdate. Requires a bearer token."
+    },
+    {
+      "id": "operation:HEAD /users/{id}",
+      "type": "operation",
+      "priority": "high",
+      "method": "HEAD",
+      "path": "/users/{id}",
+      "operationId": "headUser",
+      "tags": [
+        "users"
+      ],
+      "pending": {
+        "statuses": [
+          "200",
+          "400",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "HEAD /users/{id} (Info about user) is never called. Documented responses: 200, 400, 404."
+    },
+    {
+      "id": "operation:GET /v1/data/costs",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/v1/data/costs",
+      "operationId": null,
+      "tags": [
+        "data"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /v1/data/costs (Get costs data) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /v1/data/weather",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/v1/data/weather",
+      "operationId": null,
+      "tags": [
+        "data"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /v1/data/weather (Get weather data) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /v1/languages",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/v1/languages",
+      "operationId": "getLanguages",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /v1/languages (Get languages) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /v1/languages/translations",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/v1/languages/translations",
+      "operationId": "getTranslations",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /v1/languages/translations (Get translations) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /v1/languages/translations/{lang}",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/v1/languages/translations/{lang}",
+      "operationId": "getTranslationsByLang",
+      "tags": [
+        "other"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "hint": "GET /v1/languages/translations/{lang} (Get translations) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/articles",
+      "operationId": "getArticlesVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /visits/articles (Get articles visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/comments",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/comments",
+      "operationId": "getCommentsVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /visits/comments (Get comments visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/top/articles",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/top/articles",
+      "operationId": "getTopArticlesVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /visits/top/articles (Get top articles visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/top/comments",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/top/comments",
+      "operationId": "getTopCommentsVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /visits/top/comments (Get top comments visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/top/users",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/top/users",
+      "operationId": "getTopUsersVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": []
+      },
+      "hint": "GET /visits/top/users (Get top users visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "operation:GET /visits/users",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/visits/users",
+      "operationId": "getUsersVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "pending": {
+        "statuses": [
+          "200"
+        ],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /visits/users (Get users visits stats) is never called. Documented responses: 200."
+    },
+    {
+      "id": "status:POST /articles:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "POST",
+      "path": "/articles",
+      "operationId": "postArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for POST /articles is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:PUT /articles/{id}:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for PUT /articles/{id} is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:PUT /articles/{id}:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Unauthorized\") for PUT /articles/{id} is never exercised. Call it without a token or with an invalid token."
+    },
+    {
+      "id": "status:PUT /articles/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"Article not found\") for PUT /articles/{id} is never exercised. Use an id that does not exist."
+    },
+    {
+      "id": "status:PUT /articles/{id}:422",
+      "type": "status",
+      "priority": "medium",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "422",
+      "hint": "Documented 422 (\"Invalid article supplied\") for PUT /articles/{id} is never exercised. Send an invalid payload (see components.schemas.ArticleUpdatePut)."
+    },
+    {
+      "id": "status:PATCH /articles/{id}:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "PATCH",
+      "path": "/articles/{id}",
+      "operationId": "patchArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for PATCH /articles/{id} is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:PATCH /articles/{id}:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "PATCH",
+      "path": "/articles/{id}",
+      "operationId": "patchArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Unauthorized\") for PATCH /articles/{id} is never exercised. Call it without a token or with an invalid token."
+    },
+    {
+      "id": "status:PATCH /articles/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "PATCH",
+      "path": "/articles/{id}",
+      "operationId": "patchArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"Article not found\") for PATCH /articles/{id} is never exercised. Use an id that does not exist."
+    },
+    {
+      "id": "status:PATCH /articles/{id}:422",
+      "type": "status",
+      "priority": "medium",
+      "method": "PATCH",
+      "path": "/articles/{id}",
+      "operationId": "patchArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "422",
+      "hint": "Documented 422 (\"Invalid article supplied\") for PATCH /articles/{id} is never exercised. Send an invalid payload (see components.schemas.ArticleUpdate)."
+    },
+    {
+      "id": "status:DELETE /articles/{id}:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/articles/{id}",
+      "operationId": "deleteArticle",
+      "tags": [
+        "articles"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad Request\") for DELETE /articles/{id} is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:POST /comments:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "POST",
+      "path": "/comments",
+      "operationId": "createComment",
+      "tags": [
+        "comments"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for POST /comments is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:GET /comments/{id}:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/comments/{id}",
+      "operationId": "getCommentById",
+      "tags": [
+        "comments"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Invalid comment id supplied\") for GET /comments/{id} is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:DELETE /comments/{id}:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/comments/{id}",
+      "operationId": "deleteComment",
+      "tags": [
+        "comments"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Unauthorized\") for DELETE /comments/{id} is never exercised. Call it without a token or with an invalid token."
+    },
+    {
+      "id": "status:DELETE /comments/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/comments/{id}",
+      "operationId": "deleteComment",
+      "tags": [
+        "comments"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"Comment not found\") for DELETE /comments/{id} is never exercised. Use an id that does not exist."
+    },
+    {
+      "id": "status:POST /users:400",
+      "type": "status",
+      "priority": "medium",
+      "method": "POST",
+      "path": "/users",
+      "operationId": "postUser",
+      "tags": [
+        "users"
+      ],
+      "status": "400",
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for POST /users is never exercised. Send a malformed request (e.g. invalid JSON body)."
+    },
+    {
+      "id": "status:DELETE /users/{id}:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/users/{id}",
+      "operationId": "deleteUser",
+      "tags": [
+        "users"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Unauthorized\") for DELETE /users/{id} is never exercised. Call it without a token or with an invalid token."
+    },
+    {
+      "id": "status:DELETE /users/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/users/{id}",
+      "operationId": "deleteUser",
+      "tags": [
+        "users"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"User not found\") for DELETE /users/{id} is never exercised. Use an id that does not exist."
+    }
+  ]
+}

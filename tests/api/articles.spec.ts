@@ -276,12 +276,19 @@ test.describe('Articles API', () => {
     'POST /api/articles returns 201 when the date is the current date-time',
     { tag: ['@regression', '@tc-articles-12'] },
     async ({ articlesClient, authToken }) => {
-      // KNOWN GAD BUG — expected to fail until fixed in GAD.
+      // KNOWN GAD BUG — expected to fail on hosts west of UTC until fixed in GAD.
       // Spec: `date` is `format: date-time`; the current instant is a valid value.
       // Actual: 422 "date has date in future!" — GAD compares the UTC payload date
       // against the server's LOCAL wall-clock time, so any host west of UTC
       // (e.g. UTC-04:00) rejects "now". Not controlled by config/config-bugs.js.
-      test.fail(true, 'GAD rejects the current UTC date-time as "in future" (timezone bug)');
+      // On UTC (CI) or east-of-UTC hosts the bug does not show and this is a normal
+      // regression test. Assumes GAD and the tests share the host timezone, which
+      // holds locally and in CI (the workflow pins TZ=UTC).
+      const hostIsWestOfUtc = new Date().getTimezoneOffset() > 0;
+      test.fail(
+        hostIsWestOfUtc,
+        'GAD rejects the current UTC date-time as "in future" on hosts west of UTC (timezone bug)',
+      );
 
       // --- ARRANGE ---------------------------------------------------------
       const payload = buildArticle({ date: isoNow() });

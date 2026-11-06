@@ -12,6 +12,8 @@ export default defineConfig({
   // serially removes the race; see the "Known GAD issues" section of README.md.
   workers: 1,
   fullyParallel: false,
+  // Stamps each run with a coverage run id (see src/coverage/globalSetup.ts).
+  globalSetup: './src/coverage/globalSetup.ts',
   use: {
     baseURL: process.env.BASE_URL,
     extraHTTPHeaders: {

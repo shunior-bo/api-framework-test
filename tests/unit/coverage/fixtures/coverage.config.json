@@ -1,0 +1,6 @@
+{
+  "excludeOperations": [
+    { "method": "POST", "path": "/admin/reset", "reason": "Destructive: wipes all data." }
+  ],
+  "ignoreUnmatched": ["/api/config/**"]
+}

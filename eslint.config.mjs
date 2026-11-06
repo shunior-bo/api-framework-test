@@ -6,7 +6,13 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['node_modules/**', 'reports/**', 'test-results/**', 'playwright-report/**'],
+    ignores: [
+      'node_modules/**',
+      'reports/**',
+      'test-results/**',
+      'playwright-report/**',
+      'gad/**',
+    ],
   },
   {
     files: ['**/*.ts'],
@@ -36,6 +42,53 @@ export default [
             {
               group: ['../*', './*'],
               message: 'Use the @src/ path alias instead of relative imports.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // tools/coverage is a standalone, dependency-free CLI run by Node's native
+    // TypeScript support: it MUST use relative imports with a .ts extension and
+    // MUST NOT depend on Playwright, zod or the framework (src/).
+    files: ['tools/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [{ name: 'zod', message: 'tools/coverage has no runtime dependencies.' }],
+          patterns: [
+            {
+              group: ['@playwright/*', '@src/*', '@coverage/*', 'playwright', 'playwright-core'],
+              message: 'tools/coverage must not import Playwright or the framework (src/).',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Only the coverage tool's unit tests may import @coverage/*.
+    files: ['src/**/*.ts', 'tests/api/**/*.ts', 'tests/unit/*.ts', 'playwright.config.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'zod',
+              message: 'Import `z` and schemas from @src/utils/schema instead.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['../*', './*'],
+              message: 'Use the @src/ path alias instead of relative imports.',
+            },
+            {
+              group: ['@coverage/*'],
+              message: '@coverage/* is only for tests/unit/coverage.',
             },
           ],
         },
