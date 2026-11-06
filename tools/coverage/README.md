@@ -103,10 +103,10 @@ Current exclusions and the reasons for them are listed in the config file itself
       "priority": "medium",
       "method": "POST",
       "path": "/articles",
-      "operationId": "createArticle",
+      "operationId": "postArticle",
       "tags": ["articles"],
       "status": "400",
-      "hint": "Documented 400 (…) for POST /articles is never exercised. Send a malformed request (e.g. invalid JSON body)."
+      "hint": "Documented 400 (\"Bad request - malformed JSON\") for POST /articles is never exercised. Send a malformed request (e.g. invalid JSON body)."
     }
   ]
 }
@@ -142,6 +142,7 @@ src/
 ├── match/pathMatcher.ts   # URL → template (specificity rules)
 ├── analyze/               # config.ts, coverage.ts (3 dimensions), gaps.ts, types.ts (report contracts)
 ├── report/                # build.ts (coverage.json/gaps.json), console.ts, markdown.ts
+├── estimate/compare.ts    # Day 2 experiment: AI estimate vs tool (entry: compare-estimate.ts)
 └── shared/                # deterministic ordering, errors
 ```
 

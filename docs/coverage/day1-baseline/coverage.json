@@ -1,0 +1,6424 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-06T05:04:13.923Z",
+  "tool": {
+    "name": "api-coverage",
+    "version": "1.0.0"
+  },
+  "source": {
+    "spec": {
+      "path": "spec/openapi.json",
+      "title": "🦎 GAD",
+      "version": "1.3.3",
+      "sha256": "1317f4717dbab1fc41cccdc295a9f5a10aab4fb90a285ffcfc7161984771758e"
+    },
+    "records": {
+      "dir": "reports/coverage/raw",
+      "files": 1,
+      "lines": 67,
+      "invalidLines": 0
+    },
+    "git": {
+      "sha": "e6b8cfd45661cbbf0a1bb6cbdd446b6a918f382e",
+      "branch": "session/02-coverage-tool"
+    }
+  },
+  "options": {
+    "includeHooks": false,
+    "onlyPassed": false,
+    "configPath": "tools/coverage/coverage.config.json"
+  },
+  "requests": {
+    "recorded": 67,
+    "counted": 64,
+    "hooks": 3,
+    "filteredByOutcome": 0,
+    "errored": 0,
+    "unmatched": 0
+  },
+  "totals": {
+    "operations": {
+      "covered": 16,
+      "total": 160,
+      "pct": 10
+    },
+    "statuses": {
+      "covered": 27,
+      "total": 374,
+      "pct": 7.22
+    },
+    "parameters": {
+      "covered": 7,
+      "total": 95,
+      "pct": 7.37,
+      "required": {
+        "covered": 7,
+        "total": 49,
+        "pct": 14.29
+      },
+      "optional": {
+        "covered": 0,
+        "total": 46,
+        "pct": 0
+      }
+    }
+  },
+  "byTag": {
+    "article-labels": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 7,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 2,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "articles": {
+      "operations": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71
+      },
+      "statuses": {
+        "covered": 10,
+        "total": 24,
+        "pct": 41.67
+      },
+      "parameters": {
+        "covered": 4,
+        "total": 5,
+        "pct": 80,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "authentication": {
+      "operations": {
+        "covered": 1,
+        "total": 2,
+        "pct": 50
+      },
+      "statuses": {
+        "covered": 2,
+        "total": 4,
+        "pct": 50
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop": {
+      "operations": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 9,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 3,
+          "pct": 0
+        }
+      }
+    },
+    "book-shop-account-payment-cards": {
+      "operations": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 12,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-accounts": {
+      "operations": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 18,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 2,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-authorization": {
+      "operations": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-books": {
+      "operations": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 14,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 4,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-items": {
+      "operations": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-manage": {
+      "operations": {
+        "covered": 0,
+        "total": 10,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 31,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 5,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-orders": {
+      "operations": {
+        "covered": 0,
+        "total": 8,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 27,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 1,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "book-shop-stats": {
+      "operations": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 9,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "bookmarks": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "calculators": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "captcha": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "comments": {
+      "operations": {
+        "covered": 4,
+        "total": 7,
+        "pct": 57.14
+      },
+      "statuses": {
+        "covered": 7,
+        "total": 25,
+        "pct": 28
+      },
+      "parameters": {
+        "covered": 2,
+        "total": 5,
+        "pct": 40,
+        "required": {
+          "covered": 2,
+          "total": 5,
+          "pct": 40
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "data": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 2,
+          "pct": 0
+        }
+      }
+    },
+    "diagnostic": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "files": {
+      "operations": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 10,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 2,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "flashposts": {
+      "operations": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 18,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 3,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "games": {
+      "operations": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "hangman": {
+      "operations": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "healthcheck": {
+      "operations": {
+        "covered": 1,
+        "total": 8,
+        "pct": 12.5
+      },
+      "statuses": {
+        "covered": 1,
+        "total": 8,
+        "pct": 12.5
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "labels": {
+      "operations": {
+        "covered": 1,
+        "total": 1,
+        "pct": 100
+      },
+      "statuses": {
+        "covered": 2,
+        "total": 2,
+        "pct": 100
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "likes": {
+      "operations": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 14,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 4,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "messenger": {
+      "operations": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 8,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 2,
+          "pct": 0
+        }
+      }
+    },
+    "minesweeper": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 4,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "other": {
+      "operations": {
+        "covered": 0,
+        "total": 8,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 8,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 1,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "quiz": {
+      "operations": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 12,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "random": {
+      "operations": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 0,
+        "pct": null,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "scores": {
+      "operations": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 1,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "search": {
+      "operations": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 36,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 36,
+          "pct": 0
+        }
+      }
+    },
+    "stats": {
+      "operations": {
+        "covered": 0,
+        "total": 10,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 10,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 3,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "surveys": {
+      "operations": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 14,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 5,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 5,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "tic-tac-toe": {
+      "operations": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 18,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 1,
+          "pct": 0
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "users": {
+      "operations": {
+        "covered": 3,
+        "total": 7,
+        "pct": 42.86
+      },
+      "statuses": {
+        "covered": 5,
+        "total": 25,
+        "pct": 20
+      },
+      "parameters": {
+        "covered": 1,
+        "total": 5,
+        "pct": 20,
+        "required": {
+          "covered": 1,
+          "total": 5,
+          "pct": 20
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    },
+    "visits": {
+      "operations": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 6,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 3,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 3,
+          "pct": 0
+        }
+      }
+    }
+  },
+  "operations": [
+    {
+      "key": "GET /about",
+      "method": "GET",
+      "path": "/about",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /article-labels/articles/{id}",
+      "method": "GET",
+      "path": "/article-labels/articles/{id}",
+      "operationId": "getArticleLabels",
+      "tags": [
+        "article-labels"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PUT /article-labels/articles/{id}",
+      "method": "PUT",
+      "path": "/article-labels/articles/{id}",
+      "operationId": "putArticleLabels",
+      "tags": [
+        "article-labels"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /articles",
+      "method": "GET",
+      "path": "/articles",
+      "operationId": "getArticles",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles returns 200 and a list of articles"
+      ]
+    },
+    {
+      "key": "POST /articles",
+      "method": "POST",
+      "path": "/articles",
+      "operationId": "postArticle",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 12,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "201": 8,
+        "401": 2,
+        "422": 2
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 200 and the article is no longer retrievable",
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 401 without an access token",
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles/{id} returns 200 and the requested article",
+        "tests/api/articles.spec.ts > Articles API > PATCH /api/articles/{id} returns 200 and updates only the given fields",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 201 and the created article",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 201 when the date is the current date-time",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 401 with an invalid access token",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 401 without an access token",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 422 when a mandatory field is empty",
+        "tests/api/articles.spec.ts > Articles API > PUT /api/articles/{id} returns 200 and the replaced article",
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 201 and the created comment"
+      ]
+    },
+    {
+      "key": "GET /articles/search",
+      "method": "GET",
+      "path": "/articles/search",
+      "operationId": "getArticlesQuery",
+      "tags": [
+        "search"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "_embed",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_end",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_expand",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_limit",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_order",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_page",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_sort",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_start",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "date",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "user_id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /articles/{id}",
+      "method": "GET",
+      "path": "/articles/{id}",
+      "operationId": "getArticleById",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 4,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 2,
+        "404": 2
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 200 and the article is no longer retrievable",
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 401 without an access token",
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles/{id} returns 200 and the requested article",
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles/{id} returns 404 for a non-existent article"
+      ]
+    },
+    {
+      "key": "PUT /articles/{id}",
+      "method": "PUT",
+      "path": "/articles/{id}",
+      "operationId": "putArticle",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > PUT /api/articles/{id} returns 200 and the replaced article"
+      ]
+    },
+    {
+      "key": "PATCH /articles/{id}",
+      "method": "PATCH",
+      "path": "/articles/{id}",
+      "operationId": "patchArticle",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > PATCH /api/articles/{id} returns 200 and updates only the given fields"
+      ]
+    },
+    {
+      "key": "DELETE /articles/{id}",
+      "method": "DELETE",
+      "path": "/articles/{id}",
+      "operationId": "deleteArticle",
+      "tags": [
+        "articles"
+      ],
+      "covered": true,
+      "requestCount": 9,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 8,
+        "401": 1
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 200 and the article is no longer retrievable",
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 401 without an access token",
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles/{id} returns 200 and the requested article",
+        "tests/api/articles.spec.ts > Articles API > PATCH /api/articles/{id} returns 200 and updates only the given fields",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 201 and the created article",
+        "tests/api/articles.spec.ts > Articles API > PUT /api/articles/{id} returns 200 and the replaced article",
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 201 and the created comment"
+      ]
+    },
+    {
+      "key": "HEAD /articles/{id}",
+      "method": "HEAD",
+      "path": "/articles/{id}",
+      "operationId": "headArticle",
+      "tags": [
+        "articles"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-authors",
+      "method": "GET",
+      "path": "/book-authors",
+      "operationId": "getBookAuthors",
+      "tags": [
+        "book-shop"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-genres",
+      "method": "GET",
+      "path": "/book-genres",
+      "operationId": "getBookGenres",
+      "tags": [
+        "book-shop"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-account-payment-cards",
+      "method": "GET",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "getUserPaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PUT /book-shop-account-payment-cards",
+      "method": "PUT",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "updatePaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /book-shop-account-payment-cards",
+      "method": "DELETE",
+      "path": "/book-shop-account-payment-cards",
+      "operationId": "deletePaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-account-payment-cards/topup",
+      "method": "POST",
+      "path": "/book-shop-account-payment-cards/topup",
+      "operationId": "topUpPaymentCard",
+      "tags": [
+        "book-shop-account-payment-cards"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-accounts",
+      "method": "GET",
+      "path": "/book-shop-accounts",
+      "operationId": "getBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-accounts",
+      "method": "POST",
+      "path": "/book-shop-accounts",
+      "operationId": "createBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-accounts/files",
+      "method": "POST",
+      "path": "/book-shop-accounts/files",
+      "operationId": null,
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-accounts/my-books",
+      "method": "GET",
+      "path": "/book-shop-accounts/my-books",
+      "operationId": "getUserBooks",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-accounts/{id}",
+      "method": "GET",
+      "path": "/book-shop-accounts/{id}",
+      "operationId": "getBookShopAccountById",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /book-shop-accounts/{id}",
+      "method": "PATCH",
+      "path": "/book-shop-accounts/{id}",
+      "operationId": "updateBookShopAccount",
+      "tags": [
+        "book-shop-accounts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-authorize",
+      "method": "POST",
+      "path": "/book-shop-authorize",
+      "operationId": "authorizeBookShopAccount",
+      "tags": [
+        "book-shop-authorization"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-book-reviews",
+      "method": "GET",
+      "path": "/book-shop-book-reviews",
+      "operationId": "getBookReviews",
+      "tags": [
+        "book-shop"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "book_id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "book_ids",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "mean",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-items",
+      "method": "GET",
+      "path": "/book-shop-items",
+      "operationId": "getBookShopItems",
+      "tags": [
+        "book-shop-items"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/books-without-items",
+      "method": "GET",
+      "path": "/book-shop-manage/books-without-items",
+      "operationId": "getBooksWithoutItems",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/items",
+      "method": "GET",
+      "path": "/book-shop-manage/items",
+      "operationId": "getAllItems",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-manage/items",
+      "method": "POST",
+      "path": "/book-shop-manage/items",
+      "operationId": "createItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/items/by-book/{bookId}",
+      "method": "GET",
+      "path": "/book-shop-manage/items/by-book/{bookId}",
+      "operationId": "getItemByBookId",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "bookId",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /book-shop-manage/items/{id}",
+      "method": "PATCH",
+      "path": "/book-shop-manage/items/{id}",
+      "operationId": "updateItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /book-shop-manage/items/{id}",
+      "method": "DELETE",
+      "path": "/book-shop-manage/items/{id}",
+      "operationId": "deleteItem",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/orders",
+      "method": "GET",
+      "path": "/book-shop-manage/orders",
+      "operationId": "getAllOrders",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /book-shop-manage/orders/{id}",
+      "method": "PATCH",
+      "path": "/book-shop-manage/orders/{id}",
+      "operationId": "updateOrderStatus",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/team",
+      "method": "GET",
+      "path": "/book-shop-manage/team",
+      "operationId": null,
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-manage/users",
+      "method": "GET",
+      "path": "/book-shop-manage/users",
+      "operationId": "getBookshopUsers",
+      "tags": [
+        "book-shop-manage"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-order-items",
+      "method": "POST",
+      "path": "/book-shop-order-items",
+      "operationId": null,
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /book-shop-order-items",
+      "method": "DELETE",
+      "path": "/book-shop-order-items",
+      "operationId": null,
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-order-statuses",
+      "method": "GET",
+      "path": "/book-shop-order-statuses",
+      "operationId": "getBookShopOrderStatuses",
+      "tags": [
+        "book-shop"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-orders",
+      "method": "GET",
+      "path": "/book-shop-orders",
+      "operationId": "getUserOrders",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-orders",
+      "method": "POST",
+      "path": "/book-shop-orders",
+      "operationId": "createOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-orders/coupon",
+      "method": "POST",
+      "path": "/book-shop-orders/coupon",
+      "operationId": "applyCoupon",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /book-shop-orders/items",
+      "method": "POST",
+      "path": "/book-shop-orders/items",
+      "operationId": "addItemToOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /book-shop-orders/items",
+      "method": "DELETE",
+      "path": "/book-shop-orders/items",
+      "operationId": "removeItemFromOrder",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /book-shop-orders/{id}",
+      "method": "PATCH",
+      "path": "/book-shop-orders/{id}",
+      "operationId": "updateOrderStatus",
+      "tags": [
+        "book-shop-orders"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-roles",
+      "method": "GET",
+      "path": "/book-shop-roles",
+      "operationId": "getBookShopRoles",
+      "tags": [
+        "book-shop"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-stats/all",
+      "method": "GET",
+      "path": "/book-shop-stats/all",
+      "operationId": "getAllBookShopStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-stats/orders",
+      "method": "GET",
+      "path": "/book-shop-stats/orders",
+      "operationId": "getBookShopOrdersStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /book-shop-stats/users",
+      "method": "GET",
+      "path": "/book-shop-stats/users",
+      "operationId": "getBookShopUsersStats",
+      "tags": [
+        "book-shop-stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /bookmarks/articles",
+      "method": "GET",
+      "path": "/bookmarks/articles",
+      "operationId": "getUserArticlesBookmarks",
+      "tags": [
+        "bookmarks"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /bookmarks/articles",
+      "method": "POST",
+      "path": "/bookmarks/articles",
+      "operationId": "addUserArticlesBookmarks",
+      "tags": [
+        "bookmarks"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /books",
+      "method": "GET",
+      "path": "/books",
+      "operationId": "getBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /books/favorites/{id}",
+      "method": "POST",
+      "path": "/books/favorites/{id}",
+      "operationId": "updateFavoriteBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /books/owned/{id}",
+      "method": "POST",
+      "path": "/books/owned/{id}",
+      "operationId": "updateOwnedBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /books/read/{id}",
+      "method": "POST",
+      "path": "/books/read/{id}",
+      "operationId": "updateReadBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /books/wishlist/{id}",
+      "method": "POST",
+      "path": "/books/wishlist/{id}",
+      "operationId": "updateWishlistBooks",
+      "tags": [
+        "book-shop-books"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /calc/roi",
+      "method": "POST",
+      "path": "/calc/roi",
+      "operationId": "calcAdvRoi",
+      "tags": [
+        "calculators"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /calc/simpleroi",
+      "method": "POST",
+      "path": "/calc/simpleroi",
+      "operationId": "calcSimpleRoi",
+      "tags": [
+        "calculators"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /captcha",
+      "method": "GET",
+      "path": "/captcha",
+      "operationId": null,
+      "tags": [
+        "captcha"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /captcha",
+      "method": "POST",
+      "path": "/captcha",
+      "operationId": null,
+      "tags": [
+        "captcha"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /comments",
+      "method": "GET",
+      "path": "/comments",
+      "operationId": "getComments",
+      "tags": [
+        "comments"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments returns 200 and a list of comments"
+      ]
+    },
+    {
+      "key": "POST /comments",
+      "method": "POST",
+      "path": "/comments",
+      "operationId": "createComment",
+      "tags": [
+        "comments"
+      ],
+      "covered": true,
+      "requestCount": 4,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "201": 2,
+        "401": 1,
+        "422": 1
+      },
+      "tests": [
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 201 and the created comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 401 without an access token",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 422 when a mandatory field is empty"
+      ]
+    },
+    {
+      "key": "GET /comments/search",
+      "method": "GET",
+      "path": "/comments/search",
+      "operationId": "getCommentsQuery",
+      "tags": [
+        "search"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "_end",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_expand",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_limit",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_order",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_page",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_sort",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_start",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "article_id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "date",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "user_id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /comments/{id}",
+      "method": "GET",
+      "path": "/comments/{id}",
+      "operationId": "getCommentById",
+      "tags": [
+        "comments"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1,
+        "404": 1
+      },
+      "tests": [
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 404 for a non-existent comment"
+      ]
+    },
+    {
+      "key": "PUT /comments/{id}",
+      "method": "PUT",
+      "path": "/comments/{id}",
+      "operationId": "putComment",
+      "tags": [
+        "comments"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /comments/{id}",
+      "method": "PATCH",
+      "path": "/comments/{id}",
+      "operationId": "patchComment",
+      "tags": [
+        "comments"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /comments/{id}",
+      "method": "DELETE",
+      "path": "/comments/{id}",
+      "operationId": "deleteComment",
+      "tags": [
+        "comments"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 2
+      },
+      "tests": [
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 201 and the created comment"
+      ]
+    },
+    {
+      "key": "HEAD /comments/{id}",
+      "method": "HEAD",
+      "path": "/comments/{id}",
+      "operationId": "headComment",
+      "tags": [
+        "comments"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /diagnostic/request/histogram",
+      "method": "GET",
+      "path": "/diagnostic/request/histogram",
+      "operationId": "getRequestHistogram",
+      "tags": [
+        "diagnostic"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /files/uploaded",
+      "method": "GET",
+      "path": "/files/uploaded",
+      "operationId": "getFiles",
+      "tags": [
+        "files"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /files/uploaded/public",
+      "method": "GET",
+      "path": "/files/uploaded/public",
+      "operationId": "getPublicFiles",
+      "tags": [
+        "files"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /files/uploaded/public/users/{userIds}",
+      "method": "GET",
+      "path": "/files/uploaded/public/users/{userIds}",
+      "operationId": "getUsersPublicFiles",
+      "tags": [
+        "files"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "userIds",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /files/uploaded/{userId}",
+      "method": "GET",
+      "path": "/files/uploaded/{userId}",
+      "operationId": "getUserFiles",
+      "tags": [
+        "files"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /flashposts",
+      "method": "GET",
+      "path": "/flashposts",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /flashposts",
+      "method": "POST",
+      "path": "/flashposts",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /flashposts/{id}",
+      "method": "GET",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /flashposts/{id}",
+      "method": "PATCH",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /flashposts/{id}",
+      "method": "DELETE",
+      "path": "/flashposts/{id}",
+      "operationId": null,
+      "tags": [
+        "flashposts"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /games",
+      "method": "GET",
+      "path": "/games",
+      "operationId": "getGames",
+      "tags": [
+        "games"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /hangman/highscores",
+      "method": "GET",
+      "path": "/hangman/highscores",
+      "operationId": "getHangmanHighscores",
+      "tags": [
+        "hangman"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /hangman/random",
+      "method": "GET",
+      "path": "/hangman/random",
+      "operationId": "getRandomWord",
+      "tags": [
+        "hangman"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /hangman/score",
+      "method": "POST",
+      "path": "/hangman/score",
+      "operationId": "setHangmanScore",
+      "tags": [
+        "hangman"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /health",
+      "method": "GET",
+      "path": "/health",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/health.spec.ts > Health API > GET /api/health returns 200 and a healthy status report"
+      ]
+    },
+    {
+      "key": "GET /health/configcheck",
+      "method": "GET",
+      "path": "/health/configcheck",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /health/db",
+      "method": "GET",
+      "path": "/health/db",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /health/dbcheck",
+      "method": "GET",
+      "path": "/health/dbcheck",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /health/memory",
+      "method": "GET",
+      "path": "/health/memory",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /health/uptime",
+      "method": "GET",
+      "path": "/health/uptime",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /images/posts",
+      "method": "GET",
+      "path": "/images/posts",
+      "operationId": "getArticlesPictures",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /images/user",
+      "method": "GET",
+      "path": "/images/user",
+      "operationId": "getUserPictures",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /labels",
+      "method": "GET",
+      "path": "/labels",
+      "operationId": "getLabels",
+      "tags": [
+        "labels"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1,
+        "404": 1
+      },
+      "tests": [
+        "tests/api/labels.spec.ts > Labels API > with feature_labels disabled (GAD default) > GET /api/labels returns 404 when the labels feature is disabled",
+        "tests/api/labels.spec.ts > Labels API > with feature_labels enabled > GET /api/labels returns 200 and a list of labels"
+      ]
+    },
+    {
+      "key": "POST /likes",
+      "method": "POST",
+      "path": "/likes",
+      "operationId": "createLike",
+      "tags": [
+        "likes"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /likes/article",
+      "method": "GET",
+      "path": "/likes/article",
+      "operationId": "getLikesForArticle",
+      "tags": [
+        "likes"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /likes/article/mylikes",
+      "method": "GET",
+      "path": "/likes/article/mylikes",
+      "operationId": "getMyLikes",
+      "tags": [
+        "likes"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": true,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "userid",
+          "in": "header",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /likes/article/{id}",
+      "method": "GET",
+      "path": "/likes/article/{id}",
+      "operationId": "getLikesForArticleById",
+      "tags": [
+        "likes"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /likes/comment/{id}",
+      "method": "GET",
+      "path": "/likes/comment/{id}",
+      "operationId": "getLikesForComment",
+      "tags": [
+        "likes"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /login",
+      "method": "GET",
+      "path": "/login",
+      "operationId": "userValidation",
+      "tags": [
+        "authentication"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /login",
+      "method": "POST",
+      "path": "/login",
+      "operationId": "userLogin",
+      "tags": [
+        "authentication"
+      ],
+      "covered": true,
+      "requestCount": 16,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 14,
+        "401": 2
+      },
+      "tests": [
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 200 and the article is no longer retrievable",
+        "tests/api/articles.spec.ts > Articles API > DELETE /api/articles/{id} returns 401 without an access token",
+        "tests/api/articles.spec.ts > Articles API > GET /api/articles/{id} returns 200 and the requested article",
+        "tests/api/articles.spec.ts > Articles API > PATCH /api/articles/{id} returns 200 and updates only the given fields",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 201 and the created article",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 201 when the date is the current date-time",
+        "tests/api/articles.spec.ts > Articles API > POST /api/articles returns 422 when a mandatory field is empty",
+        "tests/api/articles.spec.ts > Articles API > PUT /api/articles/{id} returns 200 and the replaced article",
+        "tests/api/auth.spec.ts > Auth API > POST /api/login returns 200 and an access_token for valid credentials",
+        "tests/api/auth.spec.ts > Auth API > POST /api/login returns 401 for a wrong password",
+        "tests/api/auth.spec.ts > Auth API > POST /api/login returns 401 for an unknown email",
+        "tests/api/comments.spec.ts > Comments API > GET /api/comments/{id} returns 200 and the requested comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 201 and the created comment",
+        "tests/api/comments.spec.ts > Comments API > POST /api/comments returns 422 when a mandatory field is empty",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 201 and the created user",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 409 for a duplicate email"
+      ]
+    },
+    {
+      "key": "GET /logs",
+      "method": "GET",
+      "path": "/logs",
+      "operationId": "getLogs",
+      "tags": [
+        "diagnostic"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /messenger/contacts",
+      "method": "GET",
+      "path": "/messenger/contacts",
+      "operationId": "getContacts",
+      "tags": [
+        "messenger"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PUT /messenger/contacts",
+      "method": "PUT",
+      "path": "/messenger/contacts",
+      "operationId": "addContact",
+      "tags": [
+        "messenger"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /messenger/messages",
+      "method": "GET",
+      "path": "/messenger/messages",
+      "operationId": "getMessages",
+      "tags": [
+        "messenger"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "idFrom",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "userId",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /messenger/messages",
+      "method": "POST",
+      "path": "/messenger/messages",
+      "operationId": "sendMessage",
+      "tags": [
+        "messenger"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /messenger/unread",
+      "method": "GET",
+      "path": "/messenger/unread",
+      "operationId": "getUnreadMessages",
+      "tags": [
+        "messenger"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /minesweeper/highscores",
+      "method": "GET",
+      "path": "/minesweeper/highscores",
+      "operationId": "getMinesweeperHighscores",
+      "tags": [
+        "minesweeper"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /minesweeper/score",
+      "method": "POST",
+      "path": "/minesweeper/score",
+      "operationId": "setMinesweeperScore",
+      "tags": [
+        "minesweeper"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /openapi.json",
+      "method": "GET",
+      "path": "/openapi.json",
+      "operationId": "getOpenApiSchema",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /ping",
+      "method": "GET",
+      "path": "/ping",
+      "operationId": null,
+      "tags": [
+        "healthcheck"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /quiz/highscores",
+      "method": "GET",
+      "path": "/quiz/highscores",
+      "operationId": "getQuizhighscores",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /quiz/questions",
+      "method": "GET",
+      "path": "/quiz/questions",
+      "operationId": "getQuizQuestions",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /quiz/questions/check",
+      "method": "POST",
+      "path": "/quiz/questions/check",
+      "operationId": "checkQuizAnswer",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /quiz/questions/count",
+      "method": "GET",
+      "path": "/quiz/questions/count",
+      "operationId": "getQuestionCount",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /quiz/start",
+      "method": "GET",
+      "path": "/quiz/start",
+      "operationId": "startQuiz",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /quiz/stop",
+      "method": "GET",
+      "path": "/quiz/stop",
+      "operationId": "stopQuiz",
+      "tags": [
+        "quiz"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /random/article",
+      "method": "GET",
+      "path": "/random/article",
+      "operationId": "getRandomArticle",
+      "tags": [
+        "random"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /restore/list",
+      "method": "GET",
+      "path": "/restore/list",
+      "operationId": "getRestoreList",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /schema",
+      "method": "GET",
+      "path": "/schema",
+      "operationId": "getOpenApiSchema2",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /scores",
+      "method": "GET",
+      "path": "/scores",
+      "operationId": "getScores",
+      "tags": [
+        "scores"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /scores/{id}",
+      "method": "GET",
+      "path": "/scores/{id}",
+      "operationId": "getGameScores",
+      "tags": [
+        "scores"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/activity/user",
+      "method": "GET",
+      "path": "/stats/activity/user",
+      "operationId": "getUserActivityStats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/activity/user/{id}",
+      "method": "GET",
+      "path": "/stats/activity/user/{id}",
+      "operationId": "getSingleUserActivityStats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/api",
+      "method": "GET",
+      "path": "/stats/api",
+      "operationId": "getApiCalls",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/api/details",
+      "method": "GET",
+      "path": "/stats/api/details",
+      "operationId": "getApiDetailedCalls",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/articles",
+      "method": "GET",
+      "path": "/stats/articles",
+      "operationId": "getArticleStats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "chartType",
+          "in": "query",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/nonapi",
+      "method": "GET",
+      "path": "/stats/nonapi",
+      "operationId": "getNonApiCalls",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/nonapi/details",
+      "method": "GET",
+      "path": "/stats/nonapi/details",
+      "operationId": "getNonApiDetailedCalls",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/publications/articles",
+      "method": "GET",
+      "path": "/stats/publications/articles",
+      "operationId": "getArticlePublishStats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/publications/comments",
+      "method": "GET",
+      "path": "/stats/publications/comments",
+      "operationId": "getCommentsPublishStats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /stats/users",
+      "method": "GET",
+      "path": "/stats/users",
+      "operationId": "getUserstats",
+      "tags": [
+        "stats"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "chartType",
+          "in": "query",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /surveys/responses",
+      "method": "GET",
+      "path": "/surveys/responses",
+      "operationId": "getUserSurveyResponses",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /surveys/responses",
+      "method": "POST",
+      "path": "/surveys/responses",
+      "operationId": "createSurvey",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /surveys/responses/{id}",
+      "method": "GET",
+      "path": "/surveys/responses/{id}",
+      "operationId": "getUserSurveyResponse",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /surveys/statistics/{type}",
+      "method": "GET",
+      "path": "/surveys/statistics/{type}",
+      "operationId": "getSurveysStatistics",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "type",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /surveys/{surveyType}/description",
+      "method": "GET",
+      "path": "/surveys/{surveyType}/description",
+      "operationId": "getSurveysDescription",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "surveyType",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /surveys/{surveyType}/questions/{id}",
+      "method": "GET",
+      "path": "/surveys/{surveyType}/questions/{id}",
+      "operationId": "getSurveysQuestions",
+      "tags": [
+        "surveys"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "surveyType",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /tic-tac-toe/highscores",
+      "method": "GET",
+      "path": "/tic-tac-toe/highscores",
+      "operationId": "getTicTacToeHighscores",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /tic-tac-toe/join",
+      "method": "POST",
+      "path": "/tic-tac-toe/join",
+      "operationId": "joinTicTacToeSession",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /tic-tac-toe/start",
+      "method": "POST",
+      "path": "/tic-tac-toe/start",
+      "operationId": "startTicTacToe",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /tic-tac-toe/status",
+      "method": "POST",
+      "path": "/tic-tac-toe/status",
+      "operationId": "moveTicTacToe",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /tic-tac-toe/status/{code}",
+      "method": "GET",
+      "path": "/tic-tac-toe/status/{code}",
+      "operationId": "getTicTacToeStatus",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "POST /tic-tac-toe/stop",
+      "method": "POST",
+      "path": "/tic-tac-toe/stop",
+      "operationId": "stopTicTacToeSession",
+      "tags": [
+        "tic-tac-toe"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "403",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /users",
+      "method": "GET",
+      "path": "/users",
+      "operationId": "getUsers",
+      "tags": [
+        "users"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/users.spec.ts > Users API > GET /api/users returns 200 and a list of users with private fields masked"
+      ]
+    },
+    {
+      "key": "POST /users",
+      "method": "POST",
+      "path": "/users",
+      "operationId": "postUser",
+      "tags": [
+        "users"
+      ],
+      "covered": true,
+      "requestCount": 5,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "409",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "201": 2,
+        "409": 1,
+        "422": 2
+      },
+      "tests": [
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 201 and the created user",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 409 for a duplicate email",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 422 for an invalid email",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 422 when a mandatory field is empty"
+      ]
+    },
+    {
+      "key": "GET /users/search",
+      "method": "GET",
+      "path": "/users/search",
+      "operationId": "getUsersQuery",
+      "tags": [
+        "search"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "_embed",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_end",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_limit",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_order",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_page",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_sort",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "_start",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "email",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "firstname",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "lastname",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /users/{id}",
+      "method": "GET",
+      "path": "/users/{id}",
+      "operationId": "getUserById",
+      "tags": [
+        "users"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PUT /users/{id}",
+      "method": "PUT",
+      "path": "/users/{id}",
+      "operationId": "putUser",
+      "tags": [
+        "users"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "201",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "PATCH /users/{id}",
+      "method": "PATCH",
+      "path": "/users/{id}",
+      "operationId": "patchUser",
+      "tags": [
+        "users"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "DELETE /users/{id}",
+      "method": "DELETE",
+      "path": "/users/{id}",
+      "operationId": "deleteUser",
+      "tags": [
+        "users"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 2
+      },
+      "tests": [
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 201 and the created user",
+        "tests/api/users.spec.ts > Users API > POST /api/users returns 409 for a duplicate email"
+      ]
+    },
+    {
+      "key": "HEAD /users/{id}",
+      "method": "HEAD",
+      "path": "/users/{id}",
+      "operationId": "headUser",
+      "tags": [
+        "users"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "400",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /v1/data/costs",
+      "method": "GET",
+      "path": "/v1/data/costs",
+      "operationId": null,
+      "tags": [
+        "data"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "days",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /v1/data/weather",
+      "method": "GET",
+      "path": "/v1/data/weather",
+      "operationId": null,
+      "tags": [
+        "data"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "days",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /v1/languages",
+      "method": "GET",
+      "path": "/v1/languages",
+      "operationId": "getLanguages",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /v1/languages/translations",
+      "method": "GET",
+      "path": "/v1/languages/translations",
+      "operationId": "getTranslations",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /v1/languages/translations/{lang}",
+      "method": "GET",
+      "path": "/v1/languages/translations/{lang}",
+      "operationId": "getTranslationsByLang",
+      "tags": [
+        "other"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "lang",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/articles",
+      "method": "GET",
+      "path": "/visits/articles",
+      "operationId": "getArticlesVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "ids",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/comments",
+      "method": "GET",
+      "path": "/visits/comments",
+      "operationId": "getCommentsVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "ids",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/top/articles",
+      "method": "GET",
+      "path": "/visits/top/articles",
+      "operationId": "getTopArticlesVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/top/comments",
+      "method": "GET",
+      "path": "/visits/top/comments",
+      "operationId": "getTopCommentsVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/top/users",
+      "method": "GET",
+      "path": "/visits/top/users",
+      "operationId": "getTopUsersVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {},
+      "tests": []
+    },
+    {
+      "key": "GET /visits/users",
+      "method": "GET",
+      "path": "/visits/users",
+      "operationId": "getUsersVisitsStats",
+      "tags": [
+        "visits"
+      ],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "ids",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    }
+  ],
+  "excluded": [
+    {
+      "key": "GET /debug/exit",
+      "reason": "Terminates the GAD process; would kill the server under test.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /debug/restart",
+      "reason": "Restarts the GAD process (needs a process manager); destructive for the run.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /diagnostic/toggle-diagnostics",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /diagnostic/toggle-logs",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /diagnostic/toggle-metrics",
+      "reason": "Non-idempotent global toggle; a failure between two calls leaves the server altered for the whole suite.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /restoreBigDB",
+      "reason": "Replaces the shared database with a large dataset; forbidden in tests by CONVENTIONS.md.",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /restoreDB",
+      "reason": "Replaces the shared database; forbidden in tests by CONVENTIONS.md (breaks test independence).",
+      "requestCount": 0
+    },
+    {
+      "key": "GET /restoreEmptyDB",
+      "reason": "Empties the shared database; forbidden in tests by CONVENTIONS.md.",
+      "requestCount": 0
+    },
+    {
+      "key": "PATCH /api/books/{id}",
+      "reason": "Spec defect: the template repeats the /api base path, so the documented URL (/api/api/books/{id}) is not served by GAD.",
+      "requestCount": 0
+    },
+    {
+      "key": "POST /diagnostic/log-level",
+      "reason": "Changes global server logging configuration; operational, out of functional scope.",
+      "requestCount": 0
+    }
+  ],
+  "extras": {
+    "unmatched": [],
+    "ignoredUnmatched": [
+      {
+        "method": "POST",
+        "path": "/api/config/features",
+        "reason": "path-not-documented",
+        "template": null,
+        "count": 3,
+        "phases": [
+          "hook"
+        ]
+      }
+    ],
+    "undocumentedStatuses": [],
+    "specWarnings": [
+      {
+        "code": "base-path-in-template",
+        "key": "PATCH /api/books/{id}",
+        "message": "Template already starts with the server base path \"/api\"; the real URL would be /api/api/books/{id}."
+      },
+      {
+        "code": "duplicate-operation-id",
+        "key": null,
+        "message": "operationId \"updateOrderStatus\" is used by PATCH /book-shop-manage/orders/{id}, PATCH /book-shop-orders/{id}."
+      }
+    ],
+    "configWarnings": [],
+    "invalidRecordLines": []
+  }
+}

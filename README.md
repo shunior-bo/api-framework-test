@@ -63,6 +63,7 @@ cp .env.example .env
 | `npm run test:api:coverage` | API specs, then the coverage report, even if tests fail (exits with the test result) |
 | `npm run coverage` | Console coverage report from the last recorded run |
 | `npm run coverage:json` | Writes `reports/coverage/coverage.json` and `gaps.json` |
+| `npm run coverage:compare-estimate` | Day 2 experiment: compares AI coverage estimates with the tool ([docs](docs/day2-ai-estimate-vs-tool.md)) |
 | `npm run report` | Opens the HTML report |
 | `npm run typecheck` | `tsc` in strict mode, no emit (framework + `tools/coverage`) |
 | `npm run lint` / `lint:fix` | ESLint (also enforces the import rules; covers `tools/**`) |
