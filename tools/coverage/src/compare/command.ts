@@ -12,21 +12,22 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { renderDeltaConsole, renderDeltaMarkdown } from '../report/deltaMarkdown.ts';
+import { renderHtml } from '../report/html.ts';
 import { toJson, TOOL } from '../report/build.ts';
 import { InputError } from '../shared/errors.ts';
 import { csv, type CliIo } from '../shared/io.ts';
 import { computeDelta, FAIL_ON_NEGATIVE, negativeFailures, type FailOnNegative } from './delta.ts';
 import { loadSnapshot } from './loadSnapshot.ts';
 
-const FORMATS = ['console', 'json', 'markdown'] as const;
+const FORMATS = ['console', 'json', 'markdown', 'html'] as const;
 
 export const COMPARE_USAGE = `Usage: node tools/coverage/src/cli.ts compare --base <dir> --head <dir> [options]
 
   --base <dir>               Directory with the base coverage.json + gaps.json
   --head <dir>               Directory with the head coverage.json + gaps.json
   --out <dir>                Output directory (default: reports/coverage/delta)
-  --format <list>            console,json,markdown (default: console)
-                             json → delta.json · markdown → delta.md
+  --format <list>            console,json,markdown,html (default: console)
+                             json → delta.json · markdown → delta.md · html → index.html (head report + delta)
   --top <n>                  Items per list before collapsing (default: 10)
   --fail-on-negative <dim>   Exit 1 if the pct delta of <dim> is negative:
                              operations | statuses | parameters | any (any also fails on no-longer-covered operations)
@@ -97,6 +98,7 @@ export function runCompare(argv: string[], io: CliIo): number {
   const files: [string, string, () => string][] = [
     ['json', 'delta.json', () => toJson(delta)],
     ['markdown', 'delta.md', () => renderDeltaMarkdown(delta, head.gaps, { top })],
+    ['html', 'index.html', () => renderHtml(head.coverage, head.gaps, delta)],
   ];
   for (const [format, name, render] of files) {
     if (!formats.includes(format)) continue;

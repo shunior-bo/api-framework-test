@@ -22,6 +22,7 @@ import { COMPARE_USAGE, runCompare } from './compare/command.ts';
 import { loadRecords } from './records/loadRecords.ts';
 import { buildCoverageReport, buildGapsReport, toJson, TOOL } from './report/build.ts';
 import { renderConsole } from './report/console.ts';
+import { renderHtml } from './report/html.ts';
 import { renderMarkdown } from './report/markdown.ts';
 import { InputError } from './shared/errors.ts';
 import type { CliIo } from './shared/io.ts';
@@ -30,7 +31,7 @@ import { loadSpec } from './spec/loadSpec.ts';
 export type { CliIo } from './shared/io.ts';
 
 /** Output formats. */
-const FORMATS = ['console', 'json', 'gaps', 'markdown'] as const;
+const FORMATS = ['console', 'json', 'gaps', 'markdown', 'html'] as const;
 type Format = (typeof FORMATS)[number];
 
 export const USAGE = `Usage: node tools/coverage/src/cli.ts [analyze] [options]
@@ -42,7 +43,8 @@ Analyze options (the default command):
   --records <dir>         Raw JSONL records (default: reports/coverage/raw)
   --config <file>         Exclusions config (default: tools/coverage/coverage.config.json)
   --out <dir>             Output directory (default: reports/coverage)
-  --format <list>         console,json,gaps,markdown (default: console)
+  --format <list>         console,json,gaps,markdown,html (default: console)
+                          json → coverage.json · gaps → gaps.json · markdown → summary.md · html → index.html
   --top <n>               Gaps to list in console/markdown (default: 15)
   --include-hooks         Count requests made in beforeAll/afterAll
   --only-passed           Count only tests whose outcome matched the expectation
@@ -212,15 +214,16 @@ function runAnalyze(argv: string[], io: CliIo): number {
   if (selected.has('console')) {
     io.stdout(renderConsole(report, gaps, { top, color: io.isTTY && !io.env.NO_COLOR }));
   }
-  const files: [Format, string, string][] = [
-    ['json', 'coverage.json', toJson(report)],
-    ['gaps', 'gaps.json', toJson(gaps)],
-    ['markdown', 'summary.md', renderMarkdown(report, gaps, top)],
+  const files: [Format, string, () => string][] = [
+    ['json', 'coverage.json', () => toJson(report)],
+    ['gaps', 'gaps.json', () => toJson(gaps)],
+    ['markdown', 'summary.md', () => renderMarkdown(report, gaps, top)],
+    ['html', 'index.html', () => renderHtml(report, gaps)],
   ];
-  for (const [format, name, content] of files) {
+  for (const [format, name, render] of files) {
     if (!selected.has(format)) continue;
     mkdirSync(outDir, { recursive: true });
-    writeFileSync(join(outDir, name), content, 'utf8');
+    writeFileSync(join(outDir, name), render(), 'utf8');
     io.stderr(`${TOOL.name}: wrote ${join(outDir, name)}\n`);
   }
 
