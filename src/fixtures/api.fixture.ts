@@ -9,15 +9,14 @@
  * SOLID: Open/Closed Principle (OCP) — add a new resource by adding one entry to
  *        `ApiFixtures` and one fixture function below. Existing fixtures never change.
  *
- * Why this matters (Day 2): every HTTP request a test makes flows through a
- * client built here from the `request` fixture. The Day 2 coverage tool hooks
- * into this one point to record method + path + status for every call, and
- * diffs that against spec/openapi.json. A test that calls `request.get(...)`
- * directly, or builds its own APIRequestContext, is invisible to coverage.
+ * Why this matters (coverage): this file extends coverage.fixture.ts, whose
+ * `request` fixture is a recording proxy. Every client built here therefore
+ * records method + path + status for every call, and tools/coverage diffs that
+ * against spec/openapi.json. A test that builds its own APIRequestContext
+ * (e.g. `playwright.request.newContext()`) is invisible to coverage.
  *
  * Must NOT: perform assertions, log in, or read environment variables.
  */
-import { test as base, expect } from '@playwright/test';
 import { ArticlesClient } from '@src/api/ArticlesClient';
 import { AuthClient } from '@src/api/AuthClient';
 import { CommentsClient } from '@src/api/CommentsClient';
@@ -25,6 +24,7 @@ import { ConfigClient } from '@src/api/ConfigClient';
 import { HealthClient } from '@src/api/HealthClient';
 import { LabelsClient } from '@src/api/LabelsClient';
 import { UsersClient } from '@src/api/UsersClient';
+import { test as base, expect } from '@src/fixtures/coverage.fixture';
 
 /**
  * Client fixtures available to every API spec.
