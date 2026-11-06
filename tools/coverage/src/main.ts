@@ -4,6 +4,7 @@
  *
  *   cli.ts [analyze] [options]   analyze records vs spec (default; no subcommand = analyze)
  *   cli.ts compare  [options]    base vs head delta (compare/command.ts)
+ *   cli.ts gaps     [options]    deterministic gap batch with spec context (gaps/command.ts)
  *
  * Kept free of `import.meta` and `process` globals so it can be unit-tested
  * in-process (Playwright transpiles tests to CommonJS). cli.ts is the thin
@@ -19,6 +20,7 @@ import { parseArgs } from 'node:util';
 import { loadConfig } from './analyze/config.ts';
 import { analyzeCoverage } from './analyze/coverage.ts';
 import { COMPARE_USAGE, runCompare } from './compare/command.ts';
+import { GAPS_USAGE, runGaps } from './gaps/command.ts';
 import { loadRecords } from './records/loadRecords.ts';
 import { buildCoverageReport, buildGapsReport, toJson, TOOL } from './report/build.ts';
 import { renderConsole } from './report/console.ts';
@@ -36,6 +38,7 @@ type Format = (typeof FORMATS)[number];
 
 export const USAGE = `Usage: node tools/coverage/src/cli.ts [analyze] [options]
        node tools/coverage/src/cli.ts compare --base <dir> --head <dir> [options]   (compare --help)
+       node tools/coverage/src/cli.ts gaps [filters]                                 (gaps --help)
 
 Analyze options (the default command):
 
@@ -102,6 +105,7 @@ function parsePct(flag: string, value: string | undefined): number | null {
 const SUBCOMMANDS: Record<string, (argv: string[], io: CliIo) => number> = {
   analyze: (argv, io) => runAnalyze(argv, io),
   compare: (argv, io) => runCompare(argv, io),
+  gaps: (argv, io) => runGaps(argv, io),
 };
 
 /**
@@ -241,4 +245,4 @@ function runAnalyze(argv: string[], io: CliIo): number {
   return 0;
 }
 
-export { COMPARE_USAGE };
+export { COMPARE_USAGE, GAPS_USAGE };
