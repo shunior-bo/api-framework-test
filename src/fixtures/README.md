@@ -6,10 +6,11 @@ Playwright fixture files that extend the base `test` object with reusable setup/
 
 | File | Provides | Use it when |
 |------|----------|-------------|
+| `coverage.fixture.ts` | Overrides `request` with a recording proxy (`src/coverage/`) plus the auto `coverageScope` fixture | Never import it in specs; `api.fixture.ts` extends it |
 | `api.fixture.ts` | One fixture per API client (`healthClient`, `articlesClient`, `commentsClient`, `usersClient`, `labelsClient`, `authClient`, `configClient`) | The spec only hits public endpoints |
 | `auth.fixture.ts` | Everything in `api.fixture.ts` **plus** `seedCredentials`, `authToken`, `loginAs(credentials)` | The spec needs a token |
 
-`auth.fixture.ts` extends `api.fixture.ts`, so a spec imports `test` and `expect` from exactly one of them.
+The chain is `@playwright/test` → `coverage.fixture.ts` → `api.fixture.ts` → `auth.fixture.ts`. A spec imports `test` and `expect` from exactly one of `api.fixture.ts` or `auth.fixture.ts`.
 
 ## SOLID principle
 
@@ -17,7 +18,7 @@ Playwright fixture files that extend the base `test` object with reusable setup/
 
 **Open/Closed Principle (OCP)** — `auth.fixture.ts` extends the API fixture instead of modifying it. A new resource is added by adding one fixture entry; nothing else changes.
 
-**Why a single construction point matters:** every request a test makes flows through a client built here from Playwright's `request` fixture. The Day 2 coverage tool hooks into this point to record every call.
+**Why a single construction point matters:** every request a test makes flows through a client built here from Playwright's `request` fixture, and `coverage.fixture.ts` makes that `request` a recording proxy. A request made any other way is left out of coverage.
 
 ## What must NOT be here
 
