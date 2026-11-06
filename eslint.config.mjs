@@ -1,4 +1,5 @@
 // @ts-check
+// .mjs (not .js) so Node loads this ES module without a "type": "module" warning.
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
