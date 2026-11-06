@@ -64,6 +64,7 @@ cp .env.example .env
 | `npm run coverage` | Console coverage report from the last recorded run |
 | `npm run coverage:json` | Writes `reports/coverage/coverage.json` and `gaps.json` |
 | `npm run coverage:compare-estimate` | Day 2 experiment: compares AI coverage estimates with the tool ([docs](docs/day2-ai-estimate-vs-tool.md)) |
+| `npm run coverage:mcp` | Starts the `api-coverage` MCP server on stdio (normally Claude Code starts it from `.mcp.json`) |
 | `npm run report` | Opens the HTML report |
 | `npm run typecheck` | `tsc` in strict mode, no emit (framework + `tools/coverage`) |
 | `npm run lint` / `lint:fix` | ESLint (also enforces the import rules; covers `tools/**`) |
@@ -73,7 +74,8 @@ cp .env.example .env
 
 ```
 api-framework-test/
-├── .github/workflows/       # api-coverage.yml (CI)
+├── .claude/                 # test-generator agent, /fill-coverage-gaps command, permissions
+├── .github/                 # api-coverage.yml (CI) + scripts/upsert-pr-comment.js
 ├── spec/openapi.json        # GAD contract (source of truth)
 ├── src/
 │   ├── api/                 # API clients, one per resource
@@ -82,11 +84,13 @@ api-framework-test/
 │   ├── fixtures/            # Coverage → client → auth fixtures
 │   ├── models/              # TypeScript interfaces
 │   └── utils/               # schema.ts (Zod), auth.ts
-├── tools/coverage/          # Coverage CLI (Node-native TS, zero deps)
+├── tools/coverage/          # Coverage CLI (Node-native TS, zero deps): analyze, compare, gaps
+├── tools/coverage-mcp/      # api-coverage MCP server (stdio) wrapping the CLI's functions
 ├── tests/
 │   ├── api/                 # Playwright API specs
 │   └── unit/                # Unit tests (no network), incl. unit/coverage
-├── docs/                    # Experiments + coverage baselines (docs/coverage/)
+├── docs/                    # Experiments, coverage baselines (docs/coverage/), AI runs (docs/ai-generation/)
+├── .mcp.json                # Project MCP servers (api-coverage)
 ├── CONVENTIONS.md           # How to write code here (mandatory reading)
 ├── CLAUDE.md                # Pointer for AI assistants
 └── playwright.config.ts
@@ -112,7 +116,53 @@ The coverage definitions and the CLI flags are in [tools/coverage/README.md](too
 
 ## CI
 
-`.github/workflows/api-coverage.yml` runs on pull requests, on pushes to `main` and `session/**`, and on manual dispatch. It checks out GAD (`shunior-bo/gad-gui-api-demo`, ref `GAD_REF` or a `workflow_dispatch` input) into `./gad`, starts it, runs `npm run test:api` and the coverage CLI, writes the totals and top 10 gaps to the job summary, and uploads the `api-coverage`, `playwright-report` and (on failure) `gad-logs` artifacts. The job fails only if the API tests fail. If the GAD repository is private, add a `GAD_REPO_TOKEN` secret with read access. CI pins `TZ=UTC` (see Known GAD issues).
+`.github/workflows/api-coverage.yml` runs on pull requests, on pushes to `main` and `session/**`, and on manual dispatch (with an optional `gad_ref`). It pins `TZ=UTC` (see Known GAD issues).
+
+| Event | Jobs | Output |
+|---|---|---|
+| `pull_request` | `coverage (head)` + `coverage (base)` in parallel → `report` | delta (`compare`), HTML report, job summary, **sticky PR comment** |
+| `push` / `workflow_dispatch` | `coverage (head)` → `report` | head summary + HTML report (no delta, no comment) |
+
+- Each side checks out its own commit (head is the PR merge ref; base is the PR base sha) and the same GAD ref (`shunior-bo/gad-gui-api-demo`, `GAD_REF`). It then runs `npm run test:api` and analyzes **its own records against its own `spec/openapi.json` and `coverage.config.json`**, so spec changes show up in the delta. `compare` always runs with the head version of the tool.
+- A broken base (no tool, failing tests, GAD down) **never** turns the workflow red. The comment then says "Base coverage unavailable" and shows head only. The workflow fails only if the **head** API tests fail (the last step of `report`).
+- **The sticky comment** is created once and updated on every push. It is identified by the hidden marker `<!-- api-coverage-report -->` and built by `.github/scripts/upsert-pr-comment.js` through `actions/github-script`. Only the `report` job has `pull-requests: write`. PRs from forks get a read-only token, so the comment is skipped with a notice (the alternative is a separate `workflow_run` workflow, not implemented).
+- `--fail-on-negative` is available in `compare` but **not enabled** in CI yet (Day 4 decides).
+
+**Artifacts** (retention 14 days; stable names, so Day 4 can download `coverage-head` to read `gaps.json`):
+
+| Artifact | Contents |
+|---|---|
+| `coverage-head`, `coverage-base` | `reports/coverage/**` of each side: `coverage.json`, `gaps.json`, `summary.md`, `index.html` (head), `raw/*.jsonl`, `run-meta.json` (test outcome) |
+| `coverage-report-html` | `index.html`: a self-contained HTML report with the embedded delta on PRs, plus `delta.json` and `delta.md` |
+| `playwright-report-head`, `playwright-report-base` | `reports/html` + `reports/results.xml` |
+| `gad-logs-head`, `gad-logs-base` | GAD server log (only when something failed) |
+
+If the GAD repository is private, add a `GAD_REPO_TOKEN` secret with read access.
+
+## Coverage tool for agents (MCP)
+
+`.mcp.json` registers the **`api-coverage`** MCP server (`tools/coverage-mcp`, stdio, built on `@modelcontextprotocol/sdk`). It exposes the coverage tool's own functions; it does not parse console output.
+
+| Tool | What it does | Side effects |
+|---|---|---|
+| `coverage_summary` | Totals, per-tag coverage and gap counts of `reports/coverage` | none |
+| `coverage_list_gaps` | Deterministic batch (filters: priority, type, tag, pathPrefix, excludeIds, limit), each gap with its resolved spec context | none |
+| `coverage_get_operation` | Coverage detail, open gaps and resolved spec of one `METHOD /path` | none |
+| `coverage_run` | Runs the API tests (optional `grep`/`files`) and re-analyzes coverage; returns counts, failed tests and totals | runs tests against the local GAD; a filtered run replaces the recorded data |
+| `coverage_compare` | Delta between two snapshot directories | writes `delta.json` / `delta.md` |
+
+`.claude/settings.json` pre-enables the server (`enabledMcpjsonServers`) in trusted folders. Otherwise Claude Code asks for approval the first time you run `claude` in this folder. Check it with `claude mcp get api-coverage` (it should show ✔ Connected), and reset your choice with `claude mcp reset-project-choices`. The same features are available without MCP through `node tools/coverage/src/cli.ts gaps|compare`.
+
+## AI test generation
+
+`/fill-coverage-gaps <scope> [--batches N] [--batch-size N]` delegates to the **`test-generator`** subagent (`.claude/agents/test-generator.md`). The agent reads gaps through MCP, writes tests by the CONVENTIONS recipe in bounded batches, verifies every closed gap with `compare`, logs the run to `docs/ai-generation/<run-id>.md`, and opens an `ai-generated` PR. Run it in a **fresh** session with the agent's extra denies:
+
+```bash
+claude --settings .claude/test-generator.settings.json
+> /fill-coverage-gaps status-gaps --batches 2 --batch-size 5
+```
+
+The design, permissions, guardrails and the Phase B instructions are in [docs/day3-ai-test-generation.md](docs/day3-ai-test-generation.md).
 
 ## Known GAD issues
 

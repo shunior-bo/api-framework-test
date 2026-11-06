@@ -15,10 +15,20 @@ npm run test:api:coverage   # tests, then coverage even if tests fail (keeps the
 
 The CLI runs on Node ≥ 22.18 (Node 24 in this repo), using native TypeScript type stripping. It has **no dependencies**: no Playwright, no YAML/OpenAPI parser, and no arg-parsing library (it uses `node:util` `parseArgs`). It never imports the framework (`src/`).
 
+The CLI has three subcommands. When no subcommand is given, it runs `analyze`, so the original invocation keeps working.
+
+| Command | Purpose |
+|---|---|
+| `cli.ts [analyze] …` | records × spec → `coverage.json`, `gaps.json`, `summary.md`, `index.html` |
+| `cli.ts compare --base <dir> --head <dir> …` | delta between two analyzed runs → `delta.json`, `delta.md`, `index.html` with the delta embedded (see [compare](#compare-base-vs-head-delta)) |
+| `cli.ts gaps …` | deterministic gap batch with resolved spec context, for agents (see [gaps](#gaps-batch-selection-for-agents)) |
+
+Each subcommand accepts `--help`.
+
 ```
-node tools/coverage/src/cli.ts [--spec spec/openapi.json] [--records reports/coverage/raw]
+node tools/coverage/src/cli.ts [analyze] [--spec spec/openapi.json] [--records reports/coverage/raw]
      [--config tools/coverage/coverage.config.json] [--out reports/coverage]
-     [--format console,json,gaps,markdown] [--top 15] [--include-hooks] [--only-passed]
+     [--format console,json,gaps,markdown,html] [--top 15] [--include-hooks] [--only-passed]
      [--min-operations <pct>] [--min-statuses <pct>] [--min-parameters <pct>]
 ```
 
@@ -28,13 +38,13 @@ node tools/coverage/src/cli.ts [--spec spec/openapi.json] [--records reports/cov
 | `--records` | `reports/coverage/raw` | Directory of `*.jsonl` records |
 | `--config` | `tools/coverage/coverage.config.json` | Exclusions and ignore globs |
 | `--out` | `reports/coverage` | Where file formats are written |
-| `--format` | `console` | Any of `console` (stdout), `json` (`coverage.json`), `gaps` (`gaps.json`), `markdown` (`summary.md`) |
+| `--format` | `console` | Any of `console` (stdout), `json` (`coverage.json`), `gaps` (`gaps.json`), `markdown` (`summary.md`), `html` (`index.html`) |
 | `--top` | `15` | Gaps listed in the console and Markdown output |
 | `--include-hooks` | off | Also count requests made in `beforeAll`/`afterAll` |
 | `--only-passed` | off | Count only requests of tests whose outcome matched the expectation |
 | `--min-*` | — | Fail with exit 1 if that dimension's % is below the threshold |
 
-`npm run coverage` does not load `.env`. To use another spec, pass `--spec` or export `OPENAPI_PATH`.
+`npm run coverage` does not load `.env`. To use another spec, pass `--spec` or export `OPENAPI_PATH`. The git metadata in the reports comes from `COVERAGE_GIT_SHA` / `COVERAGE_GIT_BRANCH` when set (CI uses this to label the base and head of a PR), then from `GITHUB_SHA` / `GITHUB_HEAD_REF` / `GITHUB_REF_NAME`, then from `git`.
 
 ### Exit codes
 
@@ -129,21 +139,90 @@ Hints are built from spec data only (summary, response description, request body
 
 ### `summary.md`
 
-A totals table and the top N gaps, in GitHub-flavored Markdown. CI appends it to `$GITHUB_STEP_SUMMARY`; Day 3 reuses it for the PR comment.
+A totals table and the top N gaps, in GitHub-flavored Markdown. CI uses it as the job summary when there is no base to compare against.
+
+### `index.html`
+
+A single self-contained file, with CSS and a small filter script inline. There is no CDN or network access (a strict Content-Security-Policy enforces this), so it can be opened straight from a downloaded artifact. It contains:
+
+- the totals cards;
+- the delta block, when produced by `compare`;
+- coverage by tag;
+- the operations table, filterable by tag, covered state, method and free text, with expandable per-operation status/parameter detail, observed statuses and tests;
+- the gaps table, filterable;
+- the extras.
+
+It works without JavaScript; the script only filters. Light and dark themes follow `prefers-color-scheme`. **Every text that comes from the spec, the records or git is HTML-escaped** (the spec is external input). The output is deterministic, and its size is about 240 KB for GAD.
+
+## `compare`: base vs head delta
+
+```
+node tools/coverage/src/cli.ts compare --base <dir> --head <dir> [--out reports/coverage/delta]
+     [--format console,json,markdown,html] [--top 10] [--fail-on-negative operations|statuses|parameters|any]
+```
+
+Each directory must contain the `coverage.json` and `gaps.json` of one analyzed run, produced from **its own** spec and config. Both must have a supported `schemaVersion`; otherwise the command exits 2. The command writes:
+
+- `delta.json` (`schemaVersion: 1`; `generatedAt` is the only non-deterministic field):
+  - `base` and `head` (git, spec sha256/version, totals) and `specChanged`;
+  - `totals` per dimension, each with `{ base, head, delta: { covered, total, pct } }`, plus `required`/`optional` for parameters. `pct` is a 2-decimal difference, `null` if either side is `null`;
+  - `operations.added`: in head's scope but not in base's, with a `covered` flag. A new endpoint in the spec shows up here;
+  - `operations.removed`;
+  - `operations.newlyCovered`;
+  - `operations.noLongerCovered`: a regression;
+  - `gaps.opened`: full head gaps whose `id` is not in base;
+  - `gaps.closed`: base ids missing from head;
+  - `gaps.summary`;
+  - `verdict` and `verdictReasons`.
+- `delta.md`: a headline table (`Dimension | Base | Head | Δ covered | Δ %`, with ▲/▼/＝), the verdict, added and removed operations, newly covered, regressions, the top N new gaps, then the top N head gaps. Lists longer than N collapse into `<details>`. The output is **hard-limited to 60,000 characters**; truncation is deterministic, at a line boundary, closes open `<details>` and points to the artifact. CI uses this file for the job summary and the PR comment.
+- `index.html`: the head report with the delta embedded.
+
+**Verdict rules** (deterministic):
+
+| Signal | Kind |
+|---|---|
+| a dimension's `covered` decreased · a dimension's `pct` decreased · `noLongerCovered` not empty · an operation was **added** to the spec and is **not covered** | regression |
+| a dimension's `covered` increased · a dimension's `pct` increased · `newlyCovered` not empty | improvement |
+
+The verdict is `mixed` if there are both kinds of signal, `regressed` if there are only regressions, `improved` if there are only improvements, and `unchanged` otherwise.
+
+Example: the spec adds an endpoint that nobody tests. `covered` stays the same, `total` grows and `pct` drops, so the verdict is `regressed`, with the endpoint listed in `operations.added`. Both deltas, `covered` and `pct`, are reported.
+
+`--fail-on-negative <dim>` exits 1 when that dimension's `pct` delta is negative. `any` checks all three dimensions and also fails on a non-empty `noLongerCovered`. It is **off by default**, and CI does not enable it yet.
+
+## `gaps`: batch selection for agents
+
+```
+node tools/coverage/src/cli.ts gaps [--from reports/coverage/gaps.json] [--spec spec/openapi.json]
+     [--priority high,medium] [--type operation,status,parameter] [--tag likes,bookmarks]
+     [--path-prefix /likes] [--exclude-ids <file|csv>] [--limit 5] [--format json|markdown]
+```
+
+- The same `gaps.json`, spec and filters always produce the same batch, in the canonical gap order (the comparator is shared with `gaps.json`). The output has no timestamp.
+- `--tag` matches a gap that has any of the listed tags.
+- `--path-prefix` is segment-aware: `/likes` matches `/likes` and `/likes/…`, but not `/likesX`.
+- `--exclude-ids` takes a CSV, or a file with one id per line (`#` starts a comment) or with a JSON array. Agents use it to skip gaps they have flagged as blocked.
+- `--limit 0` returns every matching gap.
+- Each selected gap includes `operation`: the full spec context of its operation, with every `$ref` resolved recursively (cycle-safe, depth-capped, `xml` dropped). The context holds the method, path, `url` (with the base path), operationId, summary, description, tags, security plus the referenced security schemes, parameters, requestBody and responses with their schemas. That is about 0.5–2 KB per GAD operation.
+- `source.specMatches` is `false`, with a warning on stderr, when the spec changed since `gaps.json` was produced. In that case re-run the coverage.
+
+The `api-coverage` MCP server (`tools/coverage-mcp/`) exposes the same selection as the `coverage_list_gaps` tool.
 
 ## Source layout
 
 ```
 src/
 ├── cli.ts                 # entrypoint (process I/O only)
-├── main.ts                # run(argv, io): flags, orchestration, exit codes (unit-testable)
-├── spec/                  # loadSpec.ts ($ref, implicit params, warnings), types.ts
+├── main.ts                # run(argv, io): subcommand dispatch, analyze flags, exit codes (unit-testable)
+├── spec/                  # loadSpec.ts ($ref, implicit params, warnings), operationContext.ts (deep $ref resolution), types.ts
 ├── records/loadRecords.ts # JSONL reader + validator (corrupt lines reported, not fatal)
 ├── match/pathMatcher.ts   # URL → template (specificity rules)
 ├── analyze/               # config.ts, coverage.ts (3 dimensions), gaps.ts, types.ts (report contracts)
-├── report/                # build.ts (coverage.json/gaps.json), console.ts, markdown.ts
+├── compare/               # delta.ts (computeDelta, verdict), loadSnapshot.ts, command.ts, types.ts (delta.json contract)
+├── gaps/                  # select.ts (filters + batch), command.ts
+├── report/                # build.ts (coverage.json/gaps.json), console.ts, markdown.ts, deltaMarkdown.ts, html.ts
 ├── estimate/compare.ts    # Day 2 experiment: AI estimate vs tool (entry: compare-estimate.ts)
-└── shared/                # deterministic ordering, errors
+└── shared/                # deterministic ordering, errors, CliIo
 ```
 
 Code rules: only erasable TypeScript syntax (no `enum`, `namespace` or constructor parameter properties). Relative imports use an explicit `.ts` extension. No `import.meta` outside `cli.ts`, so that Playwright's CJS transform can load the modules in unit tests. `tools/coverage/package.json` sets `"type": "module"` for this folder only. The code is type-checked by `npm run typecheck` (`tools/coverage/tsconfig.json`, `erasableSyntaxOnly`) and tested in `tests/unit/coverage/`.
