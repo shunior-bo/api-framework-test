@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "api-coverage": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["tools/coverage-mcp/src/server.ts"]
+    }
+  }
+}

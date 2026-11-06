@@ -69,6 +69,24 @@ export default [
     },
   },
   {
+    // tools/coverage-mcp wraps tools/coverage as an MCP server: it may use the
+    // MCP SDK and zod (tool input schemas) but never Playwright or src/.
+    files: ['tools/coverage-mcp/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@playwright/*', '@src/*', '@coverage/*', 'playwright', 'playwright-core'],
+              message: 'tools/coverage-mcp must not import Playwright or the framework (src/).',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // Only the coverage tool's unit tests may import @coverage/*.
     files: ['src/**/*.ts', 'tests/api/**/*.ts', 'tests/unit/*.ts', 'playwright.config.ts'],
     rules: {
@@ -87,8 +105,8 @@ export default [
               message: 'Use the @src/ path alias instead of relative imports.',
             },
             {
-              group: ['@coverage/*'],
-              message: '@coverage/* is only for tests/unit/coverage.',
+              group: ['@coverage/*', '@coverage-mcp/*'],
+              message: '@coverage/* and @coverage-mcp/* are only for tests/unit/coverage.',
             },
           ],
         },
