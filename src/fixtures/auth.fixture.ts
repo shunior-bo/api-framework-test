@@ -29,6 +29,8 @@ import { test as base, expect } from '@src/fixtures/api.fixture';
  * Auth fixtures added on top of the API client fixtures.
  */
 export interface AuthFixtures {
+  /** Seed-user credentials from `.env` (API_USERNAME / API_PASSWORD). */
+  seedCredentials: LoginRequest;
   /** A valid `access_token` for the seed user configured in `.env`. */
   authToken: string;
   /** Logs in with arbitrary credentials and resolves to that user's `access_token`. */
@@ -51,11 +53,19 @@ function requiredEnv(name: string): string {
 
 /**
  * Extended Playwright `test` instance with every client fixture plus
- * `authToken` and `loginAs`.
+ * `seedCredentials`, `authToken` and `loginAs`.
  *
  * Import this `test` (and `expect`) in every API spec file that needs auth.
  */
 const test = base.extend<AuthFixtures>({
+  seedCredentials: async ({}, use) => {
+    // Never hardcode credentials — always read them from environment variables.
+    await use({
+      email: requiredEnv('API_USERNAME'),
+      password: requiredEnv('API_PASSWORD'),
+    });
+  },
+
   loginAs: async ({ authClient }, use) => {
     await use(async (credentials: LoginRequest): Promise<string> => {
       const response = await authClient.login(credentials);
@@ -68,12 +78,8 @@ const test = base.extend<AuthFixtures>({
     });
   },
 
-  authToken: async ({ loginAs }, use) => {
-    // Never hardcode credentials here — always read from environment variables.
-    const token = await loginAs({
-      email: requiredEnv('API_USERNAME'),
-      password: requiredEnv('API_PASSWORD'),
-    });
+  authToken: async ({ loginAs, seedCredentials }, use) => {
+    const token = await loginAs(seedCredentials);
 
     // Provide the token to the test. Everything after use() runs as teardown.
     await use(token);
