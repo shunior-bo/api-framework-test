@@ -1,0 +1,30 @@
+{
+  "name": "api-framework-test",
+  "version": "1.0.0",
+  "description": "TypeScript + Playwright API test automation framework for the GAD (GUI API Demo) application",
+  "private": true,
+  "scripts": {
+    "test:unit": "playwright test --project=unit",
+    "test:api": "playwright test --project=api",
+    "test:smokeAPI": "playwright test --project=api --grep @smoke",
+    "test:all": "playwright test",
+    "report": "playwright show-report reports/html",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.ts\" \"**/*.json\"",
+    "format:check": "prettier --check \"**/*.ts\" \"**/*.json\""
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "@typescript-eslint/eslint-plugin": "^8.72.1",
+    "@typescript-eslint/parser": "^8.72.1",
+    "dotenv": "^18.0.9",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "zod": "^3.25.76"
+  }
+}
