@@ -147,16 +147,26 @@ export function buildGaps(
     }
   }
 
-  return gaps.sort(
-    (a, b) =>
-      PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] ||
-      compareStrings(a.path, b.path) ||
-      compareMethods(a.method, b.method) ||
-      TYPE_RANK[a.type] - TYPE_RANK[b.type] ||
-      compareStatusCodes(a.status ?? '', b.status ?? '') ||
-      compareParamIn(a.parameter?.in ?? '', b.parameter?.in ?? '') ||
-      compareStrings(a.parameter?.name ?? '', b.parameter?.name ?? '') ||
-      compareStrings(a.id, b.id),
+  return gaps.sort(compareGaps);
+}
+
+/**
+ * The canonical gap order (see the file header). Exported so batch selection
+ * (`gaps` subcommand, MCP) orders gaps exactly like gaps.json.
+ *
+ * @param a - Gap.
+ * @param b - Gap.
+ */
+export function compareGaps(a: Gap, b: Gap): number {
+  return (
+    PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] ||
+    compareStrings(a.path, b.path) ||
+    compareMethods(a.method, b.method) ||
+    TYPE_RANK[a.type] - TYPE_RANK[b.type] ||
+    compareStatusCodes(a.status ?? '', b.status ?? '') ||
+    compareParamIn(a.parameter?.in ?? '', b.parameter?.in ?? '') ||
+    compareStrings(a.parameter?.name ?? '', b.parameter?.name ?? '') ||
+    compareStrings(a.id, b.id)
   );
 }
 

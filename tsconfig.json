@@ -11,7 +11,8 @@
     "rootDir": ".",
     "paths": {
       "@src/*": ["./src/*"],
-      "@coverage/*": ["./tools/coverage/src/*"]
+      "@coverage/*": ["./tools/coverage/src/*"],
+      "@coverage-mcp/*": ["./tools/coverage-mcp/src/*"]
     }
   },
   "include": ["tests/**/*.ts", "src/**/*.ts", "playwright.config.ts"],

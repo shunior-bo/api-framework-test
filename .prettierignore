@@ -8,3 +8,5 @@ spec/openapi.json
 gad
 # Immutable coverage snapshots (byte-identical tool output)
 docs/coverage/**/*.json
+# Tool-generated compare fixtures (kept byte-identical to the tool output)
+tests/unit/coverage/fixtures/compare/**/*.json
