@@ -1,0 +1,7 @@
+node_modules
+reports
+test-results
+playwright-report
+package-lock.json
+# Vendored contract — kept byte-identical to the GAD source of truth.
+spec/openapi.json
