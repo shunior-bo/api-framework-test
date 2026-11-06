@@ -1,0 +1,114 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "Mini API", "version": "0.0.1" },
+  "servers": [{ "url": "http://example.test/api" }],
+  "security": [],
+  "paths": {
+    "/items": {
+      "get": {
+        "tags": ["items"],
+        "summary": "List items",
+        "operationId": "listItems",
+        "parameters": [
+          { "$ref": "#/components/parameters/Limit" },
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "X-Trace", "in": "header", "required": false, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["items"],
+        "summary": "Create item",
+        "operationId": "createItem",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ItemCreate" } }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "422": { "description": "Invalid item" },
+          "default": { "description": "Unexpected error" }
+        }
+      }
+    },
+    "/items/search": {
+      "get": {
+        "tags": ["items"],
+        "summary": "Search items",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/items/{id}": {
+      "get": {
+        "tags": ["items"],
+        "summary": "Get item",
+        "operationId": "getItem",
+        "parameters": [{ "$ref": "#/components/parameters/ItemId" }],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["items"],
+        "summary": "Delete item (path parameter intentionally undeclared)",
+        "operationId": "deleteItem",
+        "responses": {
+          "2XX": { "description": "Deleted" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/items/{id}/parts/{partId}": {
+      "get": {
+        "tags": ["items", "parts"],
+        "summary": "Get a part of an item",
+        "operationId": "getPart",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } },
+          { "name": "partId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/admin/reset": {
+      "post": {
+        "tags": ["admin"],
+        "summary": "Reset everything",
+        "operationId": "reset",
+        "responses": { "200": { "description": "Reset done" } }
+      }
+    },
+    "/never": {
+      "get": {
+        "summary": "Never called",
+        "operationId": "never",
+        "parameters": [{ "name": "page", "in": "query", "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not found" } }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "ItemId": { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } },
+      "Limit": {
+        "name": "_limit",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer" }
+      }
+    },
+    "responses": {
+      "NotFound": { "description": "Item not found" },
+      "Unauthorized": { "description": "Missing or invalid token" }
+    },
+    "schemas": {
+      "ItemCreate": { "type": "object", "properties": { "name": { "type": "string" } } }
+    }
+  }
+}
