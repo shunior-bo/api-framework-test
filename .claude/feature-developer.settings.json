@@ -40,7 +40,9 @@
     "deny": [
       "Edit(./tests/**)",
       "Edit(./src/**)",
-      "Edit(./tools/**)",
+      "Edit(./tools/coverage/**)",
+      "Edit(./tools/coverage-mcp/**)",
+      "Edit(./tools/spec-sync/**)",
       "Edit(./spec/**)",
       "Edit(./gad.ref.json)",
       "Edit(./.github/**)",
