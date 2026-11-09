@@ -121,7 +121,8 @@ expect(parsed.success, parsed.error?.message).toBe(true);
 expect(parsed.data).toMatchObject({ ...payload });
 ```
 
-- Error responses (401/409/422) are validated with `ErrorMessageSchema` (`{ error: { message } }`), then the message is checked.
+- Error responses (401/409/422) are validated with `ErrorMessageSchema` (`{ error: { message } }`), then the message is checked. The 401 message depends on the resource: articles and comments answer `"Access token not provided!"` without a token, while likes and bookmarks answer `"Access token for given user is invalid!"` even for an empty token. Assert the message the resource really sends (check it with `curl` first).
+- **400 "malformed JSON"** is covered with a client method `<method>WithRawBody(rawBody, …)` that sends the exact text as `application/json` (e.g. `ArticlesClient.createWithRawBody`, `updateWithRawBody`, `patchWithRawBody`, `LikesClient.createWithRawBody`), with the body built by a factory (`buildMalformedArticleJson()`). It still goes through the fixture's `request`, so coverage sees it. This is the endorsed way: add one only where the spec documents a 400 for malformed JSON.
 - GAD's 404 body is `{}`, so assert `expect(body).toEqual({})`.
 - To use an interface with `toMatchObject`, spread it: `toMatchObject({ ...payload })`.
 - In **Arrange**, when you create prerequisite data, check its status first and then parse it strictly: `expect(r.status()).toBe(201); const created = ArticleSchema.parse(await r.json());`
@@ -133,12 +134,19 @@ expect(parsed.data).toMatchObject({ ...payload });
 - Build every payload with `buildXxx()` from `@src/data/factories`. Override only what the test is about: `buildUser({ email: 'not-an-email' })`.
 - Factories add `uniqueSuffix()` so that tests don't collide (for example, the 409 on duplicate email).
 - For invalid payloads, override a field with an empty or invalid value. Don't delete keys or cast types.
-- To get a 404 on GET, use `NON_EXISTENT_ID`. Never PUT to it: GAD upserts and would create the record.
+- To get a 404 on GET or PATCH, use `NON_EXISTENT_ID`. Never PUT to it: GAD upserts and would create the record (and every later run would find it). For **PUT 201** ("created"), PUT to an id above every existing one, read from `getAll()` (`Math.max(...ids) + 1000`, as tc-articles-13 does), and delete it in `finally`.
 - **Cleanup:** wrap Act and Assert in `try { … } finally { await client.delete(id, token); }`. If the resource is created in Act, delete it only if the parse succeeded: `if (parsed.success) await client.delete(parsed.data.id, authToken);`
 - Delete children before parents (a comment before its article).
 - **Users can only delete themselves.** Clean up with `loginAs({ email, password })` and then `usersClient.delete(id, ownToken)`.
 - Never call `/api/restoreDB*` from a test. It resets data for every test that is running.
-- Only `labels.spec.ts` changes GAD's global feature flags (`configClient.setFeatures`), and it restores them in `afterAll`. That endpoint is not in the contract.
+- **Feature flags.** Some resources sit behind GAD feature flags that are **OFF by default**; while a flag is off, every request to its resource answers `404 {}`. Known ones: `feature_labels` (`/api/labels`, `/api/article-labels`), `feature_likes` (`/api/likes*`), `feature_user_bookmark_articles` (`/api/bookmarks*`); the full list is GAD's `config/config-features.js`. The spec of a flag-gated resource, and only that spec:
+  - runs in serial mode (`test.describe.configure({ mode: 'serial' })`);
+  - turns its flag on in `beforeAll` with `configClient.setFeatures({ <flag>: true })` and asserts 200;
+  - restores GAD's default in `afterAll`.
+
+  Examples: `labels.spec.ts`, `likes.spec.ts`, `bookmarks.spec.ts`. Never switch flags with `curl` or from another resource's spec. `/api/config/features` is test infrastructure, not part of the contract. When GAD's only way to produce a documented bare 404 is the disabled flag (likes answer `200 {"likes":0}` for unknown ids), cover it in a `describe('with <flag> disabled (GAD default)')` block and say so in a comment (tc-labels-02, tc-likes-11/12).
+- **Toggle endpoints with no DELETE** (`POST /api/likes` adds the like the first time and removes it the second): clean up by calling the toggle again in `finally`.
+- **Residue the API cannot delete** (for example the first bookmark record of a user: there is no DELETE, and json-server reuses deleted user ids): a test that passes only once is not acceptable. Report the gap as **blocked** with that reason (Day 3: `status:POST /bookmarks/articles:201`) instead of writing it.
 
 **GAD data quirks that the factories already handle:** the `date` is 24 h in the past (GAD rejects the current UTC time as "in future"), and articles always include `image` (without it `/api/health` reports "Degraded").
 
@@ -218,7 +226,7 @@ export const WidgetSchema = z.object({
 export const WidgetsSchema = z.array(WidgetSchema);
 ```
 
-Then add a unit test for it in `tests/unit/schema.spec.ts` (one case that is accepted and one that is rejected).
+Then add a unit test for it in `tests/unit/schema.spec.ts` (one case that is accepted and one that is rejected). The schema and its unit test go in the **same `feat:` commit** (the schema layer), not in the `test:` commit of the API spec.
 
 ### Step 4: Client, `src/api/WidgetsClient.ts`
 
@@ -418,7 +426,7 @@ node -e "const g=require('./reports/coverage/gaps.json').gaps;console.log(g.filt
 
 The gaps you targeted (for example `operation:POST /widgets` or `status:POST /widgets:401`) must have disappeared from `reports/coverage/gaps.json`. If a gap is still there, the test did not really exercise it: check the status code that was actually received in `coverage.json` → `operations[].observedStatuses`.
 
-Every documented status code should have a test, or a written reason why it doesn't (for example, "400 needs malformed JSON, which the typed client can't send").
+Every documented status code should have a test, or a written reason why it doesn't (for example, "PUT 404 is unreachable: GAD upserts unknown ids"). A 400 "malformed JSON" is **not** such a reason: use a `…WithRawBody` client method (§5).
 
 ---
 
@@ -426,10 +434,14 @@ Every documented status code should have a test, or a written reason why it does
 
 | Behavior | Consequence for tests |
 |----------|-----------------------|
-| PUT on an unknown id creates the record and answers 201 (upsert) | Never PUT to `NON_EXISTENT_ID` |
+| PUT on an unknown id creates the record and answers 201 (upsert); a PUT 404 is unreachable | Never PUT to `NON_EXISTENT_ID`; for PUT 201 use an id above every existing one and delete it (§6) |
+| PATCH does **not** upsert: an unknown id answers 404 | Use `NON_EXISTENT_ID` for PATCH 404 |
+| DELETE `/api/articles/{id}` is a **soft delete**: the record stays in `db.json` with `"_inactive": true`, and GET then answers 404 | Assert the 404 after delete; a deleted id is never free for reuse |
 | GET `/api/users*` masks `email`, `lastname` and `password` as `"****"` | Don't assert on those fields after a GET |
 | DELETE/PUT/PATCH on `/api/users/{id}` need **that user's** token | Use `loginAs` |
-| `feature_labels` is off by default, so `/api/labels` returns 404 | Turn it on in `beforeAll` through `configClient` and restore it in `afterAll` |
+| `feature_labels`, `feature_likes`, `feature_user_bookmark_articles` (and others in GAD's `config/config-features.js`) are off by default, so their resources return 404 | Only the resource's own spec turns its flag on in `beforeAll` (serial mode) and restores it in `afterAll` (§6) |
+| `POST /api/likes` needs a `userid` header equal to the token owner's id (undocumented) | `LikesClient` sends it; JSDoc documents it |
+| The seed user's id is not in the login response nor in the JWT (`{ email, data, iat, exp }`) | Read it from data the test creates (`article.user_id`). There is no `authUserId` fixture on purpose: getting the id would need an extra request (`GET /api/users?email=…`) that the recorder would count, changing coverage |
 | Validation reads `db.json` from disk while writes land asynchronously | The suite runs with `workers: 1`. Don't enable parallelism |
 | The current UTC time is rejected as a "future date" on hosts west of UTC | Use the factory dates (`recentIsoDate()`) |
 
