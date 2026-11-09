@@ -1,0 +1,128 @@
+# PR guards: cheap, independent checks that re-run on every push AND on label
+# changes (the API coverage suite does not need to re-run for a label).
+#
+#   lane-check     ai-generated PRs: every agent commit stays inside its lane
+#                  (.github/scripts/lane-check.js; Agent: trailer → allowed paths)
+#   human-review   ai-generated PRs: passes only with the label human-reviewed,
+#                  added after the last push (.github/scripts/pr-guards.js)
+#   gad-ref-guard  PRs into main: gad.ref.json must pin a GAD `main` commit, never
+#                  a feature branch (tools/spec-sync ref-guard)
+#
+# Trust: lane-check and gad-ref-guard run the BASE branch's copy of their
+# scripts against the PR head, so a PR cannot weaken its own guard. A base
+# without the script (before this file reached main) skips with a notice.
+# Mark lane-check, human-review and gad-ref-guard as required checks in the
+# main ruleset (docs/day4-multi-agent-pipeline.md → Human review and merge order).
+name: PR guards
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+
+permissions: {}
+
+concurrency:
+  group: pr-guards-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lane-check:
+    if: contains(github.event.pull_request.labels.*.name, 'ai-generated')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout base (trusted script)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: Checkout PR head (full history)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Lane check
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ ! -f trusted/.github/scripts/lane-check.js ]; then
+            echo "::notice::The base branch has no lane-check.js yet: skipped."
+            exit 0
+          fi
+          node trusted/.github/scripts/lane-check.js \
+            --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" \
+            --summary "$GITHUB_STEP_SUMMARY"
+
+  human-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout base (trusted script)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Human review label
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('./.github/scripts/pr-guards.js')) {
+              core.notice('The base branch has no pr-guards.js yet: skipped.');
+              return;
+            }
+            const { run } = require('./.github/scripts/pr-guards.js');
+            await run({ github, context, core });
+
+  gad-ref-guard:
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout base (trusted tool)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+
+      - name: Checkout PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: gad.ref.json must pin GAD main
+        run: |
+          if [ ! -f trusted/tools/spec-sync/src/cli.ts ]; then
+            echo "::notice::The base branch has no tools/spec-sync yet: skipped."
+            exit 0
+          fi
+          if [ ! -f pr/gad.ref.json ]; then
+            echo "::notice::This PR has no gad.ref.json (pre-Day-4 layout): skipped."
+            exit 0
+          fi
+          if ! node trusted/tools/spec-sync/src/cli.ts ref-guard --ref-file pr/gad.ref.json --expect-ref main; then
+            echo "::error file=gad.ref.json::A PR into main must pin a GAD main commit. Merge the GAD PR, then run the repin-gad workflow (or npm run gad:pin -- --sha <GAD main sha> --ref main)."
+            exit 1
+          fi

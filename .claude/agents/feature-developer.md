@@ -86,7 +86,7 @@ Use `<n>` = issue number and `<slug>` = 3–5 lowercase words of the title joine
    - `Closes #<n>` and the link to the GAD PR;
    - the contract;
    - `## Tests: pending (test agent)`: the CI coverage job will report a `regressed` verdict because the new operations are uncovered; the `test-agent` workflow then pushes tests to this branch;
-   - `## Merge instructions`: (1) review and merge the GAD PR; (2) re-pin this PR to GAD main: `npm run gad:pin -- --sha <GAD main sha after the merge> --ref main` (or run the `repin-gad` workflow with this PR number); (3) wait for green CI: API coverage (delta not regressed), spec drift check, lane-check, merge-guards and `human-review` (label `human-reviewed` after reading the tests); (4) merge this PR;
+   - `## Merge instructions`: (1) review and merge the GAD PR; (2) re-pin this PR to GAD main: `npm run gad:pin -- --sha <GAD main sha after the merge> --ref main` (or run the `repin-gad` workflow with this PR number); (3) wait for green CI: API coverage (delta not regressed, spec drift check), lane-check, gad-ref-guard and human-review (label `human-reviewed` after reading the tests); (4) merge this PR;
    - the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` at the end.
 7. `gh issue comment <n> --body-file .agent-work/issue-comment.md` with both PR links.
 
