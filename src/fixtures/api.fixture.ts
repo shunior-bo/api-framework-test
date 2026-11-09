@@ -17,6 +17,7 @@
  *
  * Must NOT: perform assertions, log in, or read environment variables.
  */
+import { AboutClient } from '@src/api/AboutClient';
 import { ArticlesClient } from '@src/api/ArticlesClient';
 import { AuthClient } from '@src/api/AuthClient';
 import { BookmarksClient } from '@src/api/BookmarksClient';
@@ -50,6 +51,8 @@ export interface ApiFixtures {
   likesClient: LikesClient;
   /** Client for /api/bookmarks/articles. */
   bookmarksClient: BookmarksClient;
+  /** Client for /api/about. */
+  aboutClient: AboutClient;
 }
 
 /**
@@ -85,6 +88,9 @@ const test = base.extend<ApiFixtures>({
   },
   bookmarksClient: async ({ request }, use) => {
     await use(new BookmarksClient(request));
+  },
+  aboutClient: async ({ request }, use) => {
+    await use(new AboutClient(request));
   },
 });
 

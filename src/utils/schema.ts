@@ -64,6 +64,21 @@ export const HealthSchema = z.object({
 });
 
 /**
+ * Validates the response body of GET /api/about.
+ *
+ * The contract has no body schema for this endpoint; this mirrors the observed
+ * response. Expected shape: { name, version, description, repository, keywords, author }
+ */
+export const AboutSchema = z.object({
+  name: z.string().min(1),
+  version: z.string().min(1),
+  description: z.string(),
+  repository: z.string(),
+  keywords: z.array(z.string()),
+  author: z.string(),
+});
+
+/**
  * Validates the response body of POST /api/login with HTTP 200
  * (`components.schemas.UserLoginToken`).
  *
