@@ -24,7 +24,13 @@ interface FeatureAgentModule {
     author: string;
     truncated: boolean;
   };
-  outcome: (input: { result: unknown; actionOutcome: string; runUrl: string }) => {
+  agentErrorFrom: (text: string | null) => string | null;
+  outcome: (input: {
+    result: unknown;
+    actionOutcome: string;
+    runUrl: string;
+    agentError?: string | null;
+  }) => {
     blocked: boolean;
     status: string;
     comment: string | null;
@@ -171,6 +177,35 @@ test.describe('feature-agent: outcome', () => {
     expect(missing).toMatchObject({ blocked: true, status: 'missing' });
     expect(missing.comment).toContain('step outcome: `failure`');
     expect(partial.blocked).toBe(true);
+  });
+});
+
+test.describe('feature-agent: agent error from the execution log', () => {
+  test('surfaces the error of a failed run (e.g. invalid Claude credentials)', () => {
+    // Trimmed copy of the execution log of the first E2E run (run 42647556784).
+    const log = JSON.stringify([
+      { type: 'system', subtype: 'init', model: 'claude-opus-5-5' },
+      {
+        type: 'result',
+        subtype: 'success',
+        is_error: true,
+        api_error_status: 401,
+        result: 'Failed to authenticate. API Error: 401 Invalid bearer token',
+      },
+    ]);
+    const error = mod.agentErrorFrom(log);
+    expect(error).toBe('Failed to authenticate. API Error: 401 Invalid bearer token');
+    const decision = mod.outcome({
+      result: null,
+      actionOutcome: 'failure',
+      runUrl: 'u',
+      agentError: error,
+    });
+    expect(decision.comment).toContain(
+      'Claude Code reported: `Failed to authenticate. API Error: 401',
+    );
+    expect(mod.agentErrorFrom(JSON.stringify([{ type: 'result', is_error: false }]))).toBeNull();
+    expect(mod.agentErrorFrom('not json')).toBeNull();
   });
 });
 
