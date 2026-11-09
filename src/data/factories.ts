@@ -165,6 +165,23 @@ export function buildLike(
 }
 
 /**
+ * Builds a valid POST /api/likes payload for a comment (no `article_id`).
+ *
+ * GAD toggles likes: posting the same payload twice removes the like again.
+ *
+ * @param userId - ID of the token owner who gives the like.
+ * @param commentId - ID of an existing comment to like.
+ * @returns A `CreateLikeRequest` for the comment.
+ */
+export function buildCommentLike(userId: ResourceId, commentId: ResourceId): CreateLikeRequest {
+  return {
+    user_id: userId,
+    comment_id: commentId,
+    date: recentIsoDate(),
+  };
+}
+
+/**
  * Builds a malformed JSON POST /api/likes body: a valid like payload with its
  * closing brace cut off. Use it for the documented 400 "Bad request - malformed JSON".
  *
