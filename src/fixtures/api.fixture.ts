@@ -19,10 +19,12 @@
  */
 import { ArticlesClient } from '@src/api/ArticlesClient';
 import { AuthClient } from '@src/api/AuthClient';
+import { BookmarksClient } from '@src/api/BookmarksClient';
 import { CommentsClient } from '@src/api/CommentsClient';
 import { ConfigClient } from '@src/api/ConfigClient';
 import { HealthClient } from '@src/api/HealthClient';
 import { LabelsClient } from '@src/api/LabelsClient';
+import { LikesClient } from '@src/api/LikesClient';
 import { UsersClient } from '@src/api/UsersClient';
 import { test as base, expect } from '@src/fixtures/coverage.fixture';
 
@@ -44,6 +46,10 @@ export interface ApiFixtures {
   labelsClient: LabelsClient;
   /** Client for /api/config (undocumented test infrastructure — hooks only). */
   configClient: ConfigClient;
+  /** Client for /api/likes. */
+  likesClient: LikesClient;
+  /** Client for /api/bookmarks/articles. */
+  bookmarksClient: BookmarksClient;
 }
 
 /**
@@ -73,6 +79,12 @@ const test = base.extend<ApiFixtures>({
   },
   configClient: async ({ request }, use) => {
     await use(new ConfigClient(request));
+  },
+  likesClient: async ({ request }, use) => {
+    await use(new LikesClient(request));
+  },
+  bookmarksClient: async ({ request }, use) => {
+    await use(new BookmarksClient(request));
   },
 });
 

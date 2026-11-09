@@ -18,8 +18,10 @@
  */
 import { faker } from '@faker-js/faker';
 import { type CreateArticleRequest } from '@src/models/article.model';
+import { type CreateBookmarkRequest } from '@src/models/bookmark.model';
 import { type CreateCommentRequest } from '@src/models/comment.model';
 import { type ResourceId } from '@src/models/common.model';
+import { type CreateLikeRequest } from '@src/models/like.model';
 import { type CreateUserRequest } from '@src/models/user.model';
 
 /** GAD rejects article titles longer than this with 422. */
@@ -137,6 +139,53 @@ export function buildUser(overrides: Partial<CreateUserRequest> = {}): CreateUse
     avatar: DEFAULT_AVATAR,
     ...overrides,
   };
+}
+
+/**
+ * Builds a valid POST /api/likes payload for an article.
+ *
+ * GAD toggles likes: posting the same payload twice removes the like again.
+ *
+ * @param userId - ID of the token owner who gives the like.
+ * @param articleId - ID of an existing article to like.
+ * @param overrides - Fields to replace in the generated payload (e.g. `{ comment_id }`).
+ * @returns A `CreateLikeRequest` for the article.
+ */
+export function buildLike(
+  userId: ResourceId,
+  articleId: ResourceId,
+  overrides: Partial<CreateLikeRequest> = {},
+): CreateLikeRequest {
+  return {
+    user_id: userId,
+    article_id: articleId,
+    date: recentIsoDate(),
+    ...overrides,
+  };
+}
+
+/**
+ * Builds a malformed JSON POST /api/likes body: a valid like payload with its
+ * closing brace cut off. Use it for the documented 400 "Bad request - malformed JSON".
+ *
+ * @param userId - ID of the token owner.
+ * @param articleId - ID of an article.
+ * @returns A string that is not parseable as JSON.
+ */
+export function buildMalformedLikeJson(userId: ResourceId, articleId: ResourceId): string {
+  return JSON.stringify(buildLike(userId, articleId)).slice(0, -1);
+}
+
+/**
+ * Builds a valid POST /api/bookmarks/articles payload.
+ *
+ * The contract types `article_id` as a string, so the ID is stringified.
+ *
+ * @param articleId - ID of an existing article to bookmark.
+ * @returns A `CreateBookmarkRequest` for the article.
+ */
+export function buildBookmark(articleId: ResourceId): CreateBookmarkRequest {
+  return { article_id: String(articleId) };
 }
 
 /**
