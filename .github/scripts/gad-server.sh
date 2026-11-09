@@ -41,6 +41,14 @@ stop() {
     fi
     rm -f "$GAD_PID"
   fi
+  for _ in $(seq 1 20); do
+    health > /dev/null 2>&1 || break
+    sleep 0.5
+  done
+  if health > /dev/null 2>&1; then
+    echo "Something still answers on ${HEALTH_URL} (not started by this script?)" >&2
+    exit 1
+  fi
   echo "GAD stopped"
 }
 
@@ -55,7 +63,13 @@ start() {
   fi
   # A single backgrounded command with all std streams redirected, so no
   # background shell keeps the caller's stdout open (a CI step would hang).
-  (cd "$GAD_DIR" && PORT="$GAD_PORT" nohup node server.js > "$GAD_LOG" 2>&1 < /dev/null & echo $! > "$GAD_PID")
+  # `cd` runs on its own line: `cd x && cmd &` would background the whole list
+  # in a subshell and $! would be the subshell, not node.
+  (
+    cd "$GAD_DIR" || exit 1
+    PORT="$GAD_PORT" nohup node server.js > "$GAD_LOG" 2>&1 < /dev/null &
+    echo $! > "$GAD_PID"
+  )
   for i in $(seq 1 60); do
     if health > /dev/null 2>&1; then
       echo "GAD is healthy after ${i}s (pid $(cat "$GAD_PID"), log ${GAD_LOG})"
