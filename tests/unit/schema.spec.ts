@@ -18,11 +18,15 @@ import {
   z,
   ArticleSchema,
   ArticlesSchema,
+  BookmarkedArticlesSchema,
+  BookmarkSchema,
   CommentSchema,
   ErrorMessageSchema,
   HealthSchema,
   IdSchema,
   LabelSchema,
+  LikeSchema,
+  LikesCountSchema,
   LoginResponseSchema,
   MalformedJsonErrorSchema,
   UserSchema,
@@ -238,6 +242,75 @@ test.describe('MalformedJsonErrorSchema', () => {
     const result = MalformedJsonErrorSchema.safeParse({
       error: { message: 'Access token not provided!' },
     });
+
+    expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// LikeSchema
+// ---------------------------------------------------------------------------
+test.describe('LikeSchema', () => {
+  test('accepts the like GAD returns for a liked article', () => {
+    const result = LikeSchema.safeParse({
+      id: 111,
+      article_id: 90,
+      user_id: 1,
+      date: '2026-11-09T14:00:57.028Z',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  test('rejects a like without user_id', () => {
+    const result = LikeSchema.safeParse({ id: 111, article_id: 90, date: '2026-11-09T14:00:57Z' });
+
+    expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// LikesCountSchema
+// ---------------------------------------------------------------------------
+test.describe('LikesCountSchema', () => {
+  test('accepts a numeric like count', () => {
+    const result = LikesCountSchema.safeParse({ likes: 3 });
+
+    expect(result.success).toBe(true);
+  });
+
+  test('rejects a per-article map of counts', () => {
+    const result = LikesCountSchema.safeParse({ likes: { '90': 1 } });
+
+    expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BookmarkSchema / BookmarkedArticlesSchema
+// ---------------------------------------------------------------------------
+test.describe('BookmarkSchema', () => {
+  test('accepts a bookmark record with mixed number and string article ids', () => {
+    const result = BookmarkSchema.safeParse({ id: 1, user_id: 1, article_ids: [1, 3, '2'] });
+
+    expect(result.success).toBe(true);
+  });
+
+  test('rejects a bookmark record without article_ids', () => {
+    const result = BookmarkSchema.safeParse({ id: 1, user_id: 1 });
+
+    expect(result.success).toBe(false);
+  });
+});
+
+test.describe('BookmarkedArticlesSchema', () => {
+  test('accepts a list of bookmarked article ids and an empty body', () => {
+    expect(BookmarkedArticlesSchema.safeParse({ article_ids: [1, 3, 7] }).success).toBe(true);
+    expect(BookmarkedArticlesSchema.safeParse({}).success).toBe(true);
+  });
+
+  test('rejects article_ids that is not an array', () => {
+    const result = BookmarkedArticlesSchema.safeParse({ article_ids: 1 });
 
     expect(result.success).toBe(false);
   });

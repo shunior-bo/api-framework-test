@@ -159,3 +159,55 @@ export const MalformedJsonErrorSchema = z.object({
   error: z.string(),
   details: z.unknown().optional(),
 });
+
+/**
+ * Validates the like returned by POST /api/likes with HTTP 201
+ * (`components.schemas.Like`, required: `user_id`, `date`).
+ *
+ * Expected shape: { id?, user_id, article_id?, comment_id?, date }
+ */
+export const LikeSchema = z.object({
+  id: IdSchema.optional(),
+  user_id: IdSchema,
+  article_id: IdSchema.optional(),
+  comment_id: IdSchema.optional(),
+  date: DateTimeSchema,
+});
+
+/**
+ * Validates the like-count bodies of GET /api/likes/article, /api/likes/article/{id},
+ * /api/likes/comment/{id} and /api/likes/article/mylikes (inline schema,
+ * required: `likes`).
+ *
+ * Expected shape: { likes: number }
+ */
+export const LikesCountSchema = z.object({
+  likes: z.number(),
+});
+
+/**
+ * Article id inside a bookmark list. The contract declares
+ * `oneOf: [{ type: number }, { type: string }]`.
+ */
+const BookmarkArticleIdSchema = z.union([z.number(), z.string()]);
+
+/**
+ * Validates the bookmark record returned by POST /api/bookmarks/articles with
+ * HTTP 200 or 201 (inline response schema).
+ *
+ * Expected shape: { id, user_id, article_ids: (number | string)[] }
+ */
+export const BookmarkSchema = z.object({
+  id: BookmarkArticleIdSchema,
+  user_id: BookmarkArticleIdSchema,
+  article_ids: z.array(BookmarkArticleIdSchema),
+});
+
+/**
+ * Validates the response body of GET /api/bookmarks/articles (inline response schema).
+ *
+ * Expected shape: { article_ids?: (number | string)[] }
+ */
+export const BookmarkedArticlesSchema = z.object({
+  article_ids: z.array(BookmarkArticleIdSchema).optional(),
+});
