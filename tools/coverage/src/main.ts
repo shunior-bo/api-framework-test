@@ -1,11 +1,16 @@
 /**
- * Coverage CLI logic: argument parsing, orchestration and exit codes.
+ * Coverage CLI logic: subcommand dispatch, argument parsing, orchestration and
+ * exit codes.
+ *
+ *   cli.ts [analyze] [options]   analyze records vs spec (default; no subcommand = analyze)
+ *   cli.ts compare  [options]    base vs head delta (compare/command.ts)
+ *   cli.ts gaps     [options]    deterministic gap batch with spec context (gaps/command.ts)
  *
  * Kept free of `import.meta` and `process` globals so it can be unit-tested
  * in-process (Playwright transpiles tests to CommonJS). cli.ts is the thin
  * entrypoint that wires real I/O.
  *
- * Exit codes: 0 OK · 1 a --min-* threshold not met · 2 input/usage error.
+ * Exit codes: 0 OK · 1 a threshold / --fail-on-negative check failed · 2 input/usage error.
  * Gaps never cause a non-zero exit.
  */
 import { execFileSync } from 'node:child_process';
@@ -14,37 +19,35 @@ import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { loadConfig } from './analyze/config.ts';
 import { analyzeCoverage } from './analyze/coverage.ts';
+import { COMPARE_USAGE, runCompare } from './compare/command.ts';
+import { GAPS_USAGE, runGaps } from './gaps/command.ts';
 import { loadRecords } from './records/loadRecords.ts';
 import { buildCoverageReport, buildGapsReport, toJson, TOOL } from './report/build.ts';
 import { renderConsole } from './report/console.ts';
+import { renderHtml } from './report/html.ts';
 import { renderMarkdown } from './report/markdown.ts';
 import { InputError } from './shared/errors.ts';
+import type { CliIo } from './shared/io.ts';
 import { loadSpec } from './spec/loadSpec.ts';
 
-/** Side effects injected by the caller. */
-export interface CliIo {
-  stdout: (text: string) => void;
-  stderr: (text: string) => void;
-  env: Record<string, string | undefined>;
-  /** Clock for `generatedAt`. */
-  now: () => Date;
-  /** Whether stdout is a TTY (enables colors unless NO_COLOR is set). */
-  isTTY: boolean;
-  /** Git lookup; return nulls when unavailable. Defaults to the `git` binary. */
-  git?: () => { sha: string | null; branch: string | null };
-}
+export type { CliIo } from './shared/io.ts';
 
 /** Output formats. */
-const FORMATS = ['console', 'json', 'gaps', 'markdown'] as const;
+const FORMATS = ['console', 'json', 'gaps', 'markdown', 'html'] as const;
 type Format = (typeof FORMATS)[number];
 
-export const USAGE = `Usage: node tools/coverage/src/cli.ts [options]
+export const USAGE = `Usage: node tools/coverage/src/cli.ts [analyze] [options]
+       node tools/coverage/src/cli.ts compare --base <dir> --head <dir> [options]   (compare --help)
+       node tools/coverage/src/cli.ts gaps [filters]                                 (gaps --help)
+
+Analyze options (the default command):
 
   --spec <file>           OpenAPI JSON (default: $OPENAPI_PATH or spec/openapi.json)
   --records <dir>         Raw JSONL records (default: reports/coverage/raw)
   --config <file>         Exclusions config (default: tools/coverage/coverage.config.json)
   --out <dir>             Output directory (default: reports/coverage)
-  --format <list>         console,json,gaps,markdown (default: console)
+  --format <list>         console,json,gaps,markdown,html (default: console)
+                          json → coverage.json · gaps → gaps.json · markdown → summary.md · html → index.html
   --top <n>               Gaps to list in console/markdown (default: 15)
   --include-hooks         Count requests made in beforeAll/afterAll
   --only-passed           Count only tests whose outcome matched the expectation
@@ -57,7 +60,7 @@ Exit codes: 0 OK · 1 threshold not met · 2 input/usage error. Gaps alone never
 `;
 
 /**
- * Reads git metadata from CI variables, then from the git binary.
+ * Reads git metadata: COVERAGE_GIT_SHA/BRANCH, then GitHub CI variables, then the git binary.
  *
  * @param env - Environment variables.
  */
@@ -77,9 +80,14 @@ function defaultGit(env: Record<string, string | undefined>): {
       return null;
     }
   };
-  const sha = env.GITHUB_SHA || run(['rev-parse', 'HEAD']);
+  // COVERAGE_GIT_* lets CI label each side of a PR comparison exactly (GITHUB_SHA
+  // is the merge commit on pull_request events), then CI variables, then git.
+  const sha = env.COVERAGE_GIT_SHA || env.GITHUB_SHA || run(['rev-parse', 'HEAD']);
   const branch =
-    env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME || run(['rev-parse', '--abbrev-ref', 'HEAD']);
+    env.COVERAGE_GIT_BRANCH ||
+    env.GITHUB_HEAD_REF ||
+    env.GITHUB_REF_NAME ||
+    run(['rev-parse', '--abbrev-ref', 'HEAD']);
   return { sha: sha ?? null, branch: branch ?? null };
 }
 
@@ -98,6 +106,13 @@ function parsePct(flag: string, value: string | undefined): number | null {
   return n;
 }
 
+/** Subcommands; anything else (including no argument or a flag) runs analyze. */
+const SUBCOMMANDS: Record<string, (argv: string[], io: CliIo) => number> = {
+  analyze: (argv, io) => runAnalyze(argv, io),
+  compare: (argv, io) => runCompare(argv, io),
+  gaps: (argv, io) => runGaps(argv, io),
+};
+
 /**
  * Runs the CLI.
  *
@@ -107,106 +122,14 @@ function parsePct(flag: string, value: string | undefined): number | null {
  */
 export function run(argv: string[], io: CliIo): number {
   try {
-    let parsed;
-    try {
-      parsed = parseArgs({
-        args: argv,
-        strict: true,
-        allowPositionals: false,
-        options: {
-          spec: { type: 'string' },
-          records: { type: 'string' },
-          config: { type: 'string' },
-          out: { type: 'string' },
-          format: { type: 'string' },
-          top: { type: 'string' },
-          'include-hooks': { type: 'boolean' },
-          'only-passed': { type: 'boolean' },
-          'min-operations': { type: 'string' },
-          'min-statuses': { type: 'string' },
-          'min-parameters': { type: 'string' },
-          help: { type: 'boolean', short: 'h' },
-        },
-      });
-    } catch (error) {
-      throw new InputError(`${error instanceof Error ? error.message : String(error)}\n\n${USAGE}`);
+    const [first, ...rest] = argv;
+    const sub = first !== undefined && !first.startsWith('-') ? SUBCOMMANDS[first] : undefined;
+    if (first !== undefined && !first.startsWith('-') && !sub) {
+      throw new InputError(
+        `Unknown command "${first}". Use one of: ${Object.keys(SUBCOMMANDS).join(', ')}.\n\n${USAGE}`,
+      );
     }
-    const v = parsed.values;
-    if (v.help) {
-      io.stdout(USAGE);
-      return 0;
-    }
-
-    const formats = (v.format ?? 'console')
-      .split(',')
-      .map((f) => f.trim())
-      .filter(Boolean);
-    for (const f of formats) {
-      if (!(FORMATS as readonly string[]).includes(f)) {
-        throw new InputError(`Unknown format "${f}". Use any of: ${FORMATS.join(', ')}.`);
-      }
-    }
-    const top = v.top === undefined ? 15 : Number(v.top);
-    if (!Number.isInteger(top) || top < 0)
-      throw new InputError(`--top expects a non-negative integer, got "${v.top}".`);
-    const thresholds = {
-      operations: parsePct('min-operations', v['min-operations']),
-      statuses: parsePct('min-statuses', v['min-statuses']),
-      parameters: parsePct('min-parameters', v['min-parameters']),
-    };
-
-    const specPath = v.spec ?? (io.env.OPENAPI_PATH || 'spec/openapi.json');
-    const recordsDir = v.records ?? 'reports/coverage/raw';
-    const configPath = v.config ?? 'tools/coverage/coverage.config.json';
-    const outDir = v.out ?? 'reports/coverage';
-    const options = {
-      includeHooks: v['include-hooks'] === true,
-      onlyPassed: v['only-passed'] === true,
-    };
-
-    const spec = loadSpec(specPath);
-    const config = loadConfig(configPath);
-    const records = loadRecords(recordsDir);
-    const analysis = analyzeCoverage(spec, records.records, config, options);
-    const meta = {
-      generatedAt: io.now().toISOString(),
-      spec,
-      records,
-      options,
-      configPath,
-      git: (io.git ?? (() => defaultGit(io.env)))(),
-    };
-    const report = buildCoverageReport(analysis, meta);
-    const gaps = buildGapsReport(analysis, meta);
-
-    const selected = new Set<Format>(formats as Format[]);
-    if (selected.has('console')) {
-      io.stdout(renderConsole(report, gaps, { top, color: io.isTTY && !io.env.NO_COLOR }));
-    }
-    const files: [Format, string, string][] = [
-      ['json', 'coverage.json', toJson(report)],
-      ['gaps', 'gaps.json', toJson(gaps)],
-      ['markdown', 'summary.md', renderMarkdown(report, gaps, top)],
-    ];
-    for (const [format, name, content] of files) {
-      if (!selected.has(format)) continue;
-      mkdirSync(outDir, { recursive: true });
-      writeFileSync(join(outDir, name), content, 'utf8');
-      io.stderr(`${TOOL.name}: wrote ${join(outDir, name)}\n`);
-    }
-
-    const failures: string[] = [];
-    for (const [dim, min] of Object.entries(thresholds)) {
-      if (min === null) continue;
-      const pct = report.totals[dim as keyof typeof thresholds].pct;
-      // A dimension with no units (pct null) has nothing to cover and passes.
-      if (pct !== null && pct < min) failures.push(`${dim} ${pct.toFixed(2)}% < ${min}%`);
-    }
-    if (failures.length > 0) {
-      io.stderr(`${TOOL.name}: coverage threshold not met: ${failures.join('; ')}\n`);
-      return 1;
-    }
-    return 0;
+    return sub ? sub(rest, io) : runAnalyze(argv, io);
   } catch (error) {
     if (error instanceof InputError) {
       io.stderr(`${TOOL.name}: ${error.message}\n`);
@@ -215,3 +138,116 @@ export function run(argv: string[], io: CliIo): number {
     throw error;
   }
 }
+
+/**
+ * Runs the analyze command (records × spec → coverage.json, gaps.json, …).
+ *
+ * @param argv - Arguments after the optional "analyze".
+ * @param io - Injected side effects.
+ * @returns Exit code (InputError propagates to `run`).
+ */
+function runAnalyze(argv: string[], io: CliIo): number {
+  let parsed;
+  try {
+    parsed = parseArgs({
+      args: argv,
+      strict: true,
+      allowPositionals: false,
+      options: {
+        spec: { type: 'string' },
+        records: { type: 'string' },
+        config: { type: 'string' },
+        out: { type: 'string' },
+        format: { type: 'string' },
+        top: { type: 'string' },
+        'include-hooks': { type: 'boolean' },
+        'only-passed': { type: 'boolean' },
+        'min-operations': { type: 'string' },
+        'min-statuses': { type: 'string' },
+        'min-parameters': { type: 'string' },
+        help: { type: 'boolean', short: 'h' },
+      },
+    });
+  } catch (error) {
+    throw new InputError(`${error instanceof Error ? error.message : String(error)}\n\n${USAGE}`);
+  }
+  const v = parsed.values;
+  if (v.help) {
+    io.stdout(USAGE);
+    return 0;
+  }
+
+  const formats = (v.format ?? 'console')
+    .split(',')
+    .map((f) => f.trim())
+    .filter(Boolean);
+  for (const f of formats) {
+    if (!(FORMATS as readonly string[]).includes(f)) {
+      throw new InputError(`Unknown format "${f}". Use any of: ${FORMATS.join(', ')}.`);
+    }
+  }
+  const top = v.top === undefined ? 15 : Number(v.top);
+  if (!Number.isInteger(top) || top < 0)
+    throw new InputError(`--top expects a non-negative integer, got "${v.top}".`);
+  const thresholds = {
+    operations: parsePct('min-operations', v['min-operations']),
+    statuses: parsePct('min-statuses', v['min-statuses']),
+    parameters: parsePct('min-parameters', v['min-parameters']),
+  };
+
+  const specPath = v.spec ?? (io.env.OPENAPI_PATH || 'spec/openapi.json');
+  const recordsDir = v.records ?? 'reports/coverage/raw';
+  const configPath = v.config ?? 'tools/coverage/coverage.config.json';
+  const outDir = v.out ?? 'reports/coverage';
+  const options = {
+    includeHooks: v['include-hooks'] === true,
+    onlyPassed: v['only-passed'] === true,
+  };
+
+  const spec = loadSpec(specPath);
+  const config = loadConfig(configPath);
+  const records = loadRecords(recordsDir);
+  const analysis = analyzeCoverage(spec, records.records, config, options);
+  const meta = {
+    generatedAt: io.now().toISOString(),
+    spec,
+    records,
+    options,
+    configPath,
+    git: (io.git ?? (() => defaultGit(io.env)))(),
+  };
+  const report = buildCoverageReport(analysis, meta);
+  const gaps = buildGapsReport(analysis, meta);
+
+  const selected = new Set<Format>(formats as Format[]);
+  if (selected.has('console')) {
+    io.stdout(renderConsole(report, gaps, { top, color: io.isTTY && !io.env.NO_COLOR }));
+  }
+  const files: [Format, string, () => string][] = [
+    ['json', 'coverage.json', () => toJson(report)],
+    ['gaps', 'gaps.json', () => toJson(gaps)],
+    ['markdown', 'summary.md', () => renderMarkdown(report, gaps, top)],
+    ['html', 'index.html', () => renderHtml(report, gaps)],
+  ];
+  for (const [format, name, render] of files) {
+    if (!selected.has(format)) continue;
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(join(outDir, name), render(), 'utf8');
+    io.stderr(`${TOOL.name}: wrote ${join(outDir, name)}\n`);
+  }
+
+  const failures: string[] = [];
+  for (const [dim, min] of Object.entries(thresholds)) {
+    if (min === null) continue;
+    const pct = report.totals[dim as keyof typeof thresholds].pct;
+    // A dimension with no units (pct null) has nothing to cover and passes.
+    if (pct !== null && pct < min) failures.push(`${dim} ${pct.toFixed(2)}% < ${min}%`);
+  }
+  if (failures.length > 0) {
+    io.stderr(`${TOOL.name}: coverage threshold not met: ${failures.join('; ')}\n`);
+    return 1;
+  }
+  return 0;
+}
+
+export { COMPARE_USAGE, GAPS_USAGE };

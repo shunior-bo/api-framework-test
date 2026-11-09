@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx playwright test *)",
+      "Bash(node tools/coverage/src/cli.ts *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout -b *)",
+      "Bash(git switch *)",
+      "Bash(git push -u origin ai/*)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh label *)",
+      "Bash(curl -s http://localhost:3000/*)",
+      "mcp__api-coverage__*",
+      "Edit(./src/api/**)",
+      "Edit(./src/models/**)",
+      "Edit(./src/utils/schema.ts)",
+      "Edit(./src/data/**)",
+      "Edit(./src/fixtures/api.fixture.ts)",
+      "Edit(./tests/api/**)",
+      "Edit(./tests/unit/schema.spec.ts)",
+      "Edit(./docs/ai-generation/**)"
+    ],
+    "deny": [
+      "Bash(git push * main*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(rm -rf*)",
+      "Bash(npm install*)",
+      "Bash(npm i *)",
+      "Bash(curl *restoreDB*)",
+      "Bash(curl *restoreEmptyDB*)",
+      "Bash(curl *restoreBigDB*)",
+      "Bash(curl *debug/exit*)",
+      "Bash(curl *debug/restart*)",
+      "Bash(curl *diagnostic/*)"
+    ]
+  },
+  "enabledMcpjsonServers": ["api-coverage"]
+}

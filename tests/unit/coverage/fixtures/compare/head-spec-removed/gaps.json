@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "spec": {
+    "path": "fixtures/head-spec-removed/spec.json",
+    "sha256": "9a3ad09b238c40d56a788e609d93feaba25f0e5236eabbec5dac8fa8c48d6f04"
+  },
+  "summary": {
+    "total": 4,
+    "high": 1,
+    "medium": 3,
+    "low": 0
+  },
+  "gaps": [
+    {
+      "id": "operation:GET /never",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/never",
+      "operationId": "never",
+      "tags": [],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /never (Never called) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "status:GET /items:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Missing or invalid token\") for GET /items is never exercised. Call it with invalid credentials."
+    },
+    {
+      "id": "parameter:GET /items:query:q",
+      "type": "parameter",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "parameter": {
+        "name": "q",
+        "in": "query",
+        "required": true
+      },
+      "hint": "Required query parameter \"q\" of GET /items is never sent."
+    },
+    {
+      "id": "status:POST /items:422",
+      "type": "status",
+      "priority": "medium",
+      "method": "POST",
+      "path": "/items",
+      "operationId": "createItem",
+      "tags": [
+        "items"
+      ],
+      "status": "422",
+      "hint": "Documented 422 (\"Invalid item\") for POST /items is never exercised. Send an invalid payload (see components.schemas.ItemCreate)."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "spec": {
+    "path": "fixtures/head-improved/spec.json",
+    "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f"
+  },
+  "summary": {
+    "total": 5,
+    "high": 0,
+    "medium": 4,
+    "low": 1
+  },
+  "gaps": [
+    {
+      "id": "status:GET /items:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Missing or invalid token\") for GET /items is never exercised. Call it with invalid credentials."
+    },
+    {
+      "id": "parameter:GET /items:query:q",
+      "type": "parameter",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "parameter": {
+        "name": "q",
+        "in": "query",
+        "required": true
+      },
+      "hint": "Required query parameter \"q\" of GET /items is never sent."
+    },
+    {
+      "id": "status:DELETE /items/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/items/{id}",
+      "operationId": "deleteItem",
+      "tags": [
+        "items"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"Item not found\") for DELETE /items/{id} is never exercised. Use an id that does not exist."
+    },
+    {
+      "id": "status:GET /never:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/never",
+      "operationId": "never",
+      "tags": [],
+      "status": "404",
+      "hint": "Documented 404 (\"Not found\") for GET /never is never exercised. Request a resource that does not exist."
+    },
+    {
+      "id": "parameter:GET /never:query:page",
+      "type": "parameter",
+      "priority": "low",
+      "method": "GET",
+      "path": "/never",
+      "operationId": "never",
+      "tags": [],
+      "parameter": {
+        "name": "page",
+        "in": "query",
+        "required": false
+      },
+      "hint": "Optional query parameter \"page\" of GET /never is never sent."
+    }
+  ]
+}

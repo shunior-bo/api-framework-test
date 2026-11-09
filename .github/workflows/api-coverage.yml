@@ -1,11 +1,26 @@
-# API coverage (Day 2): runs the Playwright API suite against a fresh GAD and
-# reports operation / status / parameter coverage with the tools/coverage CLI.
+# API coverage: runs the Playwright API suite against a fresh GAD and reports
+# operation / status / parameter coverage with the tools/coverage CLI.
 #
-# Day 3 will add: base-vs-PR delta, HTML coverage report and the PR comment.
+#   pull_request        → coverage(head) + coverage(base) → report: delta, HTML,
+#                         job summary and a sticky PR comment
+#   push / dispatch     → coverage(head) → report: summary + HTML (no delta, no comment)
 #
-# GAD checkout: public repos work with the default GITHUB_TOKEN. If
-# shunior-bo/gad-gui-api-demo is private, add a fine-grained PAT with read access
-# to it as the repository secret GAD_REPO_TOKEN.
+# Each side analyzes ITS OWN records against ITS OWN spec/openapi.json and
+# coverage.config.json, so a PR that changes the spec shows up in the delta.
+# `compare` always runs with the head version of the tool.
+#
+# Artifacts (retention 14 days, stable names — Day 4 downloads coverage-head):
+#   coverage-head / coverage-base           reports/coverage/** of each side (coverage.json, gaps.json, …)
+#   coverage-report-html                    index.html (+ delta.json, delta.md on PRs)
+#   playwright-report-head / -base          reports/html + reports/results.xml
+#   gad-logs-head / -base                   GAD server log (only when something failed)
+#
+# GAD checkout: public repos work with the default token; for a private GAD repo
+# add a read-only PAT as the secret GAD_REPO_TOKEN.
+#
+# PRs from forks get a read-only GITHUB_TOKEN, so the comment is skipped with a
+# notice. Commenting on fork PRs would need a separate `workflow_run` workflow
+# that downloads the artifacts with a write token (not implemented).
 name: API coverage
 
 on:
@@ -23,7 +38,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: api-coverage-${{ github.ref }}
+  group: api-coverage-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
@@ -36,15 +51,28 @@ env:
   FORCE_COLOR: '0'
 
 jobs:
-  api-coverage:
+  coverage:
+    name: coverage (${{ matrix.side }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        side: ${{ fromJSON(github.event_name == 'pull_request' && '["head","base"]' || '["head"]') }}
+    env:
+      SIDE: ${{ matrix.side }}
+      # Exact commit/branch of each side (GITHUB_SHA is the merge commit on PRs).
+      COVERAGE_GIT_SHA: ${{ matrix.side == 'base' && github.event.pull_request.base.sha || github.event.pull_request.head.sha || github.sha }}
+      COVERAGE_GIT_BRANCH: ${{ matrix.side == 'base' && github.base_ref || github.head_ref || github.ref_name }}
     steps:
-      - name: Checkout framework
-        uses: actions/checkout@v4
+      - name: Checkout framework (${{ matrix.side }})
+        uses: actions/checkout@v7
+        with:
+          # head: the default ref (refs/pull/N/merge on PRs); base: the PR base commit.
+          ref: ${{ matrix.side == 'base' && github.event.pull_request.base.sha || '' }}
 
       - name: Checkout GAD
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ env.GAD_REPOSITORY }}
           ref: ${{ env.GAD_REF }}
@@ -52,7 +80,7 @@ jobs:
           token: ${{ secrets.GAD_REPO_TOKEN || github.token }}
 
       - name: Setup Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: npm
@@ -60,12 +88,16 @@ jobs:
             package-lock.json
             gad/package-lock.json
 
+      # From here on, a broken BASE never turns the workflow red: base problems
+      # are not this PR's fault. Only the head tests decide (see the report job).
       - name: Install dependencies (framework + GAD, no browsers)
+        continue-on-error: ${{ matrix.side == 'base' }}
         run: |
           npm ci
           npm ci --prefix gad
 
       - name: Start GAD and wait for /api/health
+        continue-on-error: ${{ matrix.side == 'base' }}
         run: |
           # Background a SINGLE command with all three std streams redirected, so no
           # background shell keeps this step's stdout open (the step would hang).
@@ -93,51 +125,190 @@ jobs:
         continue-on-error: true
         run: npm run test:api
 
-      - name: Coverage report
+      - name: Coverage report (${{ matrix.side }})
+        id: coverage
         if: always()
-        run: npm run coverage -- --format console,json,gaps,markdown --top 10
+        continue-on-error: ${{ matrix.side == 'base' }}
+        run: |
+          if [ ! -f tools/coverage/src/cli.ts ]; then
+            echo "::warning::This revision has no coverage tool (tools/coverage) — base coverage unavailable."
+            exit 0
+          fi
+          if [ "$SIDE" = "head" ]; then
+            npm run coverage -- --format console,json,gaps,markdown,html --top 10
+          else
+            # Older tool versions on the base branch may not support html or
+            # COVERAGE_GIT_*; drop GITHUB_SHA so they fall back to `git rev-parse`.
+            env -u GITHUB_SHA -u GITHUB_HEAD_REF -u GITHUB_REF_NAME \
+              npm run coverage -- --format console,json,gaps,markdown --top 10
+          fi
+
+      - name: Record run metadata
+        if: always()
+        run: |
+          mkdir -p reports/coverage
+          printf '{"side":"%s","sha":"%s","testsOutcome":"%s","coverageOutcome":"%s"}\n' \
+            "$SIDE" "$COVERAGE_GIT_SHA" "${{ steps.tests.outcome }}" "${{ steps.coverage.outcome }}" \
+            > reports/coverage/run-meta.json
+          cat reports/coverage/run-meta.json
+
+      - name: Upload coverage-${{ matrix.side }}
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.side }}
+          path: reports/coverage/**
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload playwright-report-${{ matrix.side }}
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ matrix.side }}
+          path: |
+            reports/html
+            reports/results.xml
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload gad-logs-${{ matrix.side }}
+        if: failure() || steps.tests.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: gad-logs-${{ matrix.side }}
+          path: gad.log
+          retention-days: 14
+          if-no-files-found: warn
+
+  report:
+    needs: coverage
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    env:
+      IS_PR: ${{ github.event_name == 'pull_request' }}
+      IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+    steps:
+      - name: Checkout framework (head — its tool runs compare)
+        uses: actions/checkout@v7
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Download coverage-head
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-head
+          path: artifacts/head
+
+      - name: Download coverage-base
+        if: env.IS_PR == 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-base
+          path: artifacts/base
+
+      - name: Detect available sides
+        id: sides
+        run: |
+          head=false; base=false
+          [ -f artifacts/head/coverage.json ] && [ -f artifacts/head/gaps.json ] && head=true
+          [ -f artifacts/base/coverage.json ] && [ -f artifacts/base/gaps.json ] && base=true
+          echo "head=$head" >> "$GITHUB_OUTPUT"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "head coverage: $head · base coverage: $base"
+
+      - name: Compare base vs head
+        if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base == 'true'
+        run: |
+          node tools/coverage/src/cli.ts compare \
+            --base artifacts/base --head artifacts/head \
+            --format console,json,markdown,html --top 10 \
+            --out reports/coverage/report
+
+      - name: Head-only report (no base)
+        if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base != 'true'
+        run: |
+          mkdir -p reports/coverage/report
+          cp artifacts/head/index.html artifacts/head/summary.md reports/coverage/report/ 2>/dev/null || true
+
+      - name: Upload coverage-report-html
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report-html
+          path: reports/coverage/report/**
+          retention-days: 14
+          if-no-files-found: warn
 
       - name: Job summary
         if: always()
         run: |
+          outcome=$(node -e "try{console.log(require('./artifacts/head/run-meta.json').testsOutcome)}catch{console.log('unknown')}")
           {
-            echo "**API tests:** ${{ steps.tests.outcome }}"
+            echo "**Head API tests:** ${outcome}"
             echo
-            if [ -f reports/coverage/summary.md ]; then
-              cat reports/coverage/summary.md
+            if [ -f reports/coverage/report/delta.md ]; then
+              cat reports/coverage/report/delta.md
+            elif [ -f reports/coverage/report/summary.md ]; then
+              if [ "$IS_PR" = "true" ]; then
+                echo "> ℹ️ Base coverage unavailable — showing head coverage only."
+                echo
+              fi
+              cat reports/coverage/report/summary.md
             else
-              echo "_No coverage summary was produced — see the Coverage report step._"
+              echo "_Head coverage unavailable — see the coverage (head) job._"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload coverage artifact
+      - name: Skip PR comment on forks
+        if: env.IS_FORK == 'true'
+        run: echo "::notice::PR from a fork — GITHUB_TOKEN is read-only, so the coverage comment is skipped (see the job summary)."
+
+      - name: Sticky PR comment
+        if: env.IS_PR == 'true' && env.IS_FORK != 'true' && steps.sides.outputs.head == 'true'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const { buildCommentBody, upsertPrComment } = require('./.github/scripts/upsert-pr-comment.js');
+            const read = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null);
+            let testsOutcome = 'unknown';
+            try { testsOutcome = JSON.parse(read('artifacts/head/run-meta.json')).testsOutcome; } catch {}
+            const body = buildCommentBody({
+              deltaMarkdown: read('reports/coverage/report/delta.md'),
+              headSummary: read('reports/coverage/report/summary.md'),
+              runUrl: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              headSha: context.payload.pull_request.head.sha,
+              baseSha: context.payload.pull_request.base.sha,
+              testsOutcome,
+            });
+            const result = await upsertPrComment({
+              github,
+              repo: context.repo,
+              issueNumber: context.payload.pull_request.number,
+              body,
+            });
+            core.info(`Coverage comment ${result.action} (id ${result.id}).`);
+
+      - name: Fail if head API tests failed
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-coverage
-          path: reports/coverage/**
-          if-no-files-found: warn
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: |
-            reports/html
-            reports/results.xml
-          if-no-files-found: warn
-
-      - name: Upload GAD logs
-        if: failure() || steps.tests.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: gad-logs
-          path: gad.log
-          if-no-files-found: warn
-
-      - name: Fail if API tests failed
-        if: steps.tests.outcome == 'failure'
         run: |
-          echo "::error::API tests failed — see the playwright-report artifact."
-          exit 1
+          if [ ! -f artifacts/head/run-meta.json ]; then
+            echo "::error::Head coverage job produced no metadata — see the coverage (head) job."
+            exit 1
+          fi
+          outcome=$(node -e "console.log(require('./artifacts/head/run-meta.json').testsOutcome)")
+          if [ "$outcome" != "success" ]; then
+            echo "::error::Head API tests: ${outcome} — see the playwright-report-head artifact."
+            exit 1
+          fi

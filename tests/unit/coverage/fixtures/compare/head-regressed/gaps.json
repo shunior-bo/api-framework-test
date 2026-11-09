@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "spec": {
+    "path": "fixtures/head-regressed/spec.json",
+    "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f"
+  },
+  "summary": {
+    "total": 5,
+    "high": 2,
+    "medium": 3,
+    "low": 0
+  },
+  "gaps": [
+    {
+      "id": "operation:POST /items",
+      "type": "operation",
+      "priority": "high",
+      "method": "POST",
+      "path": "/items",
+      "operationId": "createItem",
+      "tags": [
+        "items"
+      ],
+      "pending": {
+        "statuses": [
+          "201",
+          "422"
+        ],
+        "parameters": []
+      },
+      "hint": "POST /items (Create item) is never called. Documented responses: 201, 422. Request body: components.schemas.ItemCreate. Requires a bearer token."
+    },
+    {
+      "id": "operation:GET /never",
+      "type": "operation",
+      "priority": "high",
+      "method": "GET",
+      "path": "/never",
+      "operationId": "never",
+      "tags": [],
+      "pending": {
+        "statuses": [
+          "200",
+          "404"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false
+          }
+        ]
+      },
+      "hint": "GET /never (Never called) is never called. Documented responses: 200, 404."
+    },
+    {
+      "id": "status:GET /items:401",
+      "type": "status",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "status": "401",
+      "hint": "Documented 401 (\"Missing or invalid token\") for GET /items is never exercised. Call it with invalid credentials."
+    },
+    {
+      "id": "parameter:GET /items:query:q",
+      "type": "parameter",
+      "priority": "medium",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "parameter": {
+        "name": "q",
+        "in": "query",
+        "required": true
+      },
+      "hint": "Required query parameter \"q\" of GET /items is never sent."
+    },
+    {
+      "id": "status:DELETE /items/{id}:404",
+      "type": "status",
+      "priority": "medium",
+      "method": "DELETE",
+      "path": "/items/{id}",
+      "operationId": "deleteItem",
+      "tags": [
+        "items"
+      ],
+      "status": "404",
+      "hint": "Documented 404 (\"Item not found\") for DELETE /items/{id} is never exercised. Use an id that does not exist."
+    }
+  ]
+}

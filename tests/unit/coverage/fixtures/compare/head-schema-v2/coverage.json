@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "tool": {
+    "name": "api-coverage",
+    "version": "1.0.0"
+  },
+  "source": {
+    "spec": {
+      "path": "fixtures/base/spec.json",
+      "title": "Mini API",
+      "version": "0.0.1",
+      "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f"
+    },
+    "records": {
+      "dir": "fixtures/base/raw",
+      "files": 1,
+      "lines": 15,
+      "invalidLines": 0
+    },
+    "git": {
+      "sha": "1111111aaaaaaa",
+      "branch": "main"
+    }
+  },
+  "options": {
+    "includeHooks": false,
+    "onlyPassed": false,
+    "configPath": "tests/unit/coverage/fixtures/coverage.config.json"
+  },
+  "requests": {
+    "recorded": 15,
+    "counted": 12,
+    "hooks": 2,
+    "filteredByOutcome": 0,
+    "errored": 1,
+    "unmatched": 2
+  },
+  "totals": {
+    "operations": {
+      "covered": 6,
+      "total": 7,
+      "pct": 85.71
+    },
+    "statuses": {
+      "covered": 7,
+      "total": 12,
+      "pct": 58.33
+    },
+    "parameters": {
+      "covered": 6,
+      "total": 8,
+      "pct": 75,
+      "required": {
+        "covered": 4,
+        "total": 5,
+        "pct": 80
+      },
+      "optional": {
+        "covered": 2,
+        "total": 3,
+        "pct": 66.67
+      }
+    }
+  },
+  "byTag": {
+    "(untagged)": {
+      "operations": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0
+      },
+      "statuses": {
+        "covered": 0,
+        "total": 2,
+        "pct": 0
+      },
+      "parameters": {
+        "covered": 0,
+        "total": 1,
+        "pct": 0,
+        "required": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        },
+        "optional": {
+          "covered": 0,
+          "total": 1,
+          "pct": 0
+        }
+      }
+    },
+    "items": {
+      "operations": {
+        "covered": 6,
+        "total": 6,
+        "pct": 100
+      },
+      "statuses": {
+        "covered": 7,
+        "total": 10,
+        "pct": 70
+      },
+      "parameters": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 2,
+          "total": 2,
+          "pct": 100
+        }
+      }
+    },
+    "parts": {
+      "operations": {
+        "covered": 1,
+        "total": 1,
+        "pct": 100
+      },
+      "statuses": {
+        "covered": 1,
+        "total": 1,
+        "pct": 100
+      },
+      "parameters": {
+        "covered": 2,
+        "total": 2,
+        "pct": 100,
+        "required": {
+          "covered": 2,
+          "total": 2,
+          "pct": 100
+        },
+        "optional": {
+          "covered": 0,
+          "total": 0,
+          "pct": null
+        }
+      }
+    }
+  },
+  "operations": [
+    {
+      "key": "GET /items",
+      "method": "GET",
+      "path": "/items",
+      "operationId": "listItems",
+      "tags": [
+        "items"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "401",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "_limit",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": true
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "declared": true,
+          "covered": false
+        },
+        {
+          "name": "X-Trace",
+          "in": "header",
+          "required": false,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1,
+        "418": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > lists items",
+        "tests/api/items.spec.ts > Items > teapot"
+      ]
+    },
+    {
+      "key": "POST /items",
+      "method": "POST",
+      "path": "/items",
+      "operationId": "createItem",
+      "tags": [
+        "items"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "201",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "422",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "default",
+          "covered": true,
+          "counted": false
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "201": 1,
+        "500": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > creates",
+        "tests/api/items.spec.ts > Items > server error"
+      ]
+    },
+    {
+      "key": "GET /items/search",
+      "method": "GET",
+      "path": "/items/search",
+      "operationId": null,
+      "tags": [
+        "items"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > search with trailing slash"
+      ]
+    },
+    {
+      "key": "GET /items/{id}",
+      "method": "GET",
+      "path": "/items/{id}",
+      "operationId": "getItem",
+      "tags": [
+        "items"
+      ],
+      "covered": true,
+      "requestCount": 2,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1,
+        "404": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > missing item",
+        "tests/api/items.spec.ts > Items > unexpectedly failing get"
+      ]
+    },
+    {
+      "key": "DELETE /items/{id}",
+      "method": "DELETE",
+      "path": "/items/{id}",
+      "operationId": "deleteItem",
+      "tags": [
+        "items"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "2XX",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": false,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "204": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > deletes"
+      ]
+    },
+    {
+      "key": "GET /items/{id}/parts/{partId}",
+      "method": "GET",
+      "path": "/items/{id}/parts/{partId}",
+      "operationId": "getPart",
+      "tags": [
+        "items",
+        "parts"
+      ],
+      "covered": true,
+      "requestCount": 1,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": true,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        },
+        {
+          "name": "partId",
+          "in": "path",
+          "required": true,
+          "declared": true,
+          "covered": true
+        }
+      ],
+      "observedStatuses": {
+        "200": 1
+      },
+      "tests": [
+        "tests/api/items.spec.ts > Items > part"
+      ]
+    },
+    {
+      "key": "GET /never",
+      "method": "GET",
+      "path": "/never",
+      "operationId": "never",
+      "tags": [],
+      "covered": false,
+      "requestCount": 0,
+      "statuses": [
+        {
+          "code": "200",
+          "covered": false,
+          "counted": true
+        },
+        {
+          "code": "404",
+          "covered": false,
+          "counted": true
+        }
+      ],
+      "parameters": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "declared": true,
+          "covered": false
+        }
+      ],
+      "observedStatuses": {},
+      "tests": []
+    }
+  ],
+  "excluded": [
+    {
+      "key": "POST /admin/reset",
+      "reason": "Destructive: wipes all data.",
+      "requestCount": 1
+    }
+  ],
+  "extras": {
+    "unmatched": [
+      {
+        "method": "PUT",
+        "path": "/api/items/7",
+        "reason": "method-not-documented",
+        "template": "/items/{id}",
+        "count": 1,
+        "phases": [
+          "test"
+        ]
+      },
+      {
+        "method": "GET",
+        "path": "/api/unknown",
+        "reason": "path-not-documented",
+        "template": null,
+        "count": 1,
+        "phases": [
+          "test"
+        ]
+      }
+    ],
+    "ignoredUnmatched": [
+      {
+        "method": "POST",
+        "path": "/api/config/features",
+        "reason": "path-not-documented",
+        "template": null,
+        "count": 1,
+        "phases": [
+          "hook"
+        ]
+      }
+    ],
+    "undocumentedStatuses": [
+      {
+        "key": "GET /items",
+        "status": "418",
+        "count": 1
+      }
+    ],
+    "specWarnings": [
+      {
+        "code": "implicit-path-param",
+        "key": "DELETE /items/{id}",
+        "message": "Path variable {id} is used in the template but not declared as a parameter."
+      }
+    ],
+    "configWarnings": [],
+    "invalidRecordLines": []
+  }
+}

@@ -91,7 +91,7 @@ Every source file starts with a JSDoc header that names its SOLID principle(s) a
 | Types (`ResourceId`, `CreateArticleRequest`) | `@src/models/<x>.model` with `import { type … }` | relative paths |
 | A client **type** for a helper's signature | `import { type ArticlesClient } from '@src/api/ArticlesClient'` | creating an instance in a test |
 | `APIRequestContext`, `APIResponse` (clients only) | `@playwright/test` | — |
-| Coverage tool modules (only in `tests/unit/coverage/`) | `@coverage/<module>` (alias of `tools/coverage/src/*`) | relative paths; `@coverage/*` anywhere else (ESLint) |
+| Coverage tool / MCP modules (only in `tests/unit/coverage/`) | `@coverage/<module>` (alias of `tools/coverage/src/*`), `@coverage-mcp/<module>` (alias of `tools/coverage-mcp/src/*`) | relative paths; these aliases anywhere else (ESLint) |
 | Anything, from inside `tools/coverage/src/` | relative path **with `.ts`** (`./spec/loadSpec.ts`) | `@src/*`, `@playwright/*`, `zod` (ESLint) |
 
 `tests/unit/*.spec.ts` import `test`/`expect` from `@playwright/test`, because they need no fixtures.
@@ -487,7 +487,11 @@ The framework measures how much of `spec/openapi.json` the API tests exercise. T
 npm run test:api:coverage   # run the API tests, then the coverage report (keeps the test exit code)
 npm run coverage            # console report from the last recorded run
 npm run coverage:json       # also write reports/coverage/coverage.json and gaps.json
+node tools/coverage/src/cli.ts gaps --tag likes --limit 5               # next batch of gaps, with spec context
+node tools/coverage/src/cli.ts compare --base <dir> --head reports/coverage   # delta between two runs
 ```
+
+Agents use the same functions through the `api-coverage` MCP server (`.mcp.json`): `coverage_summary`, `coverage_list_gaps`, `coverage_get_operation`, `coverage_run`, `coverage_compare`. In CI every PR gets a sticky comment with the delta against its base branch (see README → CI).
 
 The definitions of a covered operation, status and parameter, and of a counted request, are in [`tools/coverage/README.md`](tools/coverage/README.md#coverage-definitions).
 
@@ -510,4 +514,26 @@ Exclude an operation only when it must not be tested: destructive to the shared 
 ```
 
 `path` is the spec template without `/api`. Excluded operations leave every denominator and are listed under `excluded`. For known test-infrastructure calls that are not in the spec (for example `/api/config/features`), add a glob to `ignoreUnmatched` instead. Commit config changes with `chore:` and say why in the PR.
+
+---
+
+## 13. AI-generated tests
+
+The `test-generator` agent (`.claude/agents/test-generator.md`, launched with `/fill-coverage-gaps`) writes tests under these same conventions. See `docs/day3-ai-test-generation.md` for how it works and why.
+
+- Every test it adds carries the tag **`@ai-generated`**, next to the usual `@smoke|@negative|@regression` and `@tc-<resource>-NN`. Run them with `npx playwright test --grep @ai-generated`.
+- AI-written changes arrive only as PRs from `ai/<run-id>` branches, labeled `ai-generated`, with a log in `docs/ai-generation/<run-id>.md`.
+- `test.fail(...)` in an AI test must cite curl evidence in that log (spec drift). A gap the agent could not close is reported as **blocked**, never hidden.
+- When a human edits an AI test, keep `@ai-generated` (it records the origin, not the authorship).
+
+**Reviewer checklist for an AI PR:**
+
+- [ ] The CI coverage comment shows the expected gaps closed, with no "no longer covered" regressions.
+- [ ] `git diff --stat main...<branch>` touches only `src/api`, `src/models`, `src/utils/schema.ts`, `src/data`, `src/fixtures/api.fixture.ts`, `tests/api`, `tests/unit/schema.spec.ts`, `docs/ai-generation`.
+- [ ] Each new test asserts the behavior the spec documents (status → schema → fields), not just whatever GAD returned.
+- [ ] Negative tests really trigger the documented condition (e.g. a 422 caused by an invalid field, not by a missing token).
+- [ ] Data is created with factories and cleaned up in `finally`, with no hardcoded ids or credentials.
+- [ ] Every `test.fail` has evidence in the log, and every blocked gap has a credible reason.
+- [ ] No existing test, assertion or exclusion was changed.
+- [ ] Read the log's "Where CONVENTIONS.md was insufficient" notes and decide whether to update this file (humans only).
 
