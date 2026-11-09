@@ -5,7 +5,7 @@ A stdio [Model Context Protocol](https://modelcontextprotocol.io) server that gi
 | Tool | Input | Returns | Side effects |
 |---|---|---|---|
 | `coverage_summary` | — | totals, per-tag coverage, gap counts, spec/git of the latest run | none |
-| `coverage_list_gaps` | `priority[]`, `type[]`, `tag[]`, `pathPrefix`, `excludeIds[]`, `limit` (default 5, 0 = all) | the same batch as `cli.ts gaps`, with resolved spec context | none |
+| `coverage_list_gaps` | `priority[]`, `type[]`, `tag[]`, `pathPrefix`, `excludeIds[]`, `onlyIds[]` (allow-list; `[]` selects nothing), `limit` (default 5, 0 = all) | the same batch as `cli.ts gaps`, with resolved spec context | none |
 | `coverage_get_operation` | `key` (`"POST /likes"`) | coverage detail, open gaps, excluded flag, resolved spec | none |
 | `coverage_compare` | `base`, `head?` (default `reports/coverage`), `out?` | verdict, totals delta, operations, opened/closed gap ids | writes `delta.json` / `delta.md` |
 | `coverage_run` | `grep?`, `files?` (under `tests/api/`), `timeoutSec?` (default 600, max 1800) | test counts and failures (from JUnit), coverage totals, gap counts, stdout/stderr tails | runs `npx playwright test --project=api` against the local GAD, then re-analyzes; **a filtered run replaces the recorded data** |

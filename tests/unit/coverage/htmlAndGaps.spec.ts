@@ -213,6 +213,73 @@ test.describe('Coverage gaps subcommand', () => {
   );
 
   test(
+    'applies --only-ids (csv and file) as an allow-list, combined with the other filters',
+    { tag: ['@regression', '@tc-coverage-60'] },
+    () => {
+      // --- ARRANGE ---------------------------------------------------------
+      mkdirSync(test.info().outputPath(), { recursive: true });
+      const file = test.info().outputPath('gap-ids.txt');
+      writeFileSync(file, '# delta.gaps.opened\nstatus:POST /items:422\noperation:GET /never\n');
+      const jsonFile = test.info().outputPath('gap-ids.json');
+      writeFileSync(jsonFile, JSON.stringify(['status:GET /items:401', 'not:a /real:id']));
+
+      // --- ACT -------------------------------------------------------------
+      const fromFile = gaps(['--only-ids', file, '--limit', '0']);
+      const fromJson = gaps(['--only-ids', jsonFile, '--limit', '0']);
+      const fromCsv = gaps([
+        '--only-ids',
+        'status:POST /items:422,operation:GET /never',
+        '--limit',
+        '1',
+      ]);
+      const combined = gaps(['--only-ids', file, '--type', 'status', '--limit', '0']);
+      const minusExcluded = gaps([
+        '--only-ids',
+        file,
+        '--exclude-ids',
+        'operation:GET /never',
+        '--limit',
+        '0',
+      ]);
+
+      // --- ASSERT ----------------------------------------------------------
+      expect(fromFile.batch.map((b) => b.gap.id)).toEqual([
+        'operation:GET /never',
+        'status:POST /items:422',
+      ]);
+      expect(fromFile.filters.onlyIds).toEqual(['operation:GET /never', 'status:POST /items:422']);
+      expect(fromJson.batch.map((b) => b.gap.id)).toEqual(['status:GET /items:401']);
+      expect(fromCsv.totalMatching).toBe(2);
+      expect(fromCsv.batch.map((b) => b.gap.id)).toEqual(['operation:GET /never']);
+      expect(combined.batch.map((b) => b.gap.id)).toEqual(['status:POST /items:422']);
+      expect(minusExcluded.batch.map((b) => b.gap.id)).toEqual(['status:POST /items:422']);
+    },
+  );
+
+  test(
+    'an empty --only-ids list selects nothing, and no flag means no allow-list',
+    { tag: ['@negative', '@tc-coverage-61'] },
+    () => {
+      // --- ARRANGE ---------------------------------------------------------
+      mkdirSync(test.info().outputPath(), { recursive: true });
+      const empty = test.info().outputPath('empty.txt');
+      writeFileSync(empty, '# no gaps opened\n');
+
+      // --- ACT -------------------------------------------------------------
+      const fromEmptyFile = gaps(['--only-ids', empty, '--limit', '0']);
+      const fromEmptyCsv = gaps(['--only-ids', '', '--limit', '0']);
+      const noFlag = gaps(['--limit', '0']);
+
+      // --- ASSERT ----------------------------------------------------------
+      expect(fromEmptyFile.totalMatching).toBe(0);
+      expect(fromEmptyFile.filters.onlyIds).toEqual([]);
+      expect(fromEmptyCsv.totalMatching).toBe(0);
+      expect(noFlag.filters.onlyIds).toBeNull();
+      expect(noFlag.totalMatching).toBe(5);
+    },
+  );
+
+  test(
     'adds the operation context with $refs resolved',
     { tag: ['@regression', '@tc-coverage-50'] },
     () => {

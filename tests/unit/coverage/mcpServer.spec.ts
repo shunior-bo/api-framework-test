@@ -142,6 +142,30 @@ test.describe('api-coverage MCP server', () => {
   );
 
   test(
+    'coverage_list_gaps accepts onlyIds (an empty array selects nothing)',
+    { tag: ['@regression', '@tc-coverage-62'] },
+    async () => {
+      // --- ACT -------------------------------------------------------------
+      const only = payload(
+        await client.callTool({
+          name: 'coverage_list_gaps',
+          arguments: { onlyIds: ['status:POST /items:422', 'operation:GET /never'], limit: 0 },
+        }),
+      ) as { totalMatching: number; batch: { gap: { id: string } }[] };
+      const none = payload(
+        await client.callTool({ name: 'coverage_list_gaps', arguments: { onlyIds: [], limit: 0 } }),
+      ) as { totalMatching: number };
+
+      // --- ASSERT ----------------------------------------------------------
+      expect(only.batch.map((b) => b.gap.id)).toEqual([
+        'operation:GET /never',
+        'status:POST /items:422',
+      ]);
+      expect(none.totalMatching).toBe(0);
+    },
+  );
+
+  test(
     'tools report input errors as MCP errors instead of crashing',
     { tag: ['@negative', '@tc-coverage-58'] },
     async () => {

@@ -84,6 +84,12 @@ const gapFilterShape = {
     .array(z.string())
     .optional()
     .describe('Gap ids to skip (e.g. ones already flagged as blocked).'),
+  onlyIds: z
+    .array(z.string())
+    .optional()
+    .describe(
+      'Select ONLY these gap ids (e.g. the gaps a PR opened, from gap-ids.txt). An empty array selects nothing; omit it for no allow-list.',
+    ),
   limit: z.number().int().min(0).max(100).optional().describe('Batch size (default 5; 0 = all).'),
 };
 
@@ -118,6 +124,7 @@ server.registerTool(
         tag: args.tag,
         pathPrefix: args.pathPrefix ?? null,
         excludeIds: args.excludeIds,
+        onlyIds: args.onlyIds ?? null,
         limit: args.limit === undefined ? 5 : args.limit === 0 ? null : args.limit,
       }),
     ),
