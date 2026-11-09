@@ -146,3 +146,16 @@ export const LabelSchema = z.object({
  * Validates the response body of GET /api/labels (`components.schemas.Labels`).
  */
 export const LabelsSchema = z.array(LabelSchema);
+
+/**
+ * Validates GAD's body-parser error for a malformed JSON request body (HTTP 400).
+ *
+ * The contract documents 400 "Bad request - malformed JSON" with no body schema.
+ * GAD answers with a flat envelope (unlike `ErrorMessageSchema`), e.g.
+ * `{ error: "SyntaxError: Unexpected data in JSON. Please check Your JSON.", details: "<raw body>" }`.
+ * Expected shape: { error: string, details?: unknown }
+ */
+export const MalformedJsonErrorSchema = z.object({
+  error: z.string(),
+  details: z.unknown().optional(),
+});
