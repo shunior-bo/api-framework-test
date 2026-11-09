@@ -10,7 +10,7 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 
 1. **All HTTP goes through a client in `src/api/`, and clients come from fixtures.** Tests never call `request.get/post/...` and never write `new XxxClient(request)`.
    *Why:* the coverage recorder (§12) wraps the `request` fixture, and every client is built from it in `src/fixtures/api.fixture.ts`. A request made any other way (for example `playwright.request.newContext()` or an external HTTP library) is **left out of coverage**, and the tool will then report as untested an endpoint that the test does exercise.
-2. **`spec/openapi.json` is the source of truth** for paths, methods, status codes and body shapes. It is a vendored copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json`. `OPENAPI_PATH` in `.env` points to it.
+2. **`spec/openapi.json` is the source of truth** for paths, methods, status codes and body shapes. It is a byte-identical copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json` at the GAD commit pinned in `gad.ref.json`. Never edit it by hand: change GAD, then `npm run spec:sync` (§14). `OPENAPI_PATH` in `.env` points to it.
 3. **Only `src/fixtures/auth.fixture.ts` logs in.** Tests get tokens from `authToken` or `loginAs(...)`. The single exception is `tests/api/auth.spec.ts`, because login is its feature under test.
 4. **Only `src/utils/schema.ts` imports `zod`.** ESLint enforces this rule.
 5. **Always use the `@src/` alias. Never use relative imports** (`./` or `../`). ESLint enforces this rule.
@@ -25,7 +25,8 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 
 ```
 api-framework-test/
-├── .github/workflows/         # CI (api-coverage.yml)
+├── .github/workflows/         # CI (api-coverage, feature-agent, test-agent, pr-guards, repin-gad)
+├── gad.ref.json               # GAD revision under test (§14)
 ├── spec/openapi.json          # Contract (source of truth)
 ├── src/
 │   ├── api/                   # XxxClient.ts — one class per resource
@@ -35,6 +36,7 @@ api-framework-test/
 │   ├── fixtures/              # coverage.fixture.ts → api.fixture.ts (clients) → auth.fixture.ts (tokens)
 │   └── utils/                 # schema.ts (Zod), auth.ts (auth strategies)
 ├── tools/coverage/            # Standalone coverage CLI (no Playwright, no deps)
+├── tools/spec-sync/           # gad.ref.json pin + spec sync / drift check (no deps)
 ├── tests/
 │   ├── api/                   # xxx.spec.ts — one spec per resource (needs GAD)
 │   └── unit/                  # xxx.spec.ts — pure logic, no network
@@ -454,7 +456,7 @@ Every documented status code should have a test, or a written reason why it does
 
 ## 11. Git workflow and commits
 
-- Never commit to `main`. Use a branch: `session/NN-short-description` for session work, `fix/short-description` for fixes, `experiment/<name>` for experiments.
+- Never commit to `main`. Use a branch: `session/NN-short-description` for session work, `fix/short-description` for fixes, `experiment/<name>` for experiments. `feature/<issue>-<slug>` and `ai/<run-id>` are reserved for the agents (§13, §14).
 - Commit prefixes are lowercase: `feat:` (client, fixture, schema, factory), `test:` (specs), `fix:`, `chore:` (config, tooling, deps), `docs:`.
 - Make small atomic commits, one per layer (models → schema → client → fixture → spec).
 - Stage files explicitly (no blind `git add .`) and never commit `.env`.
@@ -522,7 +524,7 @@ Exclude an operation only when it must not be tested: destructive to the shared 
 The `test-generator` agent (`.claude/agents/test-generator.md`, launched with `/fill-coverage-gaps`) writes tests under these same conventions. See `docs/day3-ai-test-generation.md` for how it works and why.
 
 - Every test it adds carries the tag **`@ai-generated`**, next to the usual `@smoke|@negative|@regression` and `@tc-<resource>-NN`. Run them with `npx playwright test --grep @ai-generated`.
-- AI-written changes arrive only as PRs from `ai/<run-id>` branches, labeled `ai-generated`, with a log in `docs/ai-generation/<run-id>.md`.
+- AI-written changes arrive only as PRs labeled `ai-generated`: from `ai/<run-id>` branches (local runs), or as `Agent: test-generator` commits on a `feature/*` PR (CI, `--mode ci-pr`, §14). Each run has a log in `docs/ai-generation/<run-id>.md`.
 - `test.fail(...)` in an AI test must cite curl evidence in that log (spec drift). A gap the agent could not close is reported as **blocked**, never hidden.
 - When a human edits an AI test, keep `@ai-generated` (it records the origin, not the authorship).
 
@@ -537,3 +539,25 @@ The `test-generator` agent (`.claude/agents/test-generator.md`, launched with `/
 - [ ] No existing test, assertion or exclusion was changed.
 - [ ] Read the log's "Where CONVENTIONS.md was insufficient" notes and decide whether to update this file (humans only).
 
+---
+
+## 14. Agent lanes and `gad.ref.json` (Day 4)
+
+**`gad.ref.json`** (repository root) is the single source of truth for which GAD the framework tests: `{ repository, ref, sha, specPath }`. On `main` it always pins a GAD `main` commit; on a feature PR it pins the GAD feature branch commit. CI checks out GAD at that sha on each side of a PR and fails on drift between `spec/openapi.json` and GAD's spec. Change both files **only** with the scripts:
+
+```bash
+npm run spec:sync -- --gad-dir ../gad-gui-api-demo   # spec/openapi.json ← GAD (byte-identical)
+npm run spec:check -- --gad-dir ../gad-gui-api-demo  # exit 1 on drift
+npm run gad:pin -- --sha <40-char sha> --ref main    # gad.ref.json
+```
+
+**Agent lanes.** Every commit an agent makes ends with a trailer `Agent: <name>`. The `lane-check` job (`pr-guards.yml`) fails a PR labeled `ai-generated` when a commit leaves its lane:
+
+| `Agent:` | May change |
+|---|---|
+| `feature-developer` | `spec/openapi.json`, `gad.ref.json` (through the scripts). In GAD: a new endpoint helper, its dispatch in `routes/validations.route.js`, GAD's OpenAPI. |
+| `test-generator` | `src/api/**`, `src/models/**`, `src/utils/schema.ts`, `src/data/**`, `src/fixtures/api.fixture.ts`, `tests/api/**`, `tests/unit/schema.spec.ts`, `docs/ai-generation/**` |
+| `repin-gad` (workflow) | `spec/openapi.json`, `gad.ref.json` |
+| none (human) | anything; listed in the summary |
+
+Agent commits must not add coverage exclusions, change non-import lines of test files that existed before the PR, or add `.only` / `test.skip` / `test.fixme`. A PR labeled `ai-generated` also needs the label `human-reviewed` (added by a person after reading it; a new push removes it), and a PR into `main` must pin GAD `main`. The full flow, merge order and failure modes are in [`docs/day4-multi-agent-pipeline.md`](docs/day4-multi-agent-pipeline.md).

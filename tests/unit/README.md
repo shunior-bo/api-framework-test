@@ -4,6 +4,8 @@
 
 Fast Playwright tests for pure logic in `src/utils/` and `src/data/`: auth strategies, Zod schemas, test-data factories. One spec per source file (`auth.spec.ts` ↔ `src/utils/auth.ts`). They run without GAD: `npm run test:unit`.
 
+Subfolders test the tooling, also without network: `coverage/` (`tools/coverage`, `tools/coverage-mcp`, the recorder), `spec-sync/` (`tools/spec-sync`, alias `@spec-sync/*`) and `ci/` (the CommonJS logic in `.github/scripts/`, loaded with `require`, with event payloads and `delta.json` fixtures shaped like real GitHub events and tool output).
+
 ## SOLID principle
 
 **Single Responsibility Principle (SRP)** — each spec verifies one utility module. A broken schema or factory fails here with a clear message instead of failing dozens of API tests for the wrong reason.

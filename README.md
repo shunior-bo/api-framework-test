@@ -1,6 +1,6 @@
 # api-framework-test
 
-API test automation framework for **GAD** (GUI API Demo), built with **TypeScript + Playwright Test** in API mode (no browser). This is Day 1 of a 4-day program: a hand-built baseline with consistent patterns, a conventions file that AI assistants can follow, and a single HTTP entry point that the Day 2 coverage tool will instrument.
+API test automation framework for **GAD** (GUI API Demo), built with **TypeScript + Playwright Test** in API mode (no browser). It is the result of a 4-day program: a hand-built baseline with consistent patterns and a conventions file that AI assistants can follow (Day 1), a deterministic coverage tool (Day 2), AI test generation verified by that tool (Day 3), and a multi-agent pipeline in GitHub Actions where a feature agent and a test agent are chained by CI ([Day 4](docs/day4-multi-agent-pipeline.md)).
 
 The architecture mirrors the course reference project (`api-testing-playwright-ts-junior`). The patterns are adapted to GAD.
 
@@ -50,7 +50,13 @@ cp .env.example .env
 | `COVERAGE_RECORD` | Set to `0` to disable request recording | recording on |
 | `COVERAGE_RAW_DIR` | Raw request records directory | `reports/coverage/raw` |
 
-`spec/openapi.json` is a vendored copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json` (OpenAPI 3.0.1, 136 paths). **It is the source of truth** for the contract. To refresh it, copy the file again and commit it with `chore:`.
+`spec/openapi.json` is a vendored, byte-identical copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json` (OpenAPI 3.0.1). **It is the source of truth** for the contract. **`gad.ref.json`** pins the GAD repository, ref and exact sha that CI tests. Keep both in step with [`tools/spec-sync`](tools/spec-sync/README.md):
+
+```bash
+npm run spec:check -- --gad-dir ../gad-gui-api-demo     # exit 1 on drift, with the operation diff
+npm run spec:sync  -- --gad-dir ../gad-gui-api-demo     # copy GAD's spec
+npm run gad:pin    -- --sha <40-char GAD sha> --ref main
+```
 
 ## npm scripts
 
@@ -65,8 +71,10 @@ cp .env.example .env
 | `npm run coverage:json` | Writes `reports/coverage/coverage.json` and `gaps.json` |
 | `npm run coverage:compare-estimate` | Day 2 experiment: compares AI coverage estimates with the tool ([docs](docs/day2-ai-estimate-vs-tool.md)) |
 | `npm run coverage:mcp` | Starts the `api-coverage` MCP server on stdio (normally Claude Code starts it from `.mcp.json`) |
+| `npm run spec:sync` / `spec:check` | Copy GAD's spec into `spec/openapi.json` / exit 1 on drift (`-- --gad-dir <path>`, default `../gad-gui-api-demo`) |
+| `npm run gad:pin` / `gad:ref-guard` | Update `gad.ref.json` (`-- --sha <sha> --ref <branch>`) / exit 1 unless it pins `main` |
 | `npm run report` | Opens the HTML report |
-| `npm run typecheck` | `tsc` in strict mode, no emit (framework + `tools/coverage`) |
+| `npm run typecheck` | `tsc` in strict mode, no emit (framework + `tools/coverage`, `tools/coverage-mcp`, `tools/spec-sync`) |
 | `npm run lint` / `lint:fix` | ESLint (also enforces the import rules; covers `tools/**`) |
 | `npm run format` / `format:check` | Prettier |
 
@@ -74,9 +82,10 @@ cp .env.example .env
 
 ```
 api-framework-test/
-├── .claude/                 # test-generator agent, /fill-coverage-gaps command, permissions
-├── .github/                 # api-coverage.yml (CI) + scripts/upsert-pr-comment.js
-├── spec/openapi.json        # GAD contract (source of truth)
+├── .claude/                 # feature-developer + test-generator agents, /fill-coverage-gaps, permissions
+├── .github/                 # workflows (coverage, feature/test agents, PR guards, re-pin) + scripts/
+├── gad.ref.json             # GAD revision under test (repository, ref, sha, specPath)
+├── spec/openapi.json        # GAD contract (source of truth, synced by tools/spec-sync)
 ├── src/
 │   ├── api/                 # API clients, one per resource
 │   ├── coverage/            # Request recorder (Proxy) + raw JSONL writer
@@ -86,6 +95,7 @@ api-framework-test/
 │   └── utils/               # schema.ts (Zod), auth.ts
 ├── tools/coverage/          # Coverage CLI (Node-native TS, zero deps): analyze, compare, gaps
 ├── tools/coverage-mcp/      # api-coverage MCP server (stdio) wrapping the CLI's functions
+├── tools/spec-sync/         # gad.ref.json pin + spec sync/drift check (Node-native TS, zero deps)
 ├── tests/
 │   ├── api/                 # Playwright API specs
 │   └── unit/                # Unit tests (no network), incl. unit/coverage
@@ -123,10 +133,19 @@ The coverage definitions and the CLI flags are in [tools/coverage/README.md](too
 | `pull_request` | `coverage (head)` + `coverage (base)` in parallel → `report` | delta (`compare`), HTML report, job summary, **sticky PR comment** |
 | `push` / `workflow_dispatch` | `coverage (head)` → `report` | head summary + HTML report (no delta, no comment) |
 
-- Each side checks out its own commit (head is the PR merge ref; base is the PR base sha) and the same GAD ref (`shunior-bo/gad-gui-api-demo`, `GAD_REF`). It then runs `npm run test:api` and analyzes **its own records against its own `spec/openapi.json` and `coverage.config.json`**, so spec changes show up in the delta. `compare` always runs with the head version of the tool.
+- Each side checks out its own commit (head is the PR merge ref; base is the PR base sha) and **GAD at the sha of its own `gad.ref.json`** (a feature PR tests its GAD feature commit, its base tests GAD main; a side without the file falls back to GAD's default branch; the dispatch input `gad_ref` overrides both). Head then runs `spec:check`: drift fails the workflow. Each side runs `npm run test:api` and analyzes **its own records against its own `spec/openapi.json` and `coverage.config.json`**, so spec changes show up in the delta. `compare` always runs with the head version of the tool.
 - A broken base (no tool, failing tests, GAD down) **never** turns the workflow red. The comment then says "Base coverage unavailable" and shows head only. The workflow fails only if the **head** API tests fail (the last step of `report`).
 - **The sticky comment** is created once and updated on every push. It is identified by the hidden marker `<!-- api-coverage-report -->` and built by `.github/scripts/upsert-pr-comment.js` through `actions/github-script`. Only the `report` job has `pull-requests: write`. PRs from forks get a read-only token, so the comment is skipped with a notice (the alternative is a separate `workflow_run` workflow, not implemented).
-- `--fail-on-negative` is available in `compare` but **not enabled** in CI yet (Day 4 decides).
+- **Negative-delta policy (Day 4):** non-`feature/*` PRs run `compare --fail-on-negative operations` (the workflow fails if operation coverage drops). On `feature/*` PRs a negative delta is expected and is the trigger of the test agent, so it shows as a ⚠️ note in the comment and summary instead.
+
+Day 4 workflows (details in [docs/day4-multi-agent-pipeline.md](docs/day4-multi-agent-pipeline.md)):
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `feature-agent.yml` | issue labeled `feature-request` (trusted author and labeler) | `feature-developer` agent: GAD PR + framework PR (spec sync + pin) |
+| `test-agent.yml` | `workflow_run` of API coverage on a `feature/*` PR with a regressed delta | `test-generator` (`ci-pr` mode) pushes tests for `delta.gaps.opened` to the same PR; ≤ 2 runs per PR |
+| `pr-guards.yml` | PR pushes and label changes | `lane-check` (agent lanes), `human-review` (label `human-reviewed`), `gad-ref-guard` (PRs into main pin GAD main) |
+| `repin-gad.yml` | manual (`pr_number`) | re-pins a feature PR to GAD main after the GAD PR is merged |
 
 **Artifacts** (retention 14 days; stable names, so Day 4 can download `coverage-head` to read `gaps.json`):
 
@@ -137,7 +156,7 @@ The coverage definitions and the CLI flags are in [tools/coverage/README.md](too
 | `playwright-report-head`, `playwright-report-base` | `reports/html` + `reports/results.xml` |
 | `gad-logs-head`, `gad-logs-base` | GAD server log (only when something failed) |
 
-If the GAD repository is private, add a `GAD_REPO_TOKEN` secret with read access.
+GAD is checked out with `AGENT_PAT`, else `GAD_REPO_TOKEN`, else the default token (enough while GAD is public).
 
 ## Coverage tool for agents (MCP)
 
@@ -163,6 +182,10 @@ claude --settings .claude/test-generator.settings.json
 ```
 
 The design, permissions, guardrails and the Phase B instructions are in [docs/day3-ai-test-generation.md](docs/day3-ai-test-generation.md).
+
+## Multi-agent pipeline (Day 4)
+
+An issue labeled `feature-request` starts the **`feature-developer`** agent in CI: it implements a new endpoint in GAD, documents it in GAD's OpenAPI and opens a GAD PR plus a framework PR that syncs the spec and pins GAD. The coverage CI reports the new operations as uncovered, which starts the **`test-generator`** agent (`/fill-coverage-gaps --mode ci-pr --gap-ids <file>`) on the same framework PR. Independent checks (coverage delta, `spec:check`, `lane-check`) judge both agents; a human reviews (`human-reviewed` label) and merges GAD first, then the re-pinned framework PR. See [docs/day4-multi-agent-pipeline.md](docs/day4-multi-agent-pipeline.md).
 
 ## Known GAD issues
 
