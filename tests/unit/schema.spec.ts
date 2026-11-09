@@ -24,6 +24,7 @@ import {
   IdSchema,
   LabelSchema,
   LoginResponseSchema,
+  MalformedJsonErrorSchema,
   UserSchema,
 } from '@src/utils/schema';
 
@@ -217,5 +218,27 @@ test.describe('ErrorMessageSchema', () => {
 
     expect(result.success).toBe(false);
     expect(result.error?.issues.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// MalformedJsonErrorSchema
+// ---------------------------------------------------------------------------
+test.describe('MalformedJsonErrorSchema', () => {
+  test('accepts the flat body-parser error GAD returns for malformed JSON', () => {
+    const result = MalformedJsonErrorSchema.safeParse({
+      error: 'SyntaxError: Unexpected data in JSON. Please check Your JSON.',
+      details: '{"title": "x",',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  test('rejects the nested ErrorMessage envelope', () => {
+    const result = MalformedJsonErrorSchema.safeParse({
+      error: { message: 'Access token not provided!' },
+    });
+
+    expect(result.success).toBe(false);
   });
 });
