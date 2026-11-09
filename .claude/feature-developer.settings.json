@@ -27,7 +27,15 @@
       "Bash(gh pr create *)",
       "Bash(gh pr view *)",
       "Bash(gh issue comment *)",
-      "Bash(gh label create *)"
+      "Bash(gh label create *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find *)"
     ],
     "deny": [
       "Edit(./tests/**)",
@@ -87,7 +95,17 @@
       "Bash(curl *config/features*)",
       "Bash(curl *restoreDB*)",
       "Bash(curl *debug/*)",
-      "Bash(curl *diagnostic/*)"
+      "Bash(curl *diagnostic/*)",
+      "Bash(find * -delete*)",
+      "Bash(find * -exec*)",
+      "Bash(find * -execdir*)",
+      "Bash(find * -ok*)",
+      "Bash(find * -fprint*)",
+      "Bash(cat /proc/*)",
+      "Bash(cat *.env*)",
+      "Bash(cat .env*)",
+      "Bash(grep * .env*)",
+      "Bash(grep -r * /proc*)"
     ]
   }
 }

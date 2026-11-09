@@ -96,9 +96,10 @@ function buildIssueData(issue) {
  * @param {any} input.result - Parsed .agent-work/result.json, or null when missing/invalid.
  * @param {string} input.actionOutcome - Outcome of the claude-code-action step.
  * @param {string} input.runUrl - URL of the workflow run.
+ * @param {string | null} [input.agentError] - Error reported by Claude Code (execution log), if any.
  * @returns {{ blocked: boolean, status: string, comment: string | null }}
  */
-function outcome({ result, actionOutcome, runUrl }) {
+function outcome({ result, actionOutcome, runUrl, agentError = null }) {
   const status = result && typeof result.status === 'string' ? result.status : 'missing';
   if (status === 'delivered' && result.frameworkPr && result.gadPr) {
     return { blocked: false, status, comment: null };
@@ -117,6 +118,12 @@ function outcome({ result, actionOutcome, runUrl }) {
       `The agent produced no result (step outcome: \`${actionOutcome}\`). It probably hit the turn or time limit, or failed before finishing.`,
     );
   }
+  if (agentError) {
+    lines.push(
+      '',
+      `Claude Code reported: \`${agentError.replace(/[`\r\n]+/g, ' ').slice(0, 300)}\``,
+    );
+  }
   if (result && typeof result.message === 'string' && result.message.trim()) {
     lines.push('', '> ' + result.message.trim().replace(/\r?\n/g, '\n> '));
   }
@@ -127,6 +134,26 @@ function outcome({ result, actionOutcome, runUrl }) {
     `[Workflow run and agent log](${runUrl}) (artifact \`feature-agent-log\`).`,
   );
   return { blocked: true, status, comment: lines.join('\n') };
+}
+
+/**
+ * Reads the error of a failed Claude Code run from the action's execution log
+ * (a JSON array of SDK messages; the last `result` message carries `is_error`).
+ *
+ * @param {string | null | undefined} text - Execution file contents.
+ * @returns {string | null}
+ */
+function agentErrorFrom(text) {
+  if (!text) return null;
+  try {
+    const messages = JSON.parse(text);
+    const results = Array.isArray(messages) ? messages.filter((m) => m && m.type === 'result') : [];
+    const last = results[results.length - 1];
+    if (!last || !last.is_error) return null;
+    return String(last.result || last.subtype || 'unknown error');
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -159,9 +186,9 @@ async function gate({ github, context, core }) {
 /**
  * github-script wrapper: comments and labels the issue when the agent did not deliver.
  *
- * @param {{ github: any, context: any, core: any, resultPath: string, actionOutcome: string }} input
+ * @param {{ github: any, context: any, core: any, resultPath: string, actionOutcome: string, executionFile?: string }} input
  */
-async function report({ github, context, core, resultPath, actionOutcome }) {
+async function report({ github, context, core, resultPath, actionOutcome, executionFile }) {
   const fs = require('fs');
   let result = null;
   try {
@@ -170,7 +197,13 @@ async function report({ github, context, core, resultPath, actionOutcome }) {
     result = null;
   }
   const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-  const decision = outcome({ result, actionOutcome, runUrl });
+  let agentError = null;
+  try {
+    agentError = executionFile ? agentErrorFrom(fs.readFileSync(executionFile, 'utf8')) : null;
+  } catch {
+    agentError = null;
+  }
+  const decision = outcome({ result, actionOutcome, runUrl, agentError });
   core.setOutput('status', decision.status);
   if (!decision.blocked) {
     core.info(`Delivered: ${result.frameworkPr} and ${result.gadPr}`);
@@ -205,6 +238,7 @@ module.exports = {
   evaluateTrigger,
   buildIssueData,
   outcome,
+  agentErrorFrom,
   gate,
   report,
 };

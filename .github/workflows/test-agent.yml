@@ -203,6 +203,8 @@ jobs:
             ${{ steps.claude.outputs.execution_file }}
           retention-days: 14
           if-no-files-found: warn
+          # .agent-work is a dot-directory: excluded by default since upload-artifact v4.4.
+          include-hidden-files: true
 
       - name: Sticky PR comment (<!-- test-agent-report -->)
         if: always() && steps.gate.outputs.action == 'run'

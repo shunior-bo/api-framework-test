@@ -167,6 +167,8 @@ jobs:
             ${{ steps.claude.outputs.execution_file }}
           retention-days: 14
           if-no-files-found: warn
+          # .agent-work is a dot-directory: excluded by default since upload-artifact v4.4.
+          include-hidden-files: true
 
       - name: Comment and label the issue unless delivered
         id: report
@@ -174,6 +176,7 @@ jobs:
         uses: actions/github-script@v9
         env:
           ACTION_OUTCOME: ${{ steps.claude.outcome }}
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
         with:
           script: |
             const { report } = require('./.github/scripts/feature-agent.js');
@@ -181,5 +184,6 @@ jobs:
               github, context, core,
               resultPath: '.agent-work/result.json',
               actionOutcome: process.env.ACTION_OUTCOME,
+              executionFile: process.env.EXECUTION_FILE,
             });
             if (decision.blocked) core.setFailed(`Feature agent status: ${decision.status}`);

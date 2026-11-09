@@ -4,7 +4,15 @@
     "allow": [
       "Bash(git push origin HEAD:feature/*)",
       "Bash(git rev-parse *)",
-      "Edit(./.agent-work/**)"
+      "Edit(./.agent-work/**)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(find *)"
     ],
     "deny": [
       "Edit(./tools/**)",
@@ -39,7 +47,17 @@
       "Bash(env*)",
       "Bash(printenv*)",
       "Edit(./gad.ref.json)",
-      "Edit(./gad/**)"
+      "Edit(./gad/**)",
+      "Bash(find * -delete*)",
+      "Bash(find * -exec*)",
+      "Bash(find * -execdir*)",
+      "Bash(find * -ok*)",
+      "Bash(find * -fprint*)",
+      "Bash(cat /proc/*)",
+      "Bash(cat *.env*)",
+      "Bash(cat .env*)",
+      "Bash(grep * .env*)",
+      "Bash(grep -r * /proc*)"
     ]
   }
 }
