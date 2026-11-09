@@ -445,4 +445,158 @@ test.describe('Articles API', () => {
       }
     },
   );
+
+  test(
+    'PUT /api/articles/{id} returns 422 when a mandatory field is empty',
+    { tag: ['@negative', '@tc-articles-17', '@ai-generated'] },
+    async ({ articlesClient, authToken }) => {
+      // --- ARRANGE ---------------------------------------------------------
+      const original = buildArticle();
+      const createResponse = await articlesClient.create(original, authToken);
+      expect(createResponse.status()).toBe(201);
+      const created = ArticleSchema.parse(await createResponse.json());
+      const invalidReplacement = buildArticle({ title: '' });
+
+      try {
+        // --- ACT -----------------------------------------------------------
+        const response = await articlesClient.update(created.id, invalidReplacement, authToken);
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(422);
+
+        const parsed = ErrorMessageSchema.safeParse(body);
+        expect(parsed.success, parsed.error?.message).toBe(true);
+
+        expect(parsed.data?.error.message).toBe('One of mandatory field is missing');
+      } finally {
+        // --- CLEANUP -------------------------------------------------------
+        await articlesClient.delete(created.id, authToken);
+      }
+    },
+  );
+
+  test(
+    'PATCH /api/articles/{id} returns 400 for a malformed JSON body',
+    { tag: ['@negative', '@tc-articles-18', '@ai-generated'] },
+    async ({ articlesClient, authToken }) => {
+      // --- ARRANGE ---------------------------------------------------------
+      const createResponse = await articlesClient.create(buildArticle(), authToken);
+      expect(createResponse.status()).toBe(201);
+      const created = ArticleSchema.parse(await createResponse.json());
+      const malformedBody = buildMalformedArticleJson();
+
+      try {
+        // --- ACT -----------------------------------------------------------
+        const response = await articlesClient.patchWithRawBody(
+          created.id,
+          malformedBody,
+          authToken,
+        );
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(400);
+
+        const parsed = MalformedJsonErrorSchema.safeParse(body);
+        expect(parsed.success, parsed.error?.message).toBe(true);
+
+        expect(parsed.data?.error).toContain('JSON');
+      } finally {
+        // --- CLEANUP -------------------------------------------------------
+        await articlesClient.delete(created.id, authToken);
+      }
+    },
+  );
+
+  test(
+    'PATCH /api/articles/{id} returns 401 without an access token',
+    { tag: ['@negative', '@tc-articles-19', '@ai-generated'] },
+    async ({ articlesClient, authToken }) => {
+      // --- ARRANGE ---------------------------------------------------------
+      const original = buildArticle();
+      const createResponse = await articlesClient.create(original, authToken);
+      expect(createResponse.status()).toBe(201);
+      const created = ArticleSchema.parse(await createResponse.json());
+      const newTitle = buildArticle().title;
+
+      try {
+        // --- ACT -----------------------------------------------------------
+        const response = await articlesClient.patch(created.id, { title: newTitle }, '');
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(401);
+
+        const parsed = ErrorMessageSchema.safeParse(body);
+        expect(parsed.success, parsed.error?.message).toBe(true);
+
+        expect(parsed.data?.error.message).toBe('Access token not provided!');
+
+        const unchanged = ArticleSchema.parse(
+          await (await articlesClient.getById(created.id)).json(),
+        );
+        expect(unchanged.title).toBe(original.title);
+      } finally {
+        // --- CLEANUP -------------------------------------------------------
+        await articlesClient.delete(created.id, authToken);
+      }
+    },
+  );
+
+  test(
+    'PATCH /api/articles/{id} returns 404 for a non-existent article',
+    { tag: ['@negative', '@tc-articles-20', '@ai-generated'] },
+    async ({ articlesClient, authToken }) => {
+      // --- ARRANGE ---------------------------------------------------------
+      // PATCH does not upsert (unlike PUT), so NON_EXISTENT_ID is safe here.
+      const missingId = NON_EXISTENT_ID;
+      const newTitle = buildArticle().title;
+
+      // --- ACT -------------------------------------------------------------
+      const response = await articlesClient.patch(missingId, { title: newTitle }, authToken);
+      const body: unknown = await response.json();
+
+      // --- ASSERT ----------------------------------------------------------
+      expect(response.status()).toBe(404);
+      expect(body).toEqual({});
+
+      const stillMissing = await articlesClient.getById(missingId);
+      expect(stillMissing.status()).toBe(404);
+    },
+  );
+
+  test(
+    'PATCH /api/articles/{id} returns 422 when a field is empty',
+    { tag: ['@negative', '@tc-articles-21', '@ai-generated'] },
+    async ({ articlesClient, authToken }) => {
+      // --- ARRANGE ---------------------------------------------------------
+      const original = buildArticle();
+      const createResponse = await articlesClient.create(original, authToken);
+      expect(createResponse.status()).toBe(201);
+      const created = ArticleSchema.parse(await createResponse.json());
+
+      try {
+        // --- ACT -----------------------------------------------------------
+        const response = await articlesClient.patch(created.id, { title: '' }, authToken);
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(422);
+
+        const parsed = ErrorMessageSchema.safeParse(body);
+        expect(parsed.success, parsed.error?.message).toBe(true);
+
+        expect(parsed.data?.error.message).toContain('"title" is empty');
+
+        const unchanged = ArticleSchema.parse(
+          await (await articlesClient.getById(created.id)).json(),
+        );
+        expect(unchanged.title).toBe(original.title);
+      } finally {
+        // --- CLEANUP -------------------------------------------------------
+        await articlesClient.delete(created.id, authToken);
+      }
+    },
+  );
 });
