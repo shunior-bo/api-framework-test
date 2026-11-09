@@ -1,6 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
+    "allow": [
+      "Bash(git push origin HEAD:feature/*)",
+      "Bash(git rev-parse *)",
+      "Edit(./.agent-work/**)"
+    ],
     "deny": [
       "Edit(./tools/**)",
       "Edit(./spec/**)",
@@ -23,7 +28,18 @@
       "Bash(git merge *)",
       "Bash(git rebase *)",
       "Bash(git reset --hard*)",
-      "Bash(gh pr merge *)"
+      "Bash(gh pr merge *)",
+      "Bash(git push * main*)",
+      "Bash(git push *:main*)",
+      "Bash(git push * -f*)",
+      "Bash(git push origin HEAD:main*)",
+      "Bash(gh api *)",
+      "Bash(gh secret *)",
+      "Bash(gh workflow *)",
+      "Bash(env*)",
+      "Bash(printenv*)",
+      "Edit(./gad.ref.json)",
+      "Edit(./gad/**)"
     ]
   }
 }

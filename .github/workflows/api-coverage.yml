@@ -277,13 +277,45 @@ jobs:
           echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "head coverage: $head · base coverage: $base"
 
+      # Negative-delta policy (docs/day4-multi-agent-pipeline.md):
+      #   feature/* PRs  → a negative operations delta is EXPECTED (new endpoints
+      #                    arrive untested) and triggers test-agent.yml: warning only.
+      #   any other PR   → --fail-on-negative operations: the job fails at the end.
       - name: Compare base vs head
+        id: compare
         if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base == 'true'
+        continue-on-error: true
+        env:
+          IS_FEATURE: ${{ startsWith(github.head_ref, 'feature/') }}
         run: |
+          flag=()
+          if [ "$IS_FEATURE" != "true" ]; then flag=(--fail-on-negative operations); fi
           node tools/coverage/src/cli.ts compare \
             --base artifacts/base --head artifacts/head \
             --format console,json,markdown,html --top 10 \
-            --out reports/coverage/report
+            --out reports/coverage/report "${flag[@]}"
+
+      - name: Delta policy note
+        id: policy
+        if: steps.compare.outcome != 'skipped'
+        env:
+          IS_FEATURE: ${{ startsWith(github.head_ref, 'feature/') }}
+          COMPARE_OUTCOME: ${{ steps.compare.outcome }}
+        run: |
+          verdict=$(node -p "require('./reports/coverage/report/delta.json').verdict" 2>/dev/null || echo unknown)
+          uncovered=$(node -p "require('./reports/coverage/report/delta.json').operations.added.filter(o => !o.covered).length" 2>/dev/null || echo 0)
+          note=""
+          if [ "$IS_FEATURE" = "true" ] && { [ "$verdict" = "regressed" ] || [ "$uncovered" != "0" ]; }; then
+            note="⚠️ **Expected on a feature PR:** verdict \`$verdict\`, $uncovered added operation(s) not covered yet. This is the trigger of the **test agent** (test-agent.yml), not a failure."
+            echo "::warning::Feature PR: verdict $verdict, $uncovered uncovered added operation(s) — test agent trigger."
+          elif [ "$COMPARE_OUTCOME" = "failure" ]; then
+            note="❌ **Operations coverage decreased** (\`compare --fail-on-negative operations\`, enabled on non-feature PRs). Add tests for the new operations or explain the exclusion."
+          fi
+          {
+            echo "note<<__POLICY__"
+            echo "$note"
+            echo "__POLICY__"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Head-only report (no base)
         if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base != 'true'
@@ -302,9 +334,12 @@ jobs:
 
       - name: Job summary
         if: always()
+        env:
+          POLICY_NOTE: ${{ steps.policy.outputs.note }}
         run: |
           meta() { node -e "try{console.log(require('./artifacts/head/run-meta.json')['$1']||'n/a')}catch{console.log('unknown')}"; }
           {
+            if [ -n "$POLICY_NOTE" ]; then echo "$POLICY_NOTE"; echo; fi
             echo "**Head API tests:** $(meta testsOutcome) · **GAD:** $(meta gadRef) @ \`$(meta gadSha)\` · **Spec drift check:** $(meta specCheck)"
             echo
             if [ -f reports/coverage/report/delta.md ]; then
@@ -327,6 +362,8 @@ jobs:
       - name: Sticky PR comment
         if: env.IS_PR == 'true' && env.IS_FORK != 'true' && steps.sides.outputs.head == 'true'
         uses: actions/github-script@v9
+        env:
+          POLICY_NOTE: ${{ steps.policy.outputs.note }}
         with:
           script: |
             const fs = require('fs');
@@ -341,6 +378,7 @@ jobs:
               headSha: context.payload.pull_request.head.sha,
               baseSha: context.payload.pull_request.base.sha,
               testsOutcome,
+              policyNote: process.env.POLICY_NOTE || null,
             });
             const result = await upsertPrComment({
               github,
@@ -350,9 +388,15 @@ jobs:
             });
             core.info(`Coverage comment ${result.action} (id ${result.id}).`);
 
-      - name: Fail if head API tests failed
+      - name: Fail if head API tests failed, the spec drifted or operations coverage dropped
         if: always()
+        env:
+          COMPARE_OUTCOME: ${{ steps.compare.outcome }}
         run: |
+          if [ "$COMPARE_OUTCOME" = "failure" ]; then
+            echo "::error::Operations coverage decreased on a non-feature PR (compare --fail-on-negative operations). See the coverage comment."
+            exit 1
+          fi
           if [ ! -f artifacts/head/run-meta.json ]; then
             echo "::error::Head coverage job produced no metadata — see the coverage (head) job."
             exit 1

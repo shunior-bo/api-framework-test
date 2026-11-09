@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-09T14:59:04.668Z",
+  "base": {
+    "git": {
+      "sha": "1111111aaaaaaa",
+      "branch": "main"
+    },
+    "spec": {
+      "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f",
+      "version": "0.0.1"
+    },
+    "totals": {
+      "operations": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71
+      },
+      "statuses": {
+        "covered": 7,
+        "total": 12,
+        "pct": 58.33
+      },
+      "parameters": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        }
+      }
+    }
+  },
+  "head": {
+    "git": {
+      "sha": "2222222bbbbbbb",
+      "branch": "feature/head-spec-added"
+    },
+    "spec": {
+      "sha256": "1f982b2fb7c4a0fc40b9cb334cefd7b22157c1b157d4c1f8e72ac4a10b23b31a",
+      "version": "0.0.2"
+    },
+    "totals": {
+      "operations": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "statuses": {
+        "covered": 7,
+        "total": 14,
+        "pct": 50
+      },
+      "parameters": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        }
+      }
+    }
+  },
+  "specChanged": true,
+  "totals": {
+    "operations": {
+      "base": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71
+      },
+      "head": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "delta": {
+        "covered": 0,
+        "total": 1,
+        "pct": -10.71
+      }
+    },
+    "statuses": {
+      "base": {
+        "covered": 7,
+        "total": 12,
+        "pct": 58.33
+      },
+      "head": {
+        "covered": 7,
+        "total": 14,
+        "pct": 50
+      },
+      "delta": {
+        "covered": 0,
+        "total": 2,
+        "pct": -8.33
+      }
+    },
+    "parameters": {
+      "base": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "head": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "delta": {
+        "covered": 0,
+        "total": 0,
+        "pct": 0
+      },
+      "required": {
+        "base": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "head": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "delta": {
+          "covered": 0,
+          "total": 0,
+          "pct": 0
+        }
+      },
+      "optional": {
+        "base": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        },
+        "head": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        },
+        "delta": {
+          "covered": 0,
+          "total": 0,
+          "pct": 0
+        }
+      }
+    }
+  },
+  "operations": {
+    "added": [
+      {
+        "key": "GET /extra",
+        "covered": false
+      }
+    ],
+    "removed": [],
+    "newlyCovered": [],
+    "noLongerCovered": []
+  },
+  "gaps": {
+    "opened": [
+      {
+        "id": "operation:GET /extra",
+        "type": "operation",
+        "priority": "high",
+        "method": "GET",
+        "path": "/extra",
+        "operationId": "extra",
+        "tags": [
+          "extra"
+        ],
+        "pending": {
+          "statuses": [
+            "200",
+            "404"
+          ],
+          "parameters": []
+        },
+        "hint": "GET /extra (Brand new endpoint) is never called. Documented responses: 200, 404."
+      }
+    ],
+    "closed": [],
+    "summary": {
+      "opened": 1,
+      "closed": 0,
+      "headTotal": 6,
+      "baseTotal": 5
+    }
+  },
+  "verdict": "regressed",
+  "verdictReasons": [
+    "regression: operations.pct decreased",
+    "regression: statuses.pct decreased",
+    "regression: uncovered operations added to the spec"
+  ]
+}

@@ -20,6 +20,7 @@ interface CommentModule {
     headSha: string | null;
     baseSha: string | null;
     testsOutcome: string;
+    policyNote?: string | null;
   }) => string;
   upsertPrComment: (input: {
     github: unknown;
@@ -72,6 +73,35 @@ function stubGithub(existing: { id: number; body: string }[], calls: Call[]): un
 const repo = { owner: 'shunior-bo', repo: 'api-framework-test' };
 
 test.describe('Sticky PR comment', () => {
+  test(
+    'puts the negative-delta policy note right after the tests line',
+    { tag: ['@regression', '@tc-coverage-63'] },
+    () => {
+      // --- ARRANGE ---------------------------------------------------------
+      const base = {
+        deltaMarkdown: '## Delta',
+        headSummary: null,
+        runUrl: 'https://github.com/o/r/actions/runs/1',
+        headSha: 'a'.repeat(40),
+        baseSha: 'b'.repeat(40),
+        testsOutcome: 'success',
+      };
+
+      // --- ACT -------------------------------------------------------------
+      const withNote = mod.buildCommentBody({ ...base, policyNote: '⚠️ Expected on a feature PR' });
+      const withoutNote = mod.buildCommentBody(base);
+
+      // --- ASSERT ----------------------------------------------------------
+      expect(withNote.split('\n').slice(0, 4)).toEqual([
+        mod.MARKER,
+        '✅ Head API tests passed.',
+        '',
+        '⚠️ Expected on a feature PR',
+      ]);
+      expect(withoutNote).not.toContain('Expected on a feature PR');
+    },
+  );
+
   test(
     'creates the comment when none carries the marker',
     { tag: ['@smoke', '@tc-coverage-52'] },
