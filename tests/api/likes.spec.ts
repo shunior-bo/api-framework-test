@@ -14,10 +14,17 @@
  * sends it from the payload's `user_id`. The seed user's id is read from an
  * article it creates (`article.user_id`).
  */
-import { buildArticle, buildLike, buildMalformedLikeJson } from '@src/data/factories';
+import {
+  buildArticle,
+  buildComment,
+  buildCommentLike,
+  buildLike,
+  buildMalformedLikeJson,
+} from '@src/data/factories';
 import { test, expect } from '@src/fixtures/auth.fixture';
 import {
   ArticleSchema,
+  CommentSchema,
   ErrorMessageSchema,
   LikeSchema,
   LikesCountSchema,
@@ -185,6 +192,111 @@ test.describe('Likes API', () => {
         }
       },
     );
+
+    test(
+      'GET /api/likes/article/{id} returns 200 and the like count of the article',
+      { tag: ['@smoke', '@tc-likes-08', '@ai-generated'] },
+      async ({ articlesClient, likesClient, authToken }) => {
+        // --- ARRANGE -------------------------------------------------------
+        const articleResponse = await articlesClient.create(buildArticle(), authToken);
+        expect(articleResponse.status()).toBe(201);
+        const article = ArticleSchema.parse(await articleResponse.json());
+        const like = buildLike(article.user_id, article.id);
+        const likeResponse = await likesClient.create(like, authToken);
+        expect(likeResponse.status()).toBe(201);
+
+        try {
+          // --- ACT ---------------------------------------------------------
+          const response = await likesClient.getByArticleId(article.id);
+          const body: unknown = await response.json();
+
+          // --- ASSERT ------------------------------------------------------
+          expect(response.status()).toBe(200);
+
+          const parsed = LikesCountSchema.safeParse(body);
+          expect(parsed.success, parsed.error?.message).toBe(true);
+
+          expect(parsed.data?.likes).toBe(1);
+        } finally {
+          // --- CLEANUP -----------------------------------------------------
+          await likesClient.create(like, authToken);
+          await articlesClient.delete(article.id, authToken);
+        }
+      },
+    );
+
+    test(
+      'GET /api/likes/comment/{id} returns 200 and the like count of the comment',
+      { tag: ['@smoke', '@tc-likes-09', '@ai-generated'] },
+      async ({ articlesClient, commentsClient, likesClient, authToken }) => {
+        // --- ARRANGE -------------------------------------------------------
+        const articleResponse = await articlesClient.create(buildArticle(), authToken);
+        expect(articleResponse.status()).toBe(201);
+        const article = ArticleSchema.parse(await articleResponse.json());
+        const commentResponse = await commentsClient.create(buildComment(article.id), authToken);
+        expect(commentResponse.status()).toBe(201);
+        const comment = CommentSchema.parse(await commentResponse.json());
+        const like = buildCommentLike(comment.user_id, comment.id);
+        const likeResponse = await likesClient.create(like, authToken);
+        expect(likeResponse.status()).toBe(201);
+
+        try {
+          // --- ACT ---------------------------------------------------------
+          const response = await likesClient.getByCommentId(comment.id);
+          const body: unknown = await response.json();
+
+          // --- ASSERT ------------------------------------------------------
+          expect(response.status()).toBe(200);
+
+          const parsed = LikesCountSchema.safeParse(body);
+          expect(parsed.success, parsed.error?.message).toBe(true);
+
+          expect(parsed.data?.likes).toBe(1);
+        } finally {
+          // --- CLEANUP -----------------------------------------------------
+          await likesClient.create(like, authToken);
+          await commentsClient.delete(comment.id, authToken);
+          await articlesClient.delete(article.id, authToken);
+        }
+      },
+    );
+
+    test(
+      'GET /api/likes/article/mylikes returns 200 and the like count of the user',
+      { tag: ['@regression', '@tc-likes-10', '@ai-generated'] },
+      async ({ articlesClient, likesClient, authToken }) => {
+        test.fail(
+          true,
+          'GAD bug: spec says 200 { likes: number }, GAD returns { likes: { "<id>": boolean } } — evidence in docs/ai-generation/20261109-0959-likes-bookmarks.md',
+        );
+
+        // --- ARRANGE -------------------------------------------------------
+        const articleResponse = await articlesClient.create(buildArticle(), authToken);
+        expect(articleResponse.status()).toBe(201);
+        const article = ArticleSchema.parse(await articleResponse.json());
+        const like = buildLike(article.user_id, article.id);
+        const likeResponse = await likesClient.create(like, authToken);
+        expect(likeResponse.status()).toBe(201);
+
+        try {
+          // --- ACT ---------------------------------------------------------
+          const response = await likesClient.getMyLikes(article.id, article.user_id);
+          const body: unknown = await response.json();
+
+          // --- ASSERT ------------------------------------------------------
+          expect(response.status()).toBe(200);
+
+          const parsed = LikesCountSchema.safeParse(body);
+          expect(parsed.success, parsed.error?.message).toBe(true);
+
+          expect(parsed.data?.likes).toBe(1);
+        } finally {
+          // --- CLEANUP -----------------------------------------------------
+          await likesClient.create(like, authToken);
+          await articlesClient.delete(article.id, authToken);
+        }
+      },
+    );
   });
 
   test.describe('with feature_likes disabled (GAD default)', () => {
@@ -220,6 +332,58 @@ test.describe('Likes API', () => {
 
         // --- ACT -----------------------------------------------------------
         const response = await likesClient.getByArticleQuery(articleId);
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(404);
+        expect(body).toEqual({});
+      },
+    );
+
+    test(
+      'GET /api/likes/article/{id} returns 404 when the likes feature is disabled',
+      { tag: ['@negative', '@tc-likes-11', '@ai-generated'] },
+      async ({ likesClient }) => {
+        // --- ARRANGE -------------------------------------------------------
+        const articleId = 1;
+
+        // --- ACT -----------------------------------------------------------
+        const response = await likesClient.getByArticleId(articleId);
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(404);
+        expect(body).toEqual({});
+      },
+    );
+
+    test(
+      'GET /api/likes/comment/{id} returns 404 when the likes feature is disabled',
+      { tag: ['@negative', '@tc-likes-12', '@ai-generated'] },
+      async ({ likesClient }) => {
+        // --- ARRANGE -------------------------------------------------------
+        const commentId = 1;
+
+        // --- ACT -----------------------------------------------------------
+        const response = await likesClient.getByCommentId(commentId);
+        const body: unknown = await response.json();
+
+        // --- ASSERT --------------------------------------------------------
+        expect(response.status()).toBe(404);
+        expect(body).toEqual({});
+      },
+    );
+
+    test(
+      'GET /api/likes/article/mylikes returns 404 when the likes feature is disabled',
+      { tag: ['@negative', '@tc-likes-13', '@ai-generated'] },
+      async ({ likesClient }) => {
+        // --- ARRANGE -------------------------------------------------------
+        const articleId = 1;
+        const userId = 1;
+
+        // --- ACT -----------------------------------------------------------
+        const response = await likesClient.getMyLikes(articleId, userId);
         const body: unknown = await response.json();
 
         // --- ASSERT --------------------------------------------------------
