@@ -135,6 +135,23 @@ export class ArticlesClient {
   }
 
   /**
+   * Sends PATCH /api/articles/{id} with a raw, unserialized JSON body (auth required).
+   *
+   * Exists for the documented 400 "Bad request - malformed JSON" (see `createWithRawBody`).
+   *
+   * @param id - The ID of the article to update.
+   * @param rawBody - The exact request body text, sent as `application/json`.
+   * @param token - The JWT Bearer token for authorization.
+   * @returns The raw APIResponse — 400 when `rawBody` is not valid JSON.
+   */
+  async patchWithRawBody(id: ResourceId, rawBody: string, token: string): Promise<APIResponse> {
+    return this.request.patch(`/api/articles/${id}`, {
+      data: rawBody,
+      headers: { ...authHeaders(new TokenAuth(token)), 'Content-Type': 'application/json' },
+    });
+  }
+
+  /**
    * Sends DELETE /api/articles/{id} — removes a article (auth required).
    *
    * @param id - The ID of the article to delete.
