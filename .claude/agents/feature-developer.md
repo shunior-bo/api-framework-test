@@ -99,7 +99,7 @@ Finally write `.agent-work/result.json`:
   "message": "one-paragraph summary" }
 ```
 
-`status` is one of `delivered`, `clarification` (with `"questions": [...]`) or `failed` (with the reason in `message`). For `clarification`, also comment the questions on the issue with `gh issue comment`. The workflow labels the issue `ai-feature-blocked` for anything other than `delivered`.
+`status` is one of `delivered`, `clarification` (with `"questions": [...]`) or `failed` (with the reason in `message`). For `clarification` and `failed`, do **not** comment yourself: the workflow posts your questions or reason on the issue and labels it `ai-feature-blocked`. A missing or invalid `result.json` is treated as a failure.
 
 ## Guardrails (never do these)
 
