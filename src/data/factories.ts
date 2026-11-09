@@ -92,6 +92,16 @@ export function buildArticle(overrides: Partial<CreateArticleRequest> = {}): Cre
 }
 
 /**
+ * Builds a malformed JSON request body: a valid article payload with its closing
+ * brace cut off. Use it for the documented 400 "Bad request - malformed JSON".
+ *
+ * @returns A string that is not parseable as JSON.
+ */
+export function buildMalformedArticleJson(): string {
+  return JSON.stringify(buildArticle()).slice(0, -1);
+}
+
+/**
  * Builds a valid POST /api/comments payload.
  *
  * @param articleId - ID of an existing article the comment belongs to.

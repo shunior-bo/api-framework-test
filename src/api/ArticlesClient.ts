@@ -101,6 +101,40 @@ export class ArticlesClient {
   }
 
   /**
+   * Sends POST /api/articles with a raw, unserialized JSON body (auth required).
+   *
+   * Exists for the documented 400 "Bad request - malformed JSON": the typed
+   * `create` always serializes a valid object, so it cannot send broken JSON.
+   *
+   * @param rawBody - The exact request body text, sent as `application/json`.
+   * @param token - The JWT Bearer token for authorization.
+   * @returns The raw APIResponse — 400 when `rawBody` is not valid JSON.
+   */
+  async createWithRawBody(rawBody: string, token: string): Promise<APIResponse> {
+    return this.request.post('/api/articles', {
+      data: rawBody,
+      headers: { ...authHeaders(new TokenAuth(token)), 'Content-Type': 'application/json' },
+    });
+  }
+
+  /**
+   * Sends PUT /api/articles/{id} with a raw, unserialized JSON body (auth required).
+   *
+   * Exists for the documented 400 "Bad request - malformed JSON" (see `createWithRawBody`).
+   *
+   * @param id - The ID of the article to replace.
+   * @param rawBody - The exact request body text, sent as `application/json`.
+   * @param token - The JWT Bearer token for authorization.
+   * @returns The raw APIResponse — 400 when `rawBody` is not valid JSON.
+   */
+  async updateWithRawBody(id: ResourceId, rawBody: string, token: string): Promise<APIResponse> {
+    return this.request.put(`/api/articles/${id}`, {
+      data: rawBody,
+      headers: { ...authHeaders(new TokenAuth(token)), 'Content-Type': 'application/json' },
+    });
+  }
+
+  /**
    * Sends DELETE /api/articles/{id} — removes a article (auth required).
    *
    * @param id - The ID of the article to delete.
