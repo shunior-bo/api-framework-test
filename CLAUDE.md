@@ -33,6 +33,6 @@ The `api-coverage` MCP server (`.mcp.json`) exposes the coverage tool: prefer it
 ## Working rules
 
 - Work on a branch (`session/NN-…`), never on `main`. Commit prefixes: `feat:` `test:` `fix:` `chore:` `docs:`.
-- Do not push or open PRs without asking.
+- Do not push or open PRs without asking. Exception: a `/fill-coverage-gaps` run is the user's request to push its `ai/<run-id>` branch and open one `ai-generated` PR (never to touch `main`).
 - Do not add dependencies without asking.
 - Do not modify `../gad-gui-api-demo` or `../api-testing-playwright-ts-junior`.
