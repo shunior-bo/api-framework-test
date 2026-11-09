@@ -12,6 +12,7 @@ export default [
       'test-results/**',
       'playwright-report/**',
       'gad/**',
+      '.agent-work/**',
     ],
   },
   {
@@ -105,8 +106,9 @@ export default [
               message: 'Use the @src/ path alias instead of relative imports.',
             },
             {
-              group: ['@coverage/*', '@coverage-mcp/*'],
-              message: '@coverage/* and @coverage-mcp/* are only for tests/unit/coverage.',
+              group: ['@coverage/*', '@coverage-mcp/*', '@spec-sync/*'],
+              message:
+                '@coverage/*, @coverage-mcp/* and @spec-sync/* are only for tests/unit/coverage and tests/unit/spec-sync.',
             },
           ],
         },

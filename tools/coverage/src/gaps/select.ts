@@ -24,6 +24,12 @@ export interface GapFilters {
   pathPrefix: string | null;
   /** Gap ids to skip (e.g. ones the agent already flagged as blocked). */
   excludeIds: string[];
+  /**
+   * Allow-list of gap ids (e.g. `delta.gaps.opened` of a PR). `null` = no
+   * allow-list; an EMPTY list matches nothing (an empty CI gap list must never
+   * widen the scope to every gap).
+   */
+  onlyIds: string[] | null;
   /** Maximum gaps returned (null = all). */
   limit: number | null;
 }
@@ -70,6 +76,8 @@ export function normalizeFilters(filters: Partial<GapFilters>): GapFilters {
     tag: list(filters.tag),
     pathPrefix: prefix ? prefix.replace(/\/+$/, '') || '/' : null,
     excludeIds: list(filters.excludeIds),
+    onlyIds:
+      filters.onlyIds === undefined || filters.onlyIds === null ? null : list(filters.onlyIds),
     limit: filters.limit === undefined ? DEFAULT_LIMIT : filters.limit,
   };
 }
@@ -93,11 +101,13 @@ function matchesPrefix(path: string, prefix: string): boolean {
  */
 export function filterGaps(gaps: readonly Gap[], filters: GapFilters): Gap[] {
   const exclude = new Set(filters.excludeIds);
+  const only = filters.onlyIds === null ? null : new Set(filters.onlyIds);
   return [...gaps]
     .sort(compareGaps)
     .filter(
       (g) =>
         !exclude.has(g.id) &&
+        (only === null || only.has(g.id)) &&
         (filters.priority.length === 0 || filters.priority.includes(g.priority)) &&
         (filters.type.length === 0 || filters.type.includes(g.type)) &&
         (filters.tag.length === 0 || g.tags.some((t) => filters.tag.includes(t))) &&

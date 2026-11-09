@@ -1,0 +1,227 @@
+# Test agent: when "API coverage" finishes on a feature PR whose delta shows new
+# uncovered behavior, the test-generator agent writes tests for exactly the gaps
+# the PR opened (delta.gaps.opened) and pushes them to the SAME PR branch, which
+# re-runs "API coverage" (the independent verdict). See docs/day4-multi-agent-pipeline.md.
+#
+# Runs only when ALL hold (logic and unit tests: .github/scripts/test-agent.js):
+#   - the coverage run was a pull_request from this repository (no forks), on feature/*
+#   - the PR is open, labeled ai-feature, and its head is still the run's head sha
+#   - delta.json (artifact coverage-report-html) has verdict "regressed" or an
+#     added operation that is not covered
+#   - fewer than 2 runs so far (labels ai-tests-run-1/2), the previous run closed
+#     at least 1 gap, and the PR is not labeled ai-tests-blocked
+# Limit reached / 0 gaps closed / regression without opened gaps → label
+# ai-tests-blocked + sticky comment asking for a human, and nothing else.
+#
+# Secrets: AGENT_PAT (push to the PR branch; GITHUB_TOKEN pushes would not
+# re-trigger CI) and ANTHROPIC_API_KEY or CLAUDE_CODE_OAUTH_TOKEN.
+# Limits: --max-turns 200, job timeout 60 min, one run per PR at a time.
+#
+# NOTE: `workflow_run` workflows only run from the default branch (main), so
+# this file, the scripts and the agent settings always come from main.
+name: Test agent
+
+on:
+  workflow_run:
+    workflows: ['API coverage']
+    types: [completed]
+
+permissions: {}
+
+concurrency:
+  group: test-agent-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+env:
+  TZ: UTC
+  GAD_REPOSITORY: shunior-bo/gad-gui-api-demo
+  FORCE_COLOR: '0'
+
+jobs:
+  test-agent:
+    # Cheap pre-filter; the full decision is made by the gate step.
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'feature/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout framework (main; trusted scripts)
+        uses: actions/checkout@v7
+
+      - name: Download coverage-report-html (delta.json) of the coverage run
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-report-html
+          path: .agent-work/coverage-report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Gate (conditions + loop limit)
+        id: gate
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            fs.mkdirSync('.agent-work', { recursive: true });
+            const { gate } = require('./.github/scripts/test-agent.js');
+            await gate({
+              github, context, core,
+              deltaPath: '.agent-work/coverage-report/delta.json',
+              gapIdsPath: '.agent-work/gap-ids.txt',
+            });
+
+      - name: Keep the gate output
+        if: steps.gate.outputs.action == 'run'
+        run: |
+          # Keep main's (trusted) scripts: the PR checkout below replaces the workspace.
+          mkdir -p "$RUNNER_TEMP/test-agent"
+          cp .agent-work/gap-ids.txt "$RUNNER_TEMP/test-agent/gap-ids.txt"
+          cp .github/scripts/test-agent.js .github/scripts/gad-server.sh "$RUNNER_TEMP/test-agent/"
+          echo "Targeting $(wc -l < .agent-work/gap-ids.txt) gap(s):"
+          cat .agent-work/gap-ids.txt
+
+      - name: Check secrets
+        if: steps.gate.outputs.action == 'run'
+        env:
+          HAS_PAT: ${{ secrets.AGENT_PAT != '' }}
+          HAS_CLAUDE: ${{ secrets.ANTHROPIC_API_KEY != '' || secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+        run: |
+          if [ "$HAS_PAT" != "true" ] || [ "$HAS_CLAUDE" != "true" ]; then
+            echo "::error::Missing secrets: AGENT_PAT and ANTHROPIC_API_KEY or CLAUDE_CODE_OAUTH_TOKEN are required."
+            exit 1
+          fi
+
+      # The PR branch (same repository, ai-feature, checked above) becomes the
+      # workspace: the agent commits on it and pushes with AGENT_PAT.
+      - name: Checkout the PR branch
+        if: steps.gate.outputs.action == 'run'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.gate.outputs.head_branch }}
+          token: ${{ secrets.AGENT_PAT }}
+          fetch-depth: 0
+
+      - name: Verify the branch head is the gated sha
+        if: steps.gate.outputs.action == 'run'
+        env:
+          EXPECTED: ${{ steps.gate.outputs.head_sha }}
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "$EXPECTED" ]; then
+            echo "::warning::The branch moved ($actual ≠ $EXPECTED); a newer coverage run will decide."
+            exit 1
+          fi
+          mkdir -p .agent-work
+          cp "$RUNNER_TEMP/test-agent/gap-ids.txt" .agent-work/gap-ids.txt
+
+      - name: Resolve GAD sha (gad.ref.json of the PR)
+        if: steps.gate.outputs.action == 'run'
+        id: gad
+        run: |
+          repo=$(node -p "require('./gad.ref.json').repository")
+          sha=$(node -p "require('./gad.ref.json').sha")
+          if [ "$repo" != "$GAD_REPOSITORY" ] || ! [[ "$sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error file=gad.ref.json::invalid gad.ref.json (repository $repo, sha $sha)"
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout GAD @ pinned sha
+        if: steps.gate.outputs.action == 'run'
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.GAD_REPOSITORY }}
+          ref: ${{ steps.gad.outputs.sha }}
+          path: gad
+          token: ${{ secrets.AGENT_PAT }}
+          persist-credentials: false
+
+      - name: Setup Node 24
+        if: steps.gate.outputs.action == 'run'
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            gad/package-lock.json
+
+      - name: Install dependencies (framework + GAD, no browsers)
+        if: steps.gate.outputs.action == 'run'
+        run: |
+          npm ci
+          npm ci --prefix gad
+          cp .env.example .env
+          sed -i "s#^BASE_URL=.*#BASE_URL=http://localhost:3000#" .env
+
+      - name: Start GAD and wait for /api/health
+        if: steps.gate.outputs.action == 'run'
+        run: bash "$RUNNER_TEMP/test-agent/gad-server.sh" start
+
+      - name: Test agent (claude-code-action, /fill-coverage-gaps --mode ci-pr)
+        id: claude
+        if: steps.gate.outputs.action == 'run'
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.AGENT_PAT }}
+          bot_name: 'claude[bot]'
+          bot_id: '41898282'
+          prompt: '/fill-coverage-gaps --mode ci-pr --gap-ids .agent-work/gap-ids.txt --run-number ${{ steps.gate.outputs.run_number }}'
+          # gh pr create (and every gh write) is denied in ci-pr mode: the PR already exists.
+          claude_args: |
+            --settings .claude/test-generator.settings.json
+            --model ${{ vars.TEST_AGENT_MODEL || 'claude-opus-5-5' }}
+            --max-turns 200
+            --disallowedTools "Bash(gh pr create *)" "Bash(gh pr merge *)" "Bash(gh pr edit *)" "Bash(gh label *)" "Bash(gh api *)"
+
+      - name: Stop GAD and restore its db/
+        if: always() && steps.gate.outputs.action == 'run'
+        run: bash "$RUNNER_TEMP/test-agent/gad-server.sh" reset-db || true
+
+      - name: Upload test-agent-log
+        if: always() && steps.gate.outputs.action == 'run'
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-agent-log
+          path: |
+            .agent-work/**
+            docs/ai-generation/**
+            reports/coverage/coverage.json
+            reports/coverage/gaps.json
+            reports/ai-runs/**/delta.json
+            ${{ steps.claude.outputs.execution_file }}
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Sticky PR comment (<!-- test-agent-report -->)
+        if: always() && steps.gate.outputs.action == 'run'
+        uses: actions/github-script@v9
+        env:
+          ACTION_OUTCOME: ${{ steps.claude.outcome }}
+          PR_NUMBER: ${{ steps.gate.outputs.pr_number }}
+          RUN_NUMBER: ${{ steps.gate.outputs.run_number }}
+          HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
+        with:
+          script: |
+            const { report } = require(`${process.env.RUNNER_TEMP}/test-agent/test-agent.js`);
+            await report({
+              github, context, core,
+              prNumber: Number(process.env.PR_NUMBER),
+              runNumber: Number(process.env.RUN_NUMBER),
+              headSha: process.env.HEAD_SHA,
+              gapIdsPath: `${process.env.RUNNER_TEMP}/test-agent/gap-ids.txt`,
+              gapsPath: 'reports/coverage/gaps.json',
+              resultPath: '.agent-work/test-agent-result.json',
+              actionOutcome: process.env.ACTION_OUTCOME,
+            });

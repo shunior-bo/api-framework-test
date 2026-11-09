@@ -12,7 +12,8 @@
     "paths": {
       "@src/*": ["./src/*"],
       "@coverage/*": ["./tools/coverage/src/*"],
-      "@coverage-mcp/*": ["./tools/coverage-mcp/src/*"]
+      "@coverage-mcp/*": ["./tools/coverage-mcp/src/*"],
+      "@spec-sync/*": ["./tools/spec-sync/src/*"]
     }
   },
   "include": ["tests/**/*.ts", "src/**/*.ts", "playwright.config.ts"],

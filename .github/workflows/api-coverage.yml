@@ -15,8 +15,14 @@
 #   playwright-report-head / -base          reports/html + reports/results.xml
 #   gad-logs-head / -base                   GAD server log (only when something failed)
 #
-# GAD checkout: public repos work with the default token; for a private GAD repo
-# add a read-only PAT as the secret GAD_REPO_TOKEN.
+# GAD revision: each side reads ITS OWN gad.ref.json and checks out GAD at that
+# exact sha (a feature PR pins its GAD feature commit, its base pins GAD main).
+# A side without gad.ref.json (pre-Day-4 main) falls back to GAD's default
+# branch. The workflow_dispatch input gad_ref overrides both. Head then runs
+# `spec:check`: spec/openapi.json must be byte-identical to GAD@sha's spec.
+#
+# GAD checkout token: secrets.AGENT_PAT, else GAD_REPO_TOKEN, else github.token
+# (enough while GAD is public).
 #
 # PRs from forks get a read-only GITHUB_TOKEN, so the comment is skipped with a
 # notice. Commenting on fork PRs would need a separate `workflow_run` workflow
@@ -45,8 +51,8 @@ env:
   # GAD rejects "now" as a future date on hosts west of UTC (README: Known GAD
   # issues). Pinning UTC keeps CI deterministic; tc-articles-12 adapts to the offset.
   TZ: UTC
+  # The only GAD repository CI will check out (gad.ref.json must name it).
   GAD_REPOSITORY: shunior-bo/gad-gui-api-demo
-  GAD_REF: ${{ inputs.gad_ref || '' }}
   GAD_PORT: '3000'
   FORCE_COLOR: '0'
 
@@ -71,13 +77,45 @@ jobs:
           # head: the default ref (refs/pull/N/merge on PRs); base: the PR base commit.
           ref: ${{ matrix.side == 'base' && github.event.pull_request.base.sha || '' }}
 
-      - name: Checkout GAD
+      - name: Resolve GAD revision (${{ matrix.side }} gad.ref.json)
+        id: gad
+        env:
+          GAD_REF_OVERRIDE: ${{ inputs.gad_ref || '' }}
+        run: |
+          if [ -n "$GAD_REF_OVERRIDE" ]; then
+            ref="$GAD_REF_OVERRIDE"; label="$GAD_REF_OVERRIDE"; source="workflow_dispatch input gad_ref"
+          elif [ -f gad.ref.json ]; then
+            repo=$(node -p "require('./gad.ref.json').repository")
+            ref=$(node -p "require('./gad.ref.json').sha")
+            label=$(node -p "require('./gad.ref.json').ref")
+            source="gad.ref.json"
+            if [ "$repo" != "$GAD_REPOSITORY" ]; then
+              echo "::error file=gad.ref.json::gad.ref.json names repository '$repo'; CI only tests $GAD_REPOSITORY."
+              exit 1
+            fi
+            if ! [[ "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error file=gad.ref.json::gad.ref.json sha '$ref' is not a 40-character commit sha."
+              exit 1
+            fi
+          else
+            ref=""; label="default branch"; source="no gad.ref.json on this side (pre-Day-4 fallback)"
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "label=$label" >> "$GITHUB_OUTPUT"
+          echo "GAD for ${SIDE}: ${GAD_REPOSITORY}@${label} ${ref:-<default branch>} (source: ${source})"
+
+      - name: Checkout GAD @ ${{ steps.gad.outputs.label }}
         uses: actions/checkout@v7
         with:
           repository: ${{ env.GAD_REPOSITORY }}
-          ref: ${{ env.GAD_REF }}
+          ref: ${{ steps.gad.outputs.ref }}
           path: gad
-          token: ${{ secrets.GAD_REPO_TOKEN || github.token }}
+          token: ${{ secrets.AGENT_PAT || secrets.GAD_REPO_TOKEN || github.token }}
+          persist-credentials: false
+
+      - name: Record GAD sha
+        id: gadsha
+        run: echo "sha=$(git -C gad rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node 24
         uses: actions/setup-node@v7
@@ -87,6 +125,17 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             gad/package-lock.json
+
+      # Head only: the vendored contract must be byte-identical to the spec of the
+      # GAD commit under test. Drift fails the job (and the report job).
+      - name: Spec drift check (spec/openapi.json vs GAD@sha)
+        id: spec
+        if: matrix.side == 'head' && hashFiles('tools/spec-sync/src/cli.ts') != ''
+        run: |
+          if ! node tools/spec-sync/src/cli.ts check --gad-dir gad; then
+            echo "::error file=spec/openapi.json::spec/openapi.json is out of sync with GAD@${{ steps.gadsha.outputs.sha }}; run npm run spec:sync (see tools/spec-sync/README.md)."
+            exit 1
+          fi
 
       # From here on, a broken BASE never turns the workflow red: base problems
       # are not this PR's fault. Only the head tests decide (see the report job).
@@ -147,8 +196,9 @@ jobs:
         if: always()
         run: |
           mkdir -p reports/coverage
-          printf '{"side":"%s","sha":"%s","testsOutcome":"%s","coverageOutcome":"%s"}\n' \
-            "$SIDE" "$COVERAGE_GIT_SHA" "${{ steps.tests.outcome }}" "${{ steps.coverage.outcome }}" \
+          printf '{"side":"%s","sha":"%s","gadSha":"%s","gadRef":"%s","specCheck":"%s","testsOutcome":"%s","coverageOutcome":"%s"}\n' \
+            "$SIDE" "$COVERAGE_GIT_SHA" "${{ steps.gadsha.outputs.sha }}" "${{ steps.gad.outputs.label }}" \
+            "${{ steps.spec.outcome }}" "${{ steps.tests.outcome }}" "${{ steps.coverage.outcome }}" \
             > reports/coverage/run-meta.json
           cat reports/coverage/run-meta.json
 
@@ -227,13 +277,45 @@ jobs:
           echo "base=$base" >> "$GITHUB_OUTPUT"
           echo "head coverage: $head · base coverage: $base"
 
+      # Negative-delta policy (docs/day4-multi-agent-pipeline.md):
+      #   feature/* PRs  → a negative operations delta is EXPECTED (new endpoints
+      #                    arrive untested) and triggers test-agent.yml: warning only.
+      #   any other PR   → --fail-on-negative operations: the job fails at the end.
       - name: Compare base vs head
+        id: compare
         if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base == 'true'
+        continue-on-error: true
+        env:
+          IS_FEATURE: ${{ startsWith(github.head_ref, 'feature/') }}
         run: |
+          flag=()
+          if [ "$IS_FEATURE" != "true" ]; then flag=(--fail-on-negative operations); fi
           node tools/coverage/src/cli.ts compare \
             --base artifacts/base --head artifacts/head \
             --format console,json,markdown,html --top 10 \
-            --out reports/coverage/report
+            --out reports/coverage/report "${flag[@]}"
+
+      - name: Delta policy note
+        id: policy
+        if: steps.compare.outcome != 'skipped'
+        env:
+          IS_FEATURE: ${{ startsWith(github.head_ref, 'feature/') }}
+          COMPARE_OUTCOME: ${{ steps.compare.outcome }}
+        run: |
+          verdict=$(node -p "require('./reports/coverage/report/delta.json').verdict" 2>/dev/null || echo unknown)
+          uncovered=$(node -p "require('./reports/coverage/report/delta.json').operations.added.filter(o => !o.covered).length" 2>/dev/null || echo 0)
+          note=""
+          if [ "$IS_FEATURE" = "true" ] && { [ "$verdict" = "regressed" ] || [ "$uncovered" != "0" ]; }; then
+            note="⚠️ **Expected on a feature PR:** verdict \`$verdict\`, $uncovered added operation(s) not covered yet. This is the trigger of the **test agent** (test-agent.yml), not a failure."
+            echo "::warning::Feature PR: verdict $verdict, $uncovered uncovered added operation(s) — test agent trigger."
+          elif [ "$COMPARE_OUTCOME" = "failure" ]; then
+            note="❌ **Operations coverage decreased** (\`compare --fail-on-negative operations\`, enabled on non-feature PRs). Add tests for the new operations or explain the exclusion."
+          fi
+          {
+            echo "note<<__POLICY__"
+            echo "$note"
+            echo "__POLICY__"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Head-only report (no base)
         if: steps.sides.outputs.head == 'true' && steps.sides.outputs.base != 'true'
@@ -252,10 +334,13 @@ jobs:
 
       - name: Job summary
         if: always()
+        env:
+          POLICY_NOTE: ${{ steps.policy.outputs.note }}
         run: |
-          outcome=$(node -e "try{console.log(require('./artifacts/head/run-meta.json').testsOutcome)}catch{console.log('unknown')}")
+          meta() { node -e "try{console.log(require('./artifacts/head/run-meta.json')['$1']||'n/a')}catch{console.log('unknown')}"; }
           {
-            echo "**Head API tests:** ${outcome}"
+            if [ -n "$POLICY_NOTE" ]; then echo "$POLICY_NOTE"; echo; fi
+            echo "**Head API tests:** $(meta testsOutcome) · **GAD:** $(meta gadRef) @ \`$(meta gadSha)\` · **Spec drift check:** $(meta specCheck)"
             echo
             if [ -f reports/coverage/report/delta.md ]; then
               cat reports/coverage/report/delta.md
@@ -277,6 +362,8 @@ jobs:
       - name: Sticky PR comment
         if: env.IS_PR == 'true' && env.IS_FORK != 'true' && steps.sides.outputs.head == 'true'
         uses: actions/github-script@v9
+        env:
+          POLICY_NOTE: ${{ steps.policy.outputs.note }}
         with:
           script: |
             const fs = require('fs');
@@ -291,6 +378,7 @@ jobs:
               headSha: context.payload.pull_request.head.sha,
               baseSha: context.payload.pull_request.base.sha,
               testsOutcome,
+              policyNote: process.env.POLICY_NOTE || null,
             });
             const result = await upsertPrComment({
               github,
@@ -300,11 +388,22 @@ jobs:
             });
             core.info(`Coverage comment ${result.action} (id ${result.id}).`);
 
-      - name: Fail if head API tests failed
+      - name: Fail if head API tests failed, the spec drifted or operations coverage dropped
         if: always()
+        env:
+          COMPARE_OUTCOME: ${{ steps.compare.outcome }}
         run: |
+          if [ "$COMPARE_OUTCOME" = "failure" ]; then
+            echo "::error::Operations coverage decreased on a non-feature PR (compare --fail-on-negative operations). See the coverage comment."
+            exit 1
+          fi
           if [ ! -f artifacts/head/run-meta.json ]; then
             echo "::error::Head coverage job produced no metadata — see the coverage (head) job."
+            exit 1
+          fi
+          spec=$(node -e "console.log(require('./artifacts/head/run-meta.json').specCheck || 'skipped')")
+          if [ "$spec" = "failure" ]; then
+            echo "::error::Spec drift: spec/openapi.json is out of sync with the pinned GAD; run npm run spec:sync."
             exit 1
           fi
           outcome=$(node -e "console.log(require('./artifacts/head/run-meta.json').testsOutcome)")

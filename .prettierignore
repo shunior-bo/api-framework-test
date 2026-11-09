@@ -10,3 +10,6 @@ gad
 docs/coverage/**/*.json
 # Tool-generated compare fixtures (kept byte-identical to the tool output)
 tests/unit/coverage/fixtures/compare/**/*.json
+# Agent scratch space
+.agent-work
+tests/unit/ci/fixtures/*.json

@@ -4,6 +4,7 @@
  *   node tools/coverage/src/cli.ts gaps [--from reports/coverage/gaps.json]
  *        [--spec spec/openapi.json] [--priority high,medium] [--type operation,status,parameter]
  *        [--tag likes,bookmarks] [--path-prefix /likes] [--exclude-ids <file|csv>]
+ *        [--only-ids <file|csv>]
  *        [--limit 5] [--format json|markdown]
  *
  * Prints the batch to stdout. Fully deterministic (no timestamp).
@@ -26,6 +27,8 @@ export const GAPS_USAGE = `Usage: node tools/coverage/src/cli.ts gaps [options]
   --tag <list>           OpenAPI tags (a gap matches if it has any of them)
   --path-prefix <path>   Template path prefix, segment-aware (e.g. /likes)
   --exclude-ids <v>      File (one id per line, or a JSON array) or comma-separated ids to skip
+  --only-ids <v>         Same formats: select ONLY these ids (e.g. a PR's delta.gaps.opened).
+                         An empty file selects nothing.
   --limit <n>            Batch size (default: 5; 0 = no limit)
   --format <f>           json (default) | markdown
   -h, --help             Show this help
@@ -41,6 +44,17 @@ const TYPES = ['operation', 'status', 'parameter'];
  */
 export function parseExcludeIds(value: string | undefined): string[] {
   if (!value) return [];
+  return parseIdList(value, '--exclude-ids');
+}
+
+/**
+ * Reads a list of gap ids: a file path (one id per line, `#` comments, or a
+ * JSON array) or a comma-separated list. Gap ids never contain commas.
+ *
+ * @param value - Flag value.
+ * @param flag - Flag name for messages.
+ */
+export function parseIdList(value: string, flag: string): string[] {
   if (existsSync(value)) {
     const text = readFileSync(value, 'utf8').trim();
     if (text.startsWith('[')) {
@@ -48,7 +62,7 @@ export function parseExcludeIds(value: string | undefined): string[] {
         const parsed: unknown = JSON.parse(text);
         if (Array.isArray(parsed)) return parsed.filter((x): x is string => typeof x === 'string');
       } catch {
-        throw new InputError(`--exclude-ids file "${value}" is not a valid JSON array.`);
+        throw new InputError(`${flag} file "${value}" is not a valid JSON array.`);
       }
     }
     return text
@@ -95,6 +109,7 @@ export function runGaps(argv: string[], io: CliIo): number {
         tag: { type: 'string' },
         'path-prefix': { type: 'string' },
         'exclude-ids': { type: 'string' },
+        'only-ids': { type: 'string' },
         limit: { type: 'string' },
         format: { type: 'string' },
         help: { type: 'boolean', short: 'h' },
@@ -123,6 +138,8 @@ export function runGaps(argv: string[], io: CliIo): number {
     tag: csv(values.tag),
     pathPrefix: values['path-prefix'] ?? null,
     excludeIds: parseExcludeIds(values['exclude-ids']),
+    onlyIds:
+      values['only-ids'] === undefined ? null : parseIdList(values['only-ids'], '--only-ids'),
     limit: limitRaw === 0 ? null : limitRaw,
   };
   checkValues('priority', filters.priority ?? [], PRIORITIES);

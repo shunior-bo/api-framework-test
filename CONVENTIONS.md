@@ -10,7 +10,7 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 
 1. **All HTTP goes through a client in `src/api/`, and clients come from fixtures.** Tests never call `request.get/post/...` and never write `new XxxClient(request)`.
    *Why:* the coverage recorder (§12) wraps the `request` fixture, and every client is built from it in `src/fixtures/api.fixture.ts`. A request made any other way (for example `playwright.request.newContext()` or an external HTTP library) is **left out of coverage**, and the tool will then report as untested an endpoint that the test does exercise.
-2. **`spec/openapi.json` is the source of truth** for paths, methods, status codes and body shapes. It is a vendored copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json`. `OPENAPI_PATH` in `.env` points to it.
+2. **`spec/openapi.json` is the source of truth** for paths, methods, status codes and body shapes. It is a byte-identical copy of `gad-gui-api-demo/public/tools/schema/openapi_rest_demo.json` at the GAD commit pinned in `gad.ref.json`. Never edit it by hand: change GAD, then `npm run spec:sync` (§14). `OPENAPI_PATH` in `.env` points to it.
 3. **Only `src/fixtures/auth.fixture.ts` logs in.** Tests get tokens from `authToken` or `loginAs(...)`. The single exception is `tests/api/auth.spec.ts`, because login is its feature under test.
 4. **Only `src/utils/schema.ts` imports `zod`.** ESLint enforces this rule.
 5. **Always use the `@src/` alias. Never use relative imports** (`./` or `../`). ESLint enforces this rule.
@@ -25,7 +25,8 @@ Stack: TypeScript (strict) + Playwright Test in API mode (no browser) + Zod + @f
 
 ```
 api-framework-test/
-├── .github/workflows/         # CI (api-coverage.yml)
+├── .github/workflows/         # CI (api-coverage, feature-agent, test-agent, pr-guards, repin-gad)
+├── gad.ref.json               # GAD revision under test (§14)
 ├── spec/openapi.json          # Contract (source of truth)
 ├── src/
 │   ├── api/                   # XxxClient.ts — one class per resource
@@ -35,6 +36,7 @@ api-framework-test/
 │   ├── fixtures/              # coverage.fixture.ts → api.fixture.ts (clients) → auth.fixture.ts (tokens)
 │   └── utils/                 # schema.ts (Zod), auth.ts (auth strategies)
 ├── tools/coverage/            # Standalone coverage CLI (no Playwright, no deps)
+├── tools/spec-sync/           # gad.ref.json pin + spec sync / drift check (no deps)
 ├── tests/
 │   ├── api/                   # xxx.spec.ts — one spec per resource (needs GAD)
 │   └── unit/                  # xxx.spec.ts — pure logic, no network
@@ -119,7 +121,8 @@ expect(parsed.success, parsed.error?.message).toBe(true);
 expect(parsed.data).toMatchObject({ ...payload });
 ```
 
-- Error responses (401/409/422) are validated with `ErrorMessageSchema` (`{ error: { message } }`), then the message is checked.
+- Error responses (401/409/422) are validated with `ErrorMessageSchema` (`{ error: { message } }`), then the message is checked. The 401 message depends on the resource: articles and comments answer `"Access token not provided!"` without a token, while likes and bookmarks answer `"Access token for given user is invalid!"` even for an empty token. Assert the message the resource really sends (check it with `curl` first).
+- **400 "malformed JSON"** is covered with a client method `<method>WithRawBody(rawBody, …)` that sends the exact text as `application/json` (e.g. `ArticlesClient.createWithRawBody`, `updateWithRawBody`, `patchWithRawBody`, `LikesClient.createWithRawBody`), with the body built by a factory (`buildMalformedArticleJson()`). It still goes through the fixture's `request`, so coverage sees it. This is the endorsed way: add one only where the spec documents a 400 for malformed JSON.
 - GAD's 404 body is `{}`, so assert `expect(body).toEqual({})`.
 - To use an interface with `toMatchObject`, spread it: `toMatchObject({ ...payload })`.
 - In **Arrange**, when you create prerequisite data, check its status first and then parse it strictly: `expect(r.status()).toBe(201); const created = ArticleSchema.parse(await r.json());`
@@ -131,12 +134,19 @@ expect(parsed.data).toMatchObject({ ...payload });
 - Build every payload with `buildXxx()` from `@src/data/factories`. Override only what the test is about: `buildUser({ email: 'not-an-email' })`.
 - Factories add `uniqueSuffix()` so that tests don't collide (for example, the 409 on duplicate email).
 - For invalid payloads, override a field with an empty or invalid value. Don't delete keys or cast types.
-- To get a 404 on GET, use `NON_EXISTENT_ID`. Never PUT to it: GAD upserts and would create the record.
+- To get a 404 on GET or PATCH, use `NON_EXISTENT_ID`. Never PUT to it: GAD upserts and would create the record (and every later run would find it). For **PUT 201** ("created"), PUT to an id above every existing one, read from `getAll()` (`Math.max(...ids) + 1000`, as tc-articles-13 does), and delete it in `finally`.
 - **Cleanup:** wrap Act and Assert in `try { … } finally { await client.delete(id, token); }`. If the resource is created in Act, delete it only if the parse succeeded: `if (parsed.success) await client.delete(parsed.data.id, authToken);`
 - Delete children before parents (a comment before its article).
 - **Users can only delete themselves.** Clean up with `loginAs({ email, password })` and then `usersClient.delete(id, ownToken)`.
 - Never call `/api/restoreDB*` from a test. It resets data for every test that is running.
-- Only `labels.spec.ts` changes GAD's global feature flags (`configClient.setFeatures`), and it restores them in `afterAll`. That endpoint is not in the contract.
+- **Feature flags.** Some resources sit behind GAD feature flags that are **OFF by default**; while a flag is off, every request to its resource answers `404 {}`. Known ones: `feature_labels` (`/api/labels`, `/api/article-labels`), `feature_likes` (`/api/likes*`), `feature_user_bookmark_articles` (`/api/bookmarks*`); the full list is GAD's `config/config-features.js`. The spec of a flag-gated resource, and only that spec:
+  - runs in serial mode (`test.describe.configure({ mode: 'serial' })`);
+  - turns its flag on in `beforeAll` with `configClient.setFeatures({ <flag>: true })` and asserts 200;
+  - restores GAD's default in `afterAll`.
+
+  Examples: `labels.spec.ts`, `likes.spec.ts`, `bookmarks.spec.ts`. Never switch flags with `curl` or from another resource's spec. `/api/config/features` is test infrastructure, not part of the contract. When GAD's only way to produce a documented bare 404 is the disabled flag (likes answer `200 {"likes":0}` for unknown ids), cover it in a `describe('with <flag> disabled (GAD default)')` block and say so in a comment (tc-labels-02, tc-likes-11/12).
+- **Toggle endpoints with no DELETE** (`POST /api/likes` adds the like the first time and removes it the second): clean up by calling the toggle again in `finally`.
+- **Residue the API cannot delete** (for example the first bookmark record of a user: there is no DELETE, and json-server reuses deleted user ids): a test that passes only once is not acceptable. Report the gap as **blocked** with that reason (Day 3: `status:POST /bookmarks/articles:201`) instead of writing it.
 
 **GAD data quirks that the factories already handle:** the `date` is 24 h in the past (GAD rejects the current UTC time as "in future"), and articles always include `image` (without it `/api/health` reports "Degraded").
 
@@ -216,7 +226,7 @@ export const WidgetSchema = z.object({
 export const WidgetsSchema = z.array(WidgetSchema);
 ```
 
-Then add a unit test for it in `tests/unit/schema.spec.ts` (one case that is accepted and one that is rejected).
+Then add a unit test for it in `tests/unit/schema.spec.ts` (one case that is accepted and one that is rejected). The schema and its unit test go in the **same `feat:` commit** (the schema layer), not in the `test:` commit of the API spec.
 
 ### Step 4: Client, `src/api/WidgetsClient.ts`
 
@@ -416,7 +426,7 @@ node -e "const g=require('./reports/coverage/gaps.json').gaps;console.log(g.filt
 
 The gaps you targeted (for example `operation:POST /widgets` or `status:POST /widgets:401`) must have disappeared from `reports/coverage/gaps.json`. If a gap is still there, the test did not really exercise it: check the status code that was actually received in `coverage.json` → `operations[].observedStatuses`.
 
-Every documented status code should have a test, or a written reason why it doesn't (for example, "400 needs malformed JSON, which the typed client can't send").
+Every documented status code should have a test, or a written reason why it doesn't (for example, "PUT 404 is unreachable: GAD upserts unknown ids"). A 400 "malformed JSON" is **not** such a reason: use a `…WithRawBody` client method (§5).
 
 ---
 
@@ -424,10 +434,14 @@ Every documented status code should have a test, or a written reason why it does
 
 | Behavior | Consequence for tests |
 |----------|-----------------------|
-| PUT on an unknown id creates the record and answers 201 (upsert) | Never PUT to `NON_EXISTENT_ID` |
+| PUT on an unknown id creates the record and answers 201 (upsert); a PUT 404 is unreachable | Never PUT to `NON_EXISTENT_ID`; for PUT 201 use an id above every existing one and delete it (§6) |
+| PATCH does **not** upsert: an unknown id answers 404 | Use `NON_EXISTENT_ID` for PATCH 404 |
+| DELETE `/api/articles/{id}` is a **soft delete**: the record stays in `db.json` with `"_inactive": true`, and GET then answers 404 | Assert the 404 after delete; a deleted id is never free for reuse |
 | GET `/api/users*` masks `email`, `lastname` and `password` as `"****"` | Don't assert on those fields after a GET |
 | DELETE/PUT/PATCH on `/api/users/{id}` need **that user's** token | Use `loginAs` |
-| `feature_labels` is off by default, so `/api/labels` returns 404 | Turn it on in `beforeAll` through `configClient` and restore it in `afterAll` |
+| `feature_labels`, `feature_likes`, `feature_user_bookmark_articles` (and others in GAD's `config/config-features.js`) are off by default, so their resources return 404 | Only the resource's own spec turns its flag on in `beforeAll` (serial mode) and restores it in `afterAll` (§6) |
+| `POST /api/likes` needs a `userid` header equal to the token owner's id (undocumented) | `LikesClient` sends it; JSDoc documents it |
+| The seed user's id is not in the login response nor in the JWT (`{ email, data, iat, exp }`) | Read it from data the test creates (`article.user_id`). There is no `authUserId` fixture on purpose: getting the id would need an extra request (`GET /api/users?email=…`) that the recorder would count, changing coverage |
 | Validation reads `db.json` from disk while writes land asynchronously | The suite runs with `workers: 1`. Don't enable parallelism |
 | The current UTC time is rejected as a "future date" on hosts west of UTC | Use the factory dates (`recentIsoDate()`) |
 
@@ -454,7 +468,7 @@ Every documented status code should have a test, or a written reason why it does
 
 ## 11. Git workflow and commits
 
-- Never commit to `main`. Use a branch: `session/NN-short-description` for session work, `fix/short-description` for fixes, `experiment/<name>` for experiments.
+- Never commit to `main`. Use a branch: `session/NN-short-description` for session work, `fix/short-description` for fixes, `experiment/<name>` for experiments. `feature/<issue>-<slug>` and `ai/<run-id>` are reserved for the agents (§13, §14).
 - Commit prefixes are lowercase: `feat:` (client, fixture, schema, factory), `test:` (specs), `fix:`, `chore:` (config, tooling, deps), `docs:`.
 - Make small atomic commits, one per layer (models → schema → client → fixture → spec).
 - Stage files explicitly (no blind `git add .`) and never commit `.env`.
@@ -522,7 +536,7 @@ Exclude an operation only when it must not be tested: destructive to the shared 
 The `test-generator` agent (`.claude/agents/test-generator.md`, launched with `/fill-coverage-gaps`) writes tests under these same conventions. See `docs/day3-ai-test-generation.md` for how it works and why.
 
 - Every test it adds carries the tag **`@ai-generated`**, next to the usual `@smoke|@negative|@regression` and `@tc-<resource>-NN`. Run them with `npx playwright test --grep @ai-generated`.
-- AI-written changes arrive only as PRs from `ai/<run-id>` branches, labeled `ai-generated`, with a log in `docs/ai-generation/<run-id>.md`.
+- AI-written changes arrive only as PRs labeled `ai-generated`: from `ai/<run-id>` branches (local runs), or as `Agent: test-generator` commits on a `feature/*` PR (CI, `--mode ci-pr`, §14). Each run has a log in `docs/ai-generation/<run-id>.md`.
 - `test.fail(...)` in an AI test must cite curl evidence in that log (spec drift). A gap the agent could not close is reported as **blocked**, never hidden.
 - When a human edits an AI test, keep `@ai-generated` (it records the origin, not the authorship).
 
@@ -537,3 +551,25 @@ The `test-generator` agent (`.claude/agents/test-generator.md`, launched with `/
 - [ ] No existing test, assertion or exclusion was changed.
 - [ ] Read the log's "Where CONVENTIONS.md was insufficient" notes and decide whether to update this file (humans only).
 
+---
+
+## 14. Agent lanes and `gad.ref.json` (Day 4)
+
+**`gad.ref.json`** (repository root) is the single source of truth for which GAD the framework tests: `{ repository, ref, sha, specPath }`. On `main` it always pins a GAD `main` commit; on a feature PR it pins the GAD feature branch commit. CI checks out GAD at that sha on each side of a PR and fails on drift between `spec/openapi.json` and GAD's spec. Change both files **only** with the scripts:
+
+```bash
+npm run spec:sync -- --gad-dir ../gad-gui-api-demo   # spec/openapi.json ← GAD (byte-identical)
+npm run spec:check -- --gad-dir ../gad-gui-api-demo  # exit 1 on drift
+npm run gad:pin -- --sha <40-char sha> --ref main    # gad.ref.json
+```
+
+**Agent lanes.** Every commit an agent makes ends with a trailer `Agent: <name>`. The `lane-check` job (`pr-guards.yml`) fails a PR labeled `ai-generated` when a commit leaves its lane:
+
+| `Agent:` | May change |
+|---|---|
+| `feature-developer` | `spec/openapi.json`, `gad.ref.json` (through the scripts). In GAD: a new endpoint helper, its dispatch in `routes/validations.route.js`, GAD's OpenAPI. |
+| `test-generator` | `src/api/**`, `src/models/**`, `src/utils/schema.ts`, `src/data/**`, `src/fixtures/api.fixture.ts`, `tests/api/**`, `tests/unit/schema.spec.ts`, `docs/ai-generation/**` |
+| `repin-gad` (workflow) | `spec/openapi.json`, `gad.ref.json` |
+| none (human) | anything; listed in the summary |
+
+Agent commits must not add coverage exclusions, change non-import lines of test files that existed before the PR, or add `.only` / `test.skip` / `test.fixme`. A PR labeled `ai-generated` also needs the label `human-reviewed` (added by a person after reading it; a new push removes it), and a PR into `main` must pin GAD `main`. The full flow, merge order and failure modes are in [`docs/day4-multi-agent-pipeline.md`](docs/day4-multi-agent-pipeline.md).

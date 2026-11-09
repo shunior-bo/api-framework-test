@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-09T14:59:04.786Z",
+  "base": {
+    "git": {
+      "sha": "1111111aaaaaaa",
+      "branch": "main"
+    },
+    "spec": {
+      "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f",
+      "version": "0.0.1"
+    },
+    "totals": {
+      "operations": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71
+      },
+      "statuses": {
+        "covered": 7,
+        "total": 12,
+        "pct": 58.33
+      },
+      "parameters": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        }
+      }
+    }
+  },
+  "head": {
+    "git": {
+      "sha": "2222222bbbbbbb",
+      "branch": "feature/head-improved"
+    },
+    "spec": {
+      "sha256": "da68ef0b2c9f21ec896779cc2925cde0854b573a3416b8b3389702a7bfe48f5f",
+      "version": "0.0.1"
+    },
+    "totals": {
+      "operations": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "statuses": {
+        "covered": 9,
+        "total": 12,
+        "pct": 75
+      },
+      "parameters": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75,
+        "required": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "optional": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        }
+      }
+    }
+  },
+  "specChanged": false,
+  "totals": {
+    "operations": {
+      "base": {
+        "covered": 6,
+        "total": 7,
+        "pct": 85.71
+      },
+      "head": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "delta": {
+        "covered": 1,
+        "total": 0,
+        "pct": 14.29
+      }
+    },
+    "statuses": {
+      "base": {
+        "covered": 7,
+        "total": 12,
+        "pct": 58.33
+      },
+      "head": {
+        "covered": 9,
+        "total": 12,
+        "pct": 75
+      },
+      "delta": {
+        "covered": 2,
+        "total": 0,
+        "pct": 16.67
+      }
+    },
+    "parameters": {
+      "base": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "head": {
+        "covered": 6,
+        "total": 8,
+        "pct": 75
+      },
+      "delta": {
+        "covered": 0,
+        "total": 0,
+        "pct": 0
+      },
+      "required": {
+        "base": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "head": {
+          "covered": 4,
+          "total": 5,
+          "pct": 80
+        },
+        "delta": {
+          "covered": 0,
+          "total": 0,
+          "pct": 0
+        }
+      },
+      "optional": {
+        "base": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        },
+        "head": {
+          "covered": 2,
+          "total": 3,
+          "pct": 66.67
+        },
+        "delta": {
+          "covered": 0,
+          "total": 0,
+          "pct": 0
+        }
+      }
+    }
+  },
+  "operations": {
+    "added": [],
+    "removed": [],
+    "newlyCovered": [
+      "GET /never"
+    ],
+    "noLongerCovered": []
+  },
+  "gaps": {
+    "opened": [
+      {
+        "id": "status:GET /never:404",
+        "type": "status",
+        "priority": "medium",
+        "method": "GET",
+        "path": "/never",
+        "operationId": "never",
+        "tags": [],
+        "status": "404",
+        "hint": "Documented 404 (\"Not found\") for GET /never is never exercised. Request a resource that does not exist."
+      },
+      {
+        "id": "parameter:GET /never:query:page",
+        "type": "parameter",
+        "priority": "low",
+        "method": "GET",
+        "path": "/never",
+        "operationId": "never",
+        "tags": [],
+        "parameter": {
+          "name": "page",
+          "in": "query",
+          "required": false
+        },
+        "hint": "Optional query parameter \"page\" of GET /never is never sent."
+      }
+    ],
+    "closed": [
+      "operation:GET /never",
+      "status:POST /items:422"
+    ],
+    "summary": {
+      "opened": 2,
+      "closed": 2,
+      "headTotal": 5,
+      "baseTotal": 5
+    }
+  },
+  "verdict": "improved",
+  "verdictReasons": [
+    "improvement: operations newly covered",
+    "improvement: operations.covered increased",
+    "improvement: operations.pct increased",
+    "improvement: statuses.covered increased",
+    "improvement: statuses.pct increased"
+  ]
+}

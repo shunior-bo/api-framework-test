@@ -28,9 +28,18 @@ const MAX_BODY = 65000;
  * @param {string | null} input.headSha - PR head commit.
  * @param {string | null} input.baseSha - PR base commit.
  * @param {string} input.testsOutcome - Outcome of the head API tests (success | failure | …).
+ * @param {string | null} [input.policyNote] - Negative-delta policy note (feature PR warning or non-feature failure).
  * @returns {string}
  */
-function buildCommentBody({ deltaMarkdown, headSummary, runUrl, headSha, baseSha, testsOutcome }) {
+function buildCommentBody({
+  deltaMarkdown,
+  headSummary,
+  runUrl,
+  headSha,
+  baseSha,
+  testsOutcome,
+  policyNote = null,
+}) {
   const short = (/** @type {string | null} */ sha) =>
     sha ? `\`${sha.slice(0, 7)}\`` : '`unknown`';
   const testsLine =
@@ -38,6 +47,7 @@ function buildCommentBody({ deltaMarkdown, headSummary, runUrl, headSha, baseSha
       ? '✅ Head API tests passed.'
       : `❌ Head API tests: **${testsOutcome}** — see the \`playwright-report-head\` artifact.`;
   const parts = [MARKER, testsLine, ''];
+  if (policyNote && policyNote.trim()) parts.push(policyNote.trim(), '');
   if (deltaMarkdown) {
     parts.push(deltaMarkdown.trim());
   } else {

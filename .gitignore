@@ -9,3 +9,6 @@ playwright-report
 
 # GAD checkout used by CI (and local CI simulations)
 gad/
+
+# Agent scratch space (issue data, evidence, results; uploaded as CI artifacts)
+.agent-work/

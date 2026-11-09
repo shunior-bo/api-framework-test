@@ -1,0 +1,121 @@
+# Re-pin a feature PR to GAD main after its GAD PR was merged (merge order,
+# step 2 — docs/day4-multi-agent-pipeline.md). Manual on purpose: a human
+# decides that the GAD PR is merged.
+#
+#   1. checks the PR: open, same repository, feature/* into main
+#   2. checks out GAD main and verifies its spec equals the PR's spec/openapi.json
+#      (i.e. the GAD feature really is on main); with allow_spec_sync=true it
+#      syncs instead (GAD main moved on since the feature was opened)
+#   3. npm run gad:pin -- --sha <GAD main sha> --ref main, commit with the
+#      trailer "Agent: repin-gad" (lane: spec/openapi.json, gad.ref.json), push
+#      with AGENT_PAT so CI (coverage, lane-check, gad-ref-guard) re-runs
+name: Re-pin GAD
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Framework PR number (feature/* into main)'
+        required: true
+        type: number
+      allow_spec_sync:
+        description: 'Sync spec/openapi.json if GAD main differs from the PR spec'
+        required: false
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: repin-gad-${{ inputs.pr_number }}
+  cancel-in-progress: false
+
+env:
+  GAD_REPOSITORY: shunior-bo/gad-gui-api-demo
+
+jobs:
+  repin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check secrets
+        env:
+          HAS_PAT: ${{ secrets.AGENT_PAT != '' }}
+        run: |
+          if [ "$HAS_PAT" != "true" ]; then
+            echo "::error::AGENT_PAT is required (its push re-triggers CI)."
+            exit 1
+          fi
+
+      - name: Read the PR
+        id: pr
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo,
+              pull_number: Number('${{ inputs.pr_number }}'),
+            });
+            const problems = [];
+            if (pr.state !== 'open') problems.push('the PR is not open');
+            if (pr.head.repo.full_name !== `${context.repo.owner}/${context.repo.repo}`) problems.push('the PR comes from a fork');
+            if (!pr.head.ref.startsWith('feature/')) problems.push('the head branch is not feature/*');
+            if (pr.base.ref !== 'main') problems.push('the PR does not target main');
+            if (problems.length) core.setFailed(`Cannot re-pin PR #${pr.number}: ${problems.join('; ')}`);
+            core.setOutput('branch', pr.head.ref);
+
+      - name: Checkout the PR branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          token: ${{ secrets.AGENT_PAT }}
+
+      - name: Checkout GAD main
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.GAD_REPOSITORY }}
+          ref: main
+          path: gad
+          token: ${{ secrets.AGENT_PAT }}
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Verify GAD main carries this PR's spec
+        env:
+          ALLOW_SYNC: ${{ inputs.allow_spec_sync }}
+        run: |
+          if node tools/spec-sync/src/cli.ts check --gad-dir gad; then
+            exit 0
+          fi
+          if [ "$ALLOW_SYNC" = "true" ]; then
+            echo "::warning::GAD main's spec differs from this PR's spec; syncing it (allow_spec_sync=true)."
+            node tools/spec-sync/src/cli.ts sync --gad-dir gad
+          else
+            echo "::error::GAD main's spec differs from this PR's spec: is the GAD PR merged? If GAD main moved on, re-run with allow_spec_sync=true."
+            exit 1
+          fi
+
+      - name: Pin GAD main, commit and push
+        env:
+          BRANCH: ${{ steps.pr.outputs.branch }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          sha=$(git -C gad rev-parse HEAD)
+          node tools/spec-sync/src/cli.ts pin --sha "$sha" --ref main
+          if git diff --quiet -- gad.ref.json spec/openapi.json; then
+            echo "Already pinned to GAD main @ $sha: nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gad.ref.json spec/openapi.json
+          git commit -m "chore: re-pin GAD to main @ ${sha:0:7} for PR #${PR_NUMBER}" -m "Agent: repin-gad"
+          git push origin "HEAD:${BRANCH}"
+          echo "Re-pinned PR #${PR_NUMBER} to GAD main @ $sha" >> "$GITHUB_STEP_SUMMARY"

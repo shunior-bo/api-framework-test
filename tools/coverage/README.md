@@ -195,13 +195,15 @@ Example: the spec adds an endpoint that nobody tests. `covered` stays the same, 
 ```
 node tools/coverage/src/cli.ts gaps [--from reports/coverage/gaps.json] [--spec spec/openapi.json]
      [--priority high,medium] [--type operation,status,parameter] [--tag likes,bookmarks]
-     [--path-prefix /likes] [--exclude-ids <file|csv>] [--limit 5] [--format json|markdown]
+     [--path-prefix /likes] [--exclude-ids <file|csv>] [--only-ids <file|csv>] [--limit 5]
+     [--format json|markdown]
 ```
 
 - The same `gaps.json`, spec and filters always produce the same batch, in the canonical gap order (the comparator is shared with `gaps.json`). The output has no timestamp.
 - `--tag` matches a gap that has any of the listed tags.
 - `--path-prefix` is segment-aware: `/likes` matches `/likes` and `/likes/…`, but not `/likesX`.
 - `--exclude-ids` takes a CSV, or a file with one id per line (`#` starts a comment) or with a JSON array. Agents use it to skip gaps they have flagged as blocked.
+- `--only-ids` takes the same formats and selects **only** those ids, after the other filters (Day 4: the test agent in CI passes the ids of the PR's `delta.gaps.opened`). An empty list (an empty file or `""`) selects **nothing**, so an empty CI gap list never widens the scope; omit the flag for no allow-list. `--exclude-ids` still wins over `--only-ids`.
 - `--limit 0` returns every matching gap.
 - Each selected gap includes `operation`: the full spec context of its operation, with every `$ref` resolved recursively (cycle-safe, depth-capped, `xml` dropped). The context holds the method, path, `url` (with the base path), operationId, summary, description, tags, security plus the referenced security schemes, parameters, requestBody and responses with their schemas. That is about 0.5–2 KB per GAD operation.
 - `source.specMatches` is `false`, with a warning on stderr, when the spec changed since `gaps.json` was produced. In that case re-run the coverage.
