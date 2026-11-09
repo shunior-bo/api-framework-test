@@ -16,6 +16,7 @@
 import { test, expect } from '@playwright/test';
 import {
   z,
+  AboutSchema,
   ArticleSchema,
   ArticlesSchema,
   BookmarkedArticlesSchema,
@@ -106,6 +107,28 @@ test.describe('HealthSchema', () => {
 
   test('rejects when the problem lists are missing', () => {
     expect(HealthSchema.safeParse({ status: 'OK', health: {} }).success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// AboutSchema
+// ---------------------------------------------------------------------------
+test.describe('AboutSchema', () => {
+  test('accepts the GAD about shape', () => {
+    const result = AboutSchema.safeParse({
+      name: 'GAD',
+      version: 'v2.9.1',
+      description: 'Simple application prepared and developed only for testing purposes',
+      repository: 'https://github.com/jaktestowac/gad-gui-api-demo',
+      keywords: ['json-server', 'node'],
+      author: 'jaktestowac.pl',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  test('rejects when the version is missing', () => {
+    expect(AboutSchema.safeParse({ name: 'GAD', keywords: [] }).success).toBe(false);
   });
 });
 
